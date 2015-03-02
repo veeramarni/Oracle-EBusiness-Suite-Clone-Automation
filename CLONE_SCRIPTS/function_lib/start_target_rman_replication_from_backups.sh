@@ -3,6 +3,7 @@ start_target_rman_replication_from_backups()
 orasid=$1
 orahome=$2
 dbname=$3
+rmandir=$4
 export NLS_DATE_FORMAT='DD-MM-RRRR HH24:MI:SS'
 export PATH=$ORACLE_HOME/bin:$PATH
 export ORACLE_SID=${orasid}
