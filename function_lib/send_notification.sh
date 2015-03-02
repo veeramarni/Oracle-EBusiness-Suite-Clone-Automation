@@ -2,17 +2,12 @@
 #
 send_notification()
 {
-dist1="DOR-ITS-BATCH-SUPPORT@dor.ga.gov"
-dist2="DOR-ORACLE-DBA@dor.ga.gov"
-dist3="oncdb2dba@DOR.GA.GOV"
-dist4="oncdb2dba@DOR.GA.GOV"
-dist5="ramzi.salameh@dor.ga.gov"
-#
-#dist1="ramzi.salameh@dor.ga.gov"
-#dist2="ramzi.salameh@dor.ga.gov"
-#dist3="ramzi.salameh@dor.ga.gov"
-#dist4="ramzi.salameh@dor.ga.gov"
-#
+dist1="marni.srikanth@gmail.com"
+dist2="marni.srikanth@gmail.com"
+dist3="marni.srikanth@gmail.com"
+dist4="marni.srikanth@gmail.com"
+dist5="marni.srikanth@gmail.com"
+
 if [ $# -lt 3 ]
 then
         echo "Please provide MSG text"
