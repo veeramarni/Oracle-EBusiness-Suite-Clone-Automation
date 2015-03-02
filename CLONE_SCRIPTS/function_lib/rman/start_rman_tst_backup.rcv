@@ -1,0 +1,35 @@
+CONNECT target /
+CONNECT catalog rman/welcome1@devcatdb
+run
+{
+sql 'alter system set "_backup_disk_bufcnt"=64 scope=memory';
+sql 'alter system set "_backup_disk_bufsz"=1048576 scope=memory';
+
+allocate channel ch01 device type disk
+format '/backups/nbackup0/DSGN/%U';
+
+allocate channel ch02 device type disk
+format '/backups/nbackup1/DSGN/%U';
+
+allocate channel ch03 device type disk
+format '/backups/nbackup2/DSGN/%U';
+
+allocate channel ch04 device type disk
+format '/backups/nbackup3/DSGN/%U';
+
+allocate channel ch05 device type disk
+format '/backups/nbackup4/DSGN/%U';
+
+allocate channel ch06 device type disk
+format '/backups/nbackup5/DSGN/%U';
+
+allocate channel ch07 device type disk
+format '/backups/nbackup6/DSGN/%U';
+
+allocate channel ch08 device type disk
+format '/backups/nbackup7/DSGN/%U';
+
+backup as backupset incremental level 0 section size 32g database
+tag 'FULLBACKUPSET_L0' plus archivelog delete input tag 'FULLBACKUPSET_L0';
+}
+EXIT;

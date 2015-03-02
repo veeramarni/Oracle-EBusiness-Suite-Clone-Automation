@@ -1,0 +1,18 @@
+CONNECT AUXILIARY /
+run {
+allocate auxiliary channel a1 device type disk;
+allocate auxiliary channel a2 device type disk;
+allocate auxiliary channel a3 device type disk;
+allocate auxiliary channel a4 device type disk;
+allocate auxiliary channel a5 device type disk;
+allocate auxiliary channel a6 device type disk;
+allocate auxiliary channel a7 device type disk;
+allocate auxiliary channel a8 device type disk;
+allocate auxiliary channel a9 device type disk;
+allocate auxiliary channel a10 device type disk;
+DUPLICATE TARGET DATABASE TO DSGN
+BACKUP LOCATION '/migration/refresh/DPGN'
+NOFILENAMECHECK;
+}
+EXIT;
+
