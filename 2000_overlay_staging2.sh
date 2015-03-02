@@ -44,8 +44,8 @@
 . ./function_lib/delete_database_asm_tempfile.sh
 . ./function_lib/delete_database_asm_datafiles.sh
 #
-logfilepath="/u01/app/oracle/scripts/refresh/logs/"
-bkupbasepath="/migration/refresh/"
+logfilepath="./logs/"
+bkupbasepath="/orabackup/rmanbackups/CONV9EBS/rman"
 basepath="/u01/app/oracle/scripts/refresh/"
 trgbasepath="/u01/app/oracle/scripts/refresh/targets/"
 #
@@ -101,41 +101,10 @@ esac
 #
 #####################################################################
 #                                                                   #
-# This block of code is to prevent this job from running before     #
-# 10:00pm                                                           #
+# Write an block condition to stop running the job with condition   #
 #                                                                   #
 #####################################################################
-hr1="$2"
-if  [ "$hr1" == "" ]
-then
-        echo "override sleep"
-else
-        echo "process sleep"
-	date1=$(date +%F"23:00:00")
-	echo "date1: " $date1
-	date2=$(date +%F%T --date="-1 hour ago")
-	echo "date2: " $date2
 
-	if [[ "$date2" > "$date1" ]]
-	then
-        	echo "greater:start replication"
-	else
-        	echo "less: go to sleep"
-        	for i in $(seq 10 10 60)
-        	do
-                	sleep 5m
-                	date2=$(date +%F%T --date="-1 hour ago")
-                	if [[ "$date2" > "$date1" ]]
-                	then
-                        	echo "greater:start replication"
-                        	break
-                	else
-                        	echo "go to sleep again"
-                        	echo "i: " $i
-                	fi
-        	done
-	fi
-fi
 #####################################################################
 #  End of code that prevents the job from running before 10:00pm    #
 #                                                                   # 
