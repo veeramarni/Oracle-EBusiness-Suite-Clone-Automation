@@ -7,50 +7,50 @@
 #                                                                                                  #
 ####################################################################################################
 #
-logfilepath="./logs/"
-bkupbasepath="/orabackup/rmanbackups/CONV9EBS/rman"
+bkupbasepath="/orabackup/rmanbackups/"
 basepath="/home/oracle/script/script/CLONE_SCRIPTS/"
 trgbasepath="/u01/app/oracle/scripts/refresh/targets/"
-dbhomepath="/u01/oracle/CONV9EBS/db/tech_st/11.2.0.4"
+dbhomepath="/u01/oracle/CONV9EBS/db/tech_st/11.2.0.4/"
+logfilepath="${basepath}logs/"
 #
 ####################################################################################################
 #      add functions library                                                                       #
 ####################################################################################################
-. "$basepath"function_lib/usage.sh
-. "$basepath"function_lib/dir_empty.sh        
-. "$basepath"function_lib/syncpoint.sh        
-. "$basepath"function_lib/user_pwd_reset.sh   
-. "$basepath"function_lib/its_crt_users.sh   
-. "$basepath"function_lib/crt_directories.sh      
-. "$basepath"function_lib/crt_dblinks.sh      
-. "$basepath"function_lib/io_calibrate.sh     
-. "$basepath"function_lib/audit_settings.sh   
-. "$basepath"function_lib/purge_audit.sh      
-. "$basepath"function_lib/turn_cluster_off.sh 
-. "$basepath"function_lib/turn_cluster_on.sh 
-. "$basepath"function_lib/set_database_audit.sh
-. "$basepath"function_lib/delete_rman_archivelogs.sh
-. "$basepath"function_lib/stop_database_rac.sh 
-. "$basepath"function_lib/start_database_rac.sh 
-. "$basepath"function_lib/send_notification.sh
-. "$basepath"function_lib/start_rman_tst_backup.sh
-. "$basepath"function_lib/check_database_status1.sh
-. "$basepath"function_lib/check_database_status2.sh
-. "$basepath"function_lib/delete_sourcedb_backups.sh
-. "$basepath"function_lib/start_mount_database_node1.sh
-. "$basepath"function_lib/start_database_mount.sh
-. "$basepath"function_lib/start_database_nomount.sh
-. "$basepath"function_lib/shutdown_database_node1.sh
-. "$basepath"function_lib/rman_register_database.sh
-. "$basepath"function_lib/list_database_recover_files.sh
-. "$basepath"function_lib/alter_database_archivelog.sh
-. "$basepath"function_lib/alter_database_open.sh
-. "$basepath"function_lib/start_rman_tst_backup.sh
-. "$basepath"function_lib/start_stg_rman_replication.sh
-. "$basepath"function_lib/delete_os_trace_files.sh
-. "$basepath"function_lib/delete_os_adump_files.sh
-. "$basepath"function_lib/delete_database_asm_tempfile.sh
-. "$basepath"function_lib/delete_database_asm_datafiles.sh
+. ${basepath}function_lib/usage.sh
+. ${basepath}function_lib/dir_empty.sh        
+. ${basepath}function_lib/syncpoint.sh        
+. ${basepath}function_lib/user_pwd_reset.sh   
+. ${basepath}function_lib/its_crt_users.sh   
+. ${basepath}function_lib/crt_directories.sh      
+. ${basepath}function_lib/crt_dblinks.sh      
+. ${basepath}function_lib/io_calibrate.sh     
+. ${basepath}function_lib/audit_settings.sh   
+. ${basepath}function_lib/purge_audit.sh      
+. ${basepath}function_lib/turn_cluster_off.sh 
+. ${basepath}function_lib/turn_cluster_on.sh 
+. ${basepath}function_lib/set_database_audit.sh
+. ${basepath}function_lib/delete_rman_archivelogs.sh
+. ${basepath}function_lib/stop_database_rac.sh 
+. ${basepath}function_lib/start_database_rac.sh 
+. ${basepath}function_lib/send_notification.sh
+. ${basepath}function_lib/start_rman_tst_backup.sh
+. ${basepath}function_lib/check_database_status1.sh
+. ${basepath}function_lib/check_database_status2.sh
+. ${basepath}function_lib/delete_sourcedb_backups.sh
+. ${basepath}function_lib/start_mount_database_node1.sh
+. ${basepath}function_lib/start_database_mount.sh
+. ${basepath}function_lib/start_database_nomount.sh
+. ${basepath}function_lib/shutdown_database_node1.sh
+. ${basepath}function_lib/rman_register_database.sh
+. ${basepath}function_lib/list_database_recover_files.sh
+. ${basepath}function_lib/alter_database_archivelog.sh
+. ${basepath}function_lib/alter_database_open.sh
+. ${basepath}function_lib/start_rman_tst_backup.sh
+. ${basepath}function_lib/start_stg_rman_replication.sh
+. ${basepath}function_lib/delete_os_trace_files.sh
+. ${basepath}function_lib/delete_os_adump_files.sh
+. ${basepath}function_lib/delete_database_asm_tempfile.sh
+. ${basepath}function_lib/delete_database_asm_datafiles.sh
 #
 #
 ########################################
@@ -119,26 +119,26 @@ do
                 restart=true
 		echo ""
                 echo "  RESTART LOCATION: "$stepnum" ,around line: "$linenum"" 
-		echo "   SCRIPT LOCATION: "$basepath"2000_overlay_staging2.sh"
+		echo "   SCRIPT LOCATION: ${basepath}2000_overlay_staging2.sh"
                 echo "TASK LOG  LOCATION: /u01/app/oracle/scripts/refresh/targets/"$trgdbname"/"
-                echo " RUN LOG  LOCATION: "$basepath"logs/"
+                echo " RUN LOG  LOCATION: ${basepath}logs/"
 		echo ""
 	else
 		echo ""
                 echo "   NORMAL LOCATION: "$stepnum" ,line: "$linenum""
-		echo "   SCRIPT LOCATION: "$basepath"2000_overlay_staging2.sh"
+		echo "   SCRIPT LOCATION: ${basepath}2000_overlay_staging2.sh"
                 echo "TASK LOG  LOCATION: /u01/app/oracle/scripts/refresh/targets/"$trgdbname"/"
-                echo " RUN LOG  LOCATION: "$basepath"logs/"
+                echo " RUN LOG  LOCATION: ${basepath}logs/"
 		echo ""
 		stepnum=`expr $stepnum + 50`
         fi
 done < "$abendfile"
 #
 now=$(date "+%m/%d/%y %H:%M:%S")
-echo $now >>$logfilepath$logfilename
+echo $now >>${logfilepath}${logfilename}
 #
 now=$(date "+%m/%d/%y %H:%M:%S")" ====  ########  $srcdbname to $trgdbname replication stage has been started  ########"
-echo $now >>$logfilepath$logfilename
+echo $now >>${logfilepath}${logfilename}
 #
 for step in $(seq "$stepnum" 50 1650)
 do
@@ -150,21 +150,21 @@ do
 			#  check backup directory              #
 			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> check $srcdbname database backup directory"
-			echo $now >>$logfilepath$logfilename
+			echo $now >>${logfilepath}${logfilename}
 			#
 			dir_empty $bkupdir
 			#
 			rcode=$?
 			if [ "$rcode" -gt 0 ]
 			then
-				echo "Backup folder for "$srcdbname" does not exists or folder is empty. \
+				echo "Backup folder for ${srcdbname} does not exists or folder is empty. \
 						Abort!!! RC=" "$rcode"
 				########################################
 				#  update log file                     #
 				########################################
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Backup folder for "$srcdbname" does \
+				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Backup folder for ${srcdbname} does \
 					not exist or folder is empty. Abort!! RC=""$rcode"       
-				echo $now >>$logfilepath$logfilename
+				echo $now >>${logfilepath}${logfilename}
 				syncpoint $trgdbname $step "$LINENO"
 				echo "error.......Exit."
 				########################################################################
@@ -183,7 +183,7 @@ do
 			#          check  DB status            #
 			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Check $trgdbname status on node1"       
-			echo $now >>$logfilepath$logfilename
+			echo $now >>${logfilepath}${logfilename}
 			#
 			check_database_status1 $trgdbname
 			#
@@ -194,9 +194,9 @@ do
 				########################################
 				#  update log file                     #
 				########################################
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Check database "$srcdbname" failed. Abort!! \
+				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Check database ${srcdbname} failed. Abort!! \
 						RC=""$rcode"       
-				echo $now >>$logfilepath$logfilename
+				echo $now >>${logfilepath}${logfilename}
 				syncpoint $trgdbname $step "$LINENO"
 				########################################################################
 				#   send notification                                                  #
@@ -215,7 +215,7 @@ do
 			#          OEM database blackout       #
 			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start $trgdbname OEM Blackout"
-			echo $now >>$logfilepath$logfilename
+			echo $now >>${logfilepath}${logfilename}
 			echo "END   TASK: " $step "start-oem-blackout"
                 ;;
                 "200")
@@ -243,7 +243,7 @@ do
 			#           delete archive logs       #
 			#######################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $trgdb archive logse"
-			echo $now >>$logfilepath$logfilename
+			echo $now >>${logfilepath}${logfilename}
 			########################################
 			#   update log file:                   #
 			#       Delete archive logs            #       
@@ -254,7 +254,7 @@ do
 			if [ $rcode -ne 0 ] 
 			then
 				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $trgdb RMAN archive logse FAILED!!" RC=$rcode
-				echo $now >>$logfilepath$logfilename
+				echo $now >>${logfilepath}${logfilename}
 				syncpoint $trgdbname $step "$LINENO"
 				########################################################################
 				#   send notification                                                  #
@@ -273,14 +273,14 @@ do
 			# STOP target DATABASE                 #
 			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Stop $trgdbname database on all nodes"
-			echo $now >>$logfilepath$logfilename
+			echo $now >>${logfilepath}${logfilename}
 			#
 			stop_database_rac $trgdbname
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
 				now=$(date "+%m/%d/%y %H:%M:%S")" ====> STOP $trgdb database FAILED!!" RC=$rcode
-				echo $now >>$logfilepath$logfilename
+				echo $now >>${logfilepath}${logfilename}
 				syncpoint $trgdbname $step "$LINENO"
 				########################################################################
 				#   send notification                                                  #
@@ -299,7 +299,7 @@ do
 			# START MOUNT DATABASE on node1        #
 			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> START $trgdbname database in MOUNT mode"
-			echo $now >>$logfilepath$logfilename
+			echo $now >>${logfilepath}${logfilename}
 			#
 			start_mount_database_node1 $trgdbname
 			#
@@ -308,7 +308,7 @@ do
 			then
 				now=$(date "+%m/%d/%y %H:%M:%S")" ====> START $trgdb database in MOUNT mode FAILED!!" \
 						RC=$rcode
-				echo $now >>$logfilepath$logfilename
+				echo $now >>${logfilepath}${logfilename}
 				syncpoint $trgdbname $step "$LINENO"
 				########################################################################
 				#   send notification                                                  #
@@ -327,7 +327,7 @@ do
 			# Delete Database ASM TEMP file        #
 			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $trgdbname ASM TEMP file"
-			echo $now >>$logfilepath$logfilename
+			echo $now >>${logfilepath}${logfilename}
 			#
 			delete_database_asm_tempfile $trgdbname
 			#
@@ -335,7 +335,7 @@ do
 			if [ $rcode -ne 0 ] 
 			then
 				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $trgdb ASM TEMP file FAILED!!" RC=$rcode
-				echo $now >>$logfilepath$logfilename
+				echo $now >>${logfilepath}${logfilename}
 				syncpoint $trgdbname $step "$LINENO"
 				########################################################################
 				#   send notification                                                  #
@@ -354,7 +354,7 @@ do
 			# Delete Database ASM DATA files       #
 			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $trgdbname ASM DATA file"
-			echo $now >>$logfilepath$logfilename
+			echo $now >>${logfilepath}${logfilename}
 			#
 			delete_database_asm_datafiles $trgdbname
 			#
@@ -362,7 +362,7 @@ do
 			if [ $rcode -ne 0 ] 
 			then
 				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $trgdb ASM DATA files FAILED!!" RC=$rcode
-				echo $now >>$logfilepath$logfilename
+				echo $now >>${logfilepath}${logfilename}
 				########################################################################
 				#   send notification                                                  #
 				########################################################################
@@ -381,7 +381,7 @@ do
 			# Turn database cluster-flag off       # 
 			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Turn Database-Cluster flag off  "
-			echo $now >>$logfilepath$logfilename
+			echo $now >>${logfilepath}${logfilename}
 			#
 			turn_cluster_off  $trgdbname
 			#
@@ -390,7 +390,7 @@ do
 			then
 				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Turn cluster database "$trgdbname" FAILED!!" \
 								RC=$rcode
-				echo $now >>$logfilepath$logfilename
+				echo $now >>${logfilepath}${logfilename}
 				syncpoint $trgdbname $step "$LINENO"
 				########################################################################
 				#   send notification                                                  #
@@ -409,7 +409,7 @@ do
 			# STOP target DATABASE                 #
 			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Stop taget database: $trgdbname "
-			echo $now >>$logfilepath$logfilename
+			echo $now >>${logfilepath}${logfilename}
 			#
 			stop_database_rac $trgdbname
 			#
@@ -417,7 +417,7 @@ do
 			if [ $rcode -ne 0 ] 
 			then
 				now=$(date "+%m/%d/%y %H:%M:%S")" ====> STOP database "$trgdbname" FAILED!! RC=$rcode"
-				echo $now >>$logfilepath$logfilename
+				echo $now >>${logfilepath}${logfilename}
 				syncpoint $trgdbname $step "$LINENO"
 				########################################################################
 				#   send notification                                                  #
@@ -436,7 +436,7 @@ do
 			#                                      #
 			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete xxxxxx for target database $trgdbname"
-			echo $now >>$logfilepath$logfilename
+			echo $now >>${logfilepath}${logfilename}
 			#
 			#
 			echo "END   TASK: $step xxxxxxxxxxxxxxxxxxxx"
@@ -448,7 +448,7 @@ do
 			#      delete OS old trace files       #
 			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete old OS trace files for target database $trgdbname"
-			echo $now >>$logfilepath$logfilename
+			echo $now >>${logfilepath}${logfilename}
 			#
 			delete_os_trace_files $trgdbname
 			#
@@ -457,7 +457,7 @@ do
 			then
 				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete OS old database "$trgdbname" trace files \
 				FAILED!!!" RC=$rcode
-				echo $now >>$logfilepath$logfilename
+				echo $now >>${logfilepath}${logfilename}
 #######				syncpoint $trgdbname $step "$LINENO"
 				echo "error.......Exit."
 				echo ""
@@ -472,7 +472,7 @@ do
 			#      delete OS old adump files       #
 			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete old OS adump files for target database $trgdbname"
-			echo $now >>$logfilepath$logfilename
+			echo $now >>${logfilepath}${logfilename}
 			#
 			delete_os_adump_files $trgdbname
 			#
@@ -481,7 +481,7 @@ do
 			then
 				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete OS old database adump "$trgdbname" \
 				FAILED!!" RC=$rcode
-				echo $now >>$logfilepath$logfilename
+				echo $now >>${logfilepath}${logfilename}
 #####				syncpoint $trgdbname $step "$LINENO"
 				echo "error.......Exit."
 				echo ""
@@ -496,7 +496,7 @@ do
 			#      start database NOMOUNT          #
 			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start target Database $trgdbname NOMOUNT"
-			echo $now >>$logfilepath$logfilename
+			echo $now >>${logfilepath}${logfilename}
 			#
 			start_database_nomount $trgdbname
 			#
@@ -505,7 +505,7 @@ do
 			then
 				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start database "$trgdbname" NOMOUNT FAILED!!" \
 						RC=$rcode
-				echo $now >>$logfilepath$logfilename
+				echo $now >>${logfilepath}${logfilename}
 				syncpoint $trgdbname $step "$LINENO"
 				########################################################################
 				#   send notification                                                  #
@@ -524,7 +524,7 @@ do
 			#  start target database replication   #
 			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start $trgdbname RMAN replication"
-			echo $now >>$logfilepath$logfilename
+			echo $now >>${logfilepath}${logfilename}
 			#
 			start_stg_rman_replication $trgdbname
 			#
@@ -533,7 +533,7 @@ do
 			then
 				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start database "$trgdbname" replication FAILED!!" \
 							RC=$rcode
-				echo $now >>$logfilepath$logfilename
+				echo $now >>${logfilepath}${logfilename}
 				syncpoint $trgdbname $step "$LINENO"
 				########################################################################
 				#   send notification                                                  #
@@ -552,7 +552,7 @@ do
 			#      list recover files              #
 			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> List database $trgdbname recover files"
-			echo $now >>$logfilepath$logfilename
+			echo $now >>${logfilepath}${logfilename}
 			#
 			list_database_recover_files $trgdbname
 			#
@@ -561,7 +561,7 @@ do
 			then
 				now=$(date "+%m/%d/%y %H:%M:%S")" ====> List recover files for "$trgdbname" FAILED!!" \
 						RC=$rcode
-				echo $now >>$logfilepath$logfilename
+				echo $now >>${logfilepath}${logfilename}
 				syncpoint $trgdbname $step "$LINENO"
 				########################################################################
 				#   send notification                                                  #
@@ -580,7 +580,7 @@ do
 			#      shutdown database node1/sqlplus #
 			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Shutdown database $trgdbname on node1/sqlplus"
-			echo $now >>$logfilepath$logfilename
+			echo $now >>${logfilepath}${logfilename}
 			#
 			shutdown_database_node1 $trgdbname
 			#
@@ -589,7 +589,7 @@ do
 			then
 				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Shutdown database "$trgdbname" node1 using SQLPLUS \
 							FAILED!!" RC=$rcode
-				echo $now >>$logfilepath$logfilename
+				echo $now >>${logfilepath}${logfilename}
 				syncpoint $trgdbname $step "$LINENO"
 				########################################################################
 				#   send notification                                                  #
@@ -608,7 +608,7 @@ do
 			#      start database in mount mode    #
 			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start database $trgdbname in mount mode"
-			echo $now >>$logfilepath$logfilename
+			echo $now >>${logfilepath}${logfilename}
 			#
 			start_database_mount $trgdbname
 			#
@@ -617,7 +617,7 @@ do
 			then
 				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start database "$trgdbname" in mount \
 						mode FAILED!!" RC=$rcode
-				echo $now >>$logfilepath$logfilename
+				echo $now >>${logfilepath}${logfilename}
 				syncpoint $trgdbname $step "$LINENO"
 				########################################################################
 				#   send notification                                                  #
@@ -636,7 +636,7 @@ do
 			#      alter database archivelog       #
 			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Alter database $trgdbname archivelog"
-			echo $now >>$logfilepath$logfilename
+			echo $now >>${logfilepath}${logfilename}
 			#
 			alter_database_archivelog $trgdbname
 			#
@@ -645,7 +645,7 @@ do
 			then
 				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Alter database "$trgdbname" archivelog FAILED!!" \
 							RC=$rcode
-				echo $now >>$logfilepath$logfilename
+				echo $now >>${logfilepath}${logfilename}
 				syncpoint $trgdbname $step "$LINENO"
 				########################################################################
 				#   send notification                                                  #
@@ -664,7 +664,7 @@ do
 			#      alter databa open               #
 			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Alter $trgdbname database open"
-			echo $now >>$logfilepath$logfilename
+			echo $now >>${logfilepath}${logfilename}
 			#
 			alter_database_open $trgdbname
 			#
@@ -672,7 +672,7 @@ do
 			if [ $rcode -ne 0 ] 
 			then
 				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Alter database "$trgdbname" OPEN  FAILED!!" RC=$rcode
-				echo $now >>$logfilepath$logfilename
+				echo $now >>${logfilepath}${logfilename}
 				syncpoint $trgdbname $step "$LINENO"
 				########################################################################
 				#   send notification                                                  #
@@ -691,7 +691,7 @@ do
 			#      turn database cluster on        #
 			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Turn database cluster on for $dbname"
-			echo $now >>$logfilepath$logfilename
+			echo $now >>${logfilepath}${logfilename}
 			#
 			turn_cluster_on $trgdbname
 			#
@@ -699,7 +699,7 @@ do
 			if [ $rcode -ne 0 ] 
 			then
 				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Turn database "$trgdbname" cluster ON FAILED!!" RC=$rcode
-				echo $now >>$logfilepath$logfilename
+				echo $now >>${logfilepath}${logfilename}
 				syncpoint $trgdbname $step "$LINENO"
 				########################################################################
 				#   send notification                                                  #
@@ -718,7 +718,7 @@ do
 			#      set database audit              #
 			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Set database audit for $trgdbname database"
-			echo $now >>$logfilepath$logfilename
+			echo $now >>${logfilepath}${logfilename}
 			#
 			set_database_audit $trgdbname
 			#
@@ -726,7 +726,7 @@ do
 			if [ $rcode -ne 0 ] 
 			then
 				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Set database audit for "$trgdbname" FAILED!!" RC=$rcode
-				echo $now >>$logfilepath$logfilename
+				echo $now >>${logfilepath}${logfilename}
 				syncpoint $trgdbname $step "$LINENO"
 				########################################################################
 				#   send notification                                                  #
@@ -745,7 +745,7 @@ do
 			#      shutdown database node1/sqlplus #
 			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Shutdown database $trgdbname on node1/sqlplus"
-			echo $now >>$logfilepath$logfilename
+			echo $now >>${logfilepath}${logfilename}
 			#
 			shutdown_database_node1 $trgdbname
 			#
@@ -754,7 +754,7 @@ do
 			then
 				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Shutdown database "$trgdbname" node1 with SQLPLUS \
 								FAILED!!" RC=$rcode
-				echo $now >>$logfilepath$logfilename
+				echo $now >>${logfilepath}${logfilename}
 				syncpoint $trgdbname $step "$LINENO"
 				########################################################################
 				#   send notification                                                  #
@@ -773,7 +773,7 @@ do
 			#      start database rac on all nodes #
 			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start database $trgdbname on all nodes"
-			echo $now >>$logfilepath$logfilename
+			echo $now >>${logfilepath}${logfilename}
 			#
 			start_database_rac $trgdbname
 			#
@@ -781,7 +781,7 @@ do
 			if [ $rcode -ne 0 ] 
 			then
 				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start database "$trgdbname" RAC FAILED!!" RC=$rcode
-				echo $now >>$logfilepath$logfilename
+				echo $now >>${logfilepath}${logfilename}
 				syncpoint $trgdbname $step "$LINENO"
 				########################################################################
 				#   send notification                                                  #
@@ -801,7 +801,7 @@ do
 			#        REFRRESH post scripts         #
 			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Execute $trgdbname REFRESH Post Scripts"
-			echo $now >>$logfilepath$logfilename
+			echo $now >>${logfilepath}${logfilename}
 			#
 			case $trgdbname in
 				  "DSGN")
@@ -851,7 +851,7 @@ do
 			#        ITS post scripts              #
 			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Execute $trgdbname ITS Post Scripts"
-			echo $now >>$logfilepath$logfilename
+			echo $now >>${logfilepath}${logfilename}
 			#
 			case $trgdbname in
 				  "DSGN")
@@ -910,7 +910,7 @@ do
 			########################################
 			#
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Register database $trgdbname in RMAN"
-			echo $now >>$logfilepath$logfilename
+			echo $now >>${logfilepath}${logfilename}
 			#
 			rman_register_database $trgdbname
 			#
@@ -918,7 +918,7 @@ do
 			if [ $rcode -ne 0 ] 
 			then
 				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Register database "$trgdbname" FAILED!!" RC=$rcode
-				echo $now >>$logfilepath$logfilename
+				echo $now >>${logfilepath}${logfilename}
 				syncpoint $trgdbname $step "$LINENO"
 				########################################################################
 				#   send notification                                                  #
@@ -940,7 +940,7 @@ do
 			########################################
 			#
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start database $trgdbname RMAN backup"
-			echo $now >>$logfilepath$logfilename
+			echo $now >>${logfilepath}${logfilename}
 			#
 			start_rman_tst_backup $trgdbname
 			#
@@ -948,7 +948,7 @@ do
 			if [ $rcode -ne 0 ] 
 			then
 				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start database "$trgdbname" RMAN backup FAILED!!" RC=$rcode
-				echo $now >>$logfilepath$logfilename
+				echo $now >>${logfilepath}${logfilename}
 				syncpoint $trgdbname $step "$LINENO"
 				########################################################################
 				#   send notification                                                  #
