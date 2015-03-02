@@ -42,7 +42,7 @@ rmanbasepath="${functionbasepath}rman/"
 . ${basepath}function_lib/delete_sourcedb_backups.sh
 . ${basepath}function_lib/start_mount_database_sqlplus.sh
 . ${basepath}function_lib/start_nomount_database_sqlplus.sh
-. ${basepath}function_lib/shutdown_database_sqlplus.sh
+. ${basepath}function_lib/stop_database_sqlplus.sh
 . ${basepath}function_lib/rman_register_database.sh
 . ${basepath}function_lib/list_database_recover_files.sh
 . ${basepath}function_lib/alter_database_archivelog.sh
