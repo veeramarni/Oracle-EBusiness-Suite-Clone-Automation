@@ -391,29 +391,7 @@ do
 			# update log file:                     #
 			# STOP target DATABASE                 #
 			########################################
-			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Stop taget database: $trgdbname "
-			echo $now >>${logfilepath}${logfilename}
-			#
-			stop_database_sqlplus $instname $dbhomepath $trgdbname
-			#
-			rcode=$?
-			if [ $rcode -ne 0 ] 
-			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> STOP database "$trgdbname" FAILED!! RC=$rcode"
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Stop target database $trgdbname failed" 3
-				echo "error.......Exit."
-				echo ""
-				exit $step
-			fi
-			echo "END   TASK: $step stop_database_sqlplus"
-		;;
-                "650")
-			echo "START TASK: $step xxxxxxxxxxxxxxxxxxxx"
+
 			########################################
 			#  update log file:                    #
 			#                                      #
@@ -481,7 +459,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start target Database $trgdbname NOMOUNT"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			start_database_nomount $trgdbname
+			start_nomount_database_sqlplus $instname $dbhomepath $trgdbname
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -498,10 +476,10 @@ do
 				echo ""
 				exit $step
 			fi
-			echo "END   TASK: $step start_database_nomount"
+			echo "END   TASK: $step start_nomount_database_sqlplus"
 		;;
                 "850")
-			echo "START TASK: " $step "start_stg_rman_replication"
+			echo "START TASK: " $step "start_target_rman_replication_from_backups"
 			########################################
 			#  update log file:                    #
 			#  start target database replication   #
@@ -509,7 +487,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start $trgdbname RMAN replication"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			start_stg_rman_replication $instname $dbhomepath $trgdbname $bkupdir
+			start_target_rman_replication_from_backups $instname $dbhomepath $trgdbname $bkupdir
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -526,7 +504,7 @@ do
 				echo ""
 				exit $step
 			fi
-			echo "END   TASK: " $step "start_stg_rman_replication"
+			echo "END   TASK: " $step "start_target_rman_replication_from_backups"
 		;;
                 "900")
 			echo "START TASK: $step list_database_recover_files"
