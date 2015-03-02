@@ -34,7 +34,7 @@ rmanbasepath="${functionbasepath}rman/"
 . ${basepath}function_lib/set_database_audit.sh
 . ${basepath}function_lib/delete_rman_archivelogs_backups_all.sh
 . ${basepath}function_lib/stop_database_srvctl.sh 
-. ${basepath}function_lib/start_database_rac.sh 
+. ${basepath}function_lib/start_database_srvctl.sh 
 . ${basepath}function_lib/send_notification.sh
 . ${basepath}function_lib/start_rman_tst_backup.sh
 . ${basepath}function_lib/check_database_status1.sh
@@ -770,7 +770,7 @@ do
 			echo "END   TASK: $step shutdown_database_node1"
 		;;
                 "1300")
-			echo "START TASK: $step start_database_rac"
+			echo "START TASK: $step start_database_srvctl"
 			########################################
 			#  update log files:                   #
 			#      start database rac on all nodes #
@@ -778,7 +778,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start database $trgdbname on all nodes"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			start_database_rac $trgdbname
+			start_database_srvctl $instname $dbhomepath $trgdbname
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -795,7 +795,7 @@ do
 				exit $step
 			fi
 			sleep 30
-			echo "END   TASK: $step start_database_rac"
+			echo "END   TASK: $step start_database_srvctl"
 		;;
                 "1350")
 			echo "START TASK:  $step REFRESH_post_scripts"

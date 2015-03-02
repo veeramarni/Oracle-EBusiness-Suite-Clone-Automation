@@ -10,7 +10,7 @@ export PATH=$ORACLE_HOME/bin:$PATH
 case $orasid in
 	$orasid)
 		rman target / @${rmanbasepath}delete_rman_archivelogs.rcv \
-		> ${logfilepath}${dbname}_delete_rman_archivelogs.log
+		> ${logfilepath}${orasid}_delete_rman_archivelogs.log
 		;;
 	*)
 		echo "wrong target database for RMAN delete archivelogs";;

@@ -11,7 +11,7 @@ export ORACLE_HOME=${orahome}
 case $orasid in
 	$orasid)
 		rman target / @${rmanbasepath}delete_rman_archivelogs_backups_all.rcv \
-		> ${logfilepath}${logfilename}_delete_rman_archivelogs_backups_all.log
+		> ${logfilepath}${orasid}_delete_rman_archivelogs_backups_all.log
 		;;
 	*)
 		echo "wrong target database for RMAN delete archivelogs";;
