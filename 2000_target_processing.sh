@@ -9,7 +9,7 @@
 #
 bkupbasepath="/orabackup/rmanbackups/"
 basepath="/home/oracle/script/script/CLONE_SCRIPTS/"
-trgbasepath="/u01/app/oracle/scripts/refresh/targets/"
+trgbasepath="${basepath}/targets/"
 dbhomepath="/u01/oracle/CONV9EBS/db/tech_st/11.2.0.4/"
 logfilepath="${basepath}logs/"
 #
