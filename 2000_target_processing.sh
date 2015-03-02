@@ -255,17 +255,17 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $trgdb RMAN archive logs FAILED!!" RC=$rcode
+				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $trgdb RMAN archive logs and backups FAILED!!" RC=$rcode
 				echo $now >>${logfilepath}${logfilename}
 				syncpoint $trgdbname $step "$LINENO"
 				########################################################################
 				#   send notification                                                  #
 				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Delete RMAN archive logs for $trgdbname failed" 3
+				send_notification "$trgdbname"_Overlay_abend "Delete RMAN archive logs and backups for $trgdbname failed" 3
 				echo ""
 				exit $step
 			fi
-			echo "END   TASK: " $step "delete_rman_archivelogs"
+			echo "END   TASK: " $step "delete_rman_archivelogs_backups_all"
 
 		;;
                 "350")
