@@ -6,5 +6,5 @@ export ORACLE_SID=${orasid}
 export ORACLE_HOME=${orahome}
 
 ${ORACLE_HOME}/bin/sqlplus /" as sysdba" @${sqlbasepath}database_status1.sql \
-	>${logfilepath}${dbname}_database_status1.log
+	>${logfilepath}${orasid}_database_status1.log
 }
