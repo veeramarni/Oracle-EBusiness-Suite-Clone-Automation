@@ -7,14 +7,18 @@
 #                                                                                                  #
 ####################################################################################################
 #
+asmsid="+ASM"
+asmhomepath="/u01/grid/product/11.2.0/grid/"
 bkupbasepath="/orabackup/rmanbackups/"
 basepath="/home/oracle/script/script/CLONE_SCRIPTS/"
-trgbasepath="${basepath}targets/"
 dbhomepath="/u01/oracle/CONV9EBS/db/tech_st/11.2.0.4/"
+trgbasepath="${basepath}targets/"
 logfilepath="${basepath}logs/"
 functionbasepath="${basepath}function_lib/"
 sqlbasepath="${functionbasepath}sql/"
 rmanbasepath="${functionbasepath}rman/"
+
+
 #
 ####################################################################################################
 #      add functions library                                                                       #
@@ -48,7 +52,7 @@ rmanbasepath="${functionbasepath}rman/"
 . ${basepath}function_lib/alter_database_archivelog.sh
 . ${basepath}function_lib/alter_database_open.sh
 . ${basepath}function_lib/start_rman_tst_backup.sh
-. ${basepath}function_lib/start_stg_rman_replication.sh
+. ${basepath}function_lib/start_target_rman_replication_from_backups.sh
 . ${basepath}function_lib/delete_os_trace_files.sh
 . ${basepath}function_lib/delete_os_adump_files.sh
 . ${basepath}function_lib/delete_database_asm_tempfile.sh
@@ -331,7 +335,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $trgdbname ASM TEMP file"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			delete_database_asm_tempfile $trgdbname
+			delete_database_asm_tempfile $asmsid $asmhomepath $trgdbname
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -358,7 +362,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $trgdbname ASM DATA file"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			delete_database_asm_datafiles $trgdbname
+			delete_database_asm_datafiles  $asmsid $asmhomepath $trgdbname
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -382,30 +386,7 @@ do
 			# update log file:                     #
 			# Turn database cluster-flag off       # 
 			########################################
-			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Turn Database-Cluster flag off  "
-			echo $now >>${logfilepath}${logfilename}
-			#
-			turn_cluster_off  $trgdbname
-			#
-			rcode=$?
-			if [ $rcode -ne 0 ] 
-			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Turn cluster database "$trgdbname" FAILED!!" \
-								RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Turn $trgdbname datbase cluster flag off failed" 3
-				echo "error.......Exit."
-				echo ""
-				exit $step
-			fi
-			echo "END   TASK: " $step "turn_cluster_off"
-		;;
-                "600")
-			echo "START TASK: " $step "stop_database_sqlplus"
+
 			########################################
 			# update log file:                     #
 			# STOP target DATABASE                 #
@@ -528,7 +509,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start $trgdbname RMAN replication"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			start_stg_rman_replication $trgdbname
+			start_stg_rman_replication $instname $dbhomepath $trgdbname $bkupdir
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -692,84 +673,17 @@ do
 			#  update log file:                    #
 			#      turn database cluster on        #
 			########################################
-			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Turn database cluster on for $dbname"
-			echo $now >>${logfilepath}${logfilename}
-			#
-			turn_cluster_on $trgdbname
-			#
-			rcode=$?
-			if [ $rcode -ne 0 ] 
-			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Turn database "$trgdbname" cluster ON FAILED!!" RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Turn target database $trgdbname on failed" 3
-				echo "error.......Exit."
-				echo ""
-				exit $step
-			fi
-			echo "END   TASK:  $step turn_cluster_on"
-		;;
-                "1200")
-			echo "START TASK:  $step set_database_audit"
+
 			########################################
 			#  update log file:                    #
 			#      set database audit              #
 			########################################
-			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Set database audit for $trgdbname database"
-			echo $now >>${logfilepath}${logfilename}
-			#
-			set_database_audit $trgdbname
-			#
-			rcode=$?
-			if [ $rcode -ne 0 ] 
-			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Set database audit for "$trgdbname" FAILED!!" RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Set target databse $trgdbname on failed" 3
-				echo "error.......Exit."
-				echo ""
-				exit $step
-			fi
-			echo "END   TASK: $step set_database_audit"
-		;;
-                "1250")
-			echo "START TASK: $step shutdown_database_node1"
+
 			########################################
 			#  update log files:                   #
 			#      shutdown database node1/sqlplus #
 			########################################
-			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Shutdown database $trgdbname on node1/sqlplus"
-			echo $now >>${logfilepath}${logfilename}
-			#
-			shutdown_database_node1 $trgdbname
-			#
-			rcode=$?
-			if [ $rcode -ne 0 ] 
-			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Shutdown database "$trgdbname" node1 with SQLPLUS \
-								FAILED!!" RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Shutdown target database $trgdbname node1 failed" 3
-				echo "error.......Exit."
-				echo ""
-				exit $step
-			fi
-			echo "END   TASK: $step shutdown_database_node1"
-		;;
-                "1300")
-			echo "START TASK: $step start_database_sqlplus"
+
 			########################################
 			#  update log files:                   #
 			#      start database rac on all nodes #
