@@ -12,6 +12,8 @@ basepath="/home/oracle/script/script/CLONE_SCRIPTS/"
 trgbasepath="${basepath}targets/"
 dbhomepath="/u01/oracle/CONV9EBS/db/tech_st/11.2.0.4/"
 logfilepath="${basepath}logs/"
+functionbasepath="${basepath}function_lib/"
+sqlbasepath="${functionbasepath}sql/"
 #
 ####################################################################################################
 #      add functions library                                                                       #
@@ -120,14 +122,14 @@ do
 		echo ""
                 echo "  RESTART LOCATION: "$stepnum" ,around line: "$linenum"" 
 		echo "   SCRIPT LOCATION: ${basepath}2000_overlay_staging2.sh"
-                echo "TASK LOG  LOCATION: /u01/app/oracle/scripts/refresh/targets/"$trgdbname"/"
+                echo "TASK LOG  LOCATION: ${trgbasepath}${trgdbname}/"
                 echo " RUN LOG  LOCATION: ${basepath}logs/"
 		echo ""
 	else
 		echo ""
                 echo "   NORMAL LOCATION: "$stepnum" ,line: "$linenum""
 		echo "   SCRIPT LOCATION: ${basepath}2000_overlay_staging2.sh"
-                echo "TASK LOG  LOCATION: /u01/app/oracle/scripts/refresh/targets/"$trgdbname"/"
+                echo "TASK LOG  LOCATION: ${trgbasepath}${trgdbname}/"
                 echo " RUN LOG  LOCATION: ${basepath}logs/"
 		echo ""
 		stepnum=`expr $stepnum + 50`
@@ -185,7 +187,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Check $trgdbname status on node1"       
 			echo $now >>${logfilepath}${logfilename}
 			#
-			check_database_status1 $trgdbname
+			check_database_status1 $instname $dbhomepath
 			#
 			rcode=$?
 			if [ "$rcode" -gt 0 ]
