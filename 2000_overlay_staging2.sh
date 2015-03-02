@@ -6,48 +6,52 @@
 #                        2000_overlay_staging2.sh                                                  #
 #                                                                                                  #
 ####################################################################################################
-#      add functions library                                                                       #
-####################################################################################################
-. ./function_lib/usage.sh
-. ./function_lib/dir_empty.sh        
-. ./function_lib/syncpoint.sh        
-. ./function_lib/user_pwd_reset.sh   
-. ./function_lib/its_crt_users.sh   
-. ./function_lib/crt_directories.sh      
-. ./function_lib/crt_dblinks.sh      
-. ./function_lib/io_calibrate.sh     
-. ./function_lib/audit_settings.sh   
-. ./function_lib/purge_audit.sh      
-. ./function_lib/turn_cluster_off.sh 
-. ./function_lib/turn_cluster_on.sh 
-. ./function_lib/set_database_audit.sh
-. ./function_lib/delete_rman_archivelogs.sh
-. ./function_lib/stop_database_rac.sh 
-. ./function_lib/start_database_rac.sh 
-. ./function_lib/send_notification.sh
-. ./function_lib/start_rman_tst_backup.sh
-. ./function_lib/check_database_status1.sh
-. ./function_lib/check_database_status2.sh
-. ./function_lib/delete_sourcedb_backups.sh
-. ./function_lib/start_mount_database_node1.sh
-. ./function_lib/start_database_mount.sh
-. ./function_lib/start_database_nomount.sh
-. ./function_lib/shutdown_database_node1.sh
-. ./function_lib/rman_register_database.sh
-. ./function_lib/list_database_recover_files.sh
-. ./function_lib/alter_database_archivelog.sh
-. ./function_lib/alter_database_open.sh
-. ./function_lib/start_rman_tst_backup.sh
-. ./function_lib/start_stg_rman_replication.sh
-. ./function_lib/delete_os_trace_files.sh
-. ./function_lib/delete_os_adump_files.sh
-. ./function_lib/delete_database_asm_tempfile.sh
-. ./function_lib/delete_database_asm_datafiles.sh
 #
 logfilepath="./logs/"
 bkupbasepath="/orabackup/rmanbackups/CONV9EBS/rman"
-basepath="/u01/app/oracle/scripts/refresh/"
+basepath="/home/oracle/script/script/CLONE_SCRIPTS/"
 trgbasepath="/u01/app/oracle/scripts/refresh/targets/"
+dbhomepath="/u01/oracle/CONV9EBS/db/tech_st/11.2.0.4"
+#
+####################################################################################################
+#      add functions library                                                                       #
+####################################################################################################
+. "$basepath"function_lib/usage.sh
+. "$basepath"function_lib/dir_empty.sh        
+. "$basepath"function_lib/syncpoint.sh        
+. "$basepath"function_lib/user_pwd_reset.sh   
+. "$basepath"function_lib/its_crt_users.sh   
+. "$basepath"function_lib/crt_directories.sh      
+. "$basepath"function_lib/crt_dblinks.sh      
+. "$basepath"function_lib/io_calibrate.sh     
+. "$basepath"function_lib/audit_settings.sh   
+. "$basepath"function_lib/purge_audit.sh      
+. "$basepath"function_lib/turn_cluster_off.sh 
+. "$basepath"function_lib/turn_cluster_on.sh 
+. "$basepath"function_lib/set_database_audit.sh
+. "$basepath"function_lib/delete_rman_archivelogs.sh
+. "$basepath"function_lib/stop_database_rac.sh 
+. "$basepath"function_lib/start_database_rac.sh 
+. "$basepath"function_lib/send_notification.sh
+. "$basepath"function_lib/start_rman_tst_backup.sh
+. "$basepath"function_lib/check_database_status1.sh
+. "$basepath"function_lib/check_database_status2.sh
+. "$basepath"function_lib/delete_sourcedb_backups.sh
+. "$basepath"function_lib/start_mount_database_node1.sh
+. "$basepath"function_lib/start_database_mount.sh
+. "$basepath"function_lib/start_database_nomount.sh
+. "$basepath"function_lib/shutdown_database_node1.sh
+. "$basepath"function_lib/rman_register_database.sh
+. "$basepath"function_lib/list_database_recover_files.sh
+. "$basepath"function_lib/alter_database_archivelog.sh
+. "$basepath"function_lib/alter_database_open.sh
+. "$basepath"function_lib/start_rman_tst_backup.sh
+. "$basepath"function_lib/start_stg_rman_replication.sh
+. "$basepath"function_lib/delete_os_trace_files.sh
+. "$basepath"function_lib/delete_os_adump_files.sh
+. "$basepath"function_lib/delete_database_asm_tempfile.sh
+. "$basepath"function_lib/delete_database_asm_datafiles.sh
+#
 #
 ########################################
 #      Validations                     #
@@ -68,23 +72,15 @@ fi
 #
 trgdbname=$1
 trgdbname=${trgdbname// }
-trgdbname=`echo "$trgdbname" | tr [a-z] [A-Z]`
+# To convert dbname to UPPER case
+#trgdbname=`echo "$trgdbname" | tr [a-z] [A-Z]`
 # 
 case $trgdbname in
-	"DB1")
+	"CONV9EBS")
 		logfilename="$trgdbname"_Overlay_$(date +%a)"_$(date +%F).log"
 		srcdbname="DPGN"
+		instname="CONV9EBS"
 		bkupdir=$bkupbasepath"DPGN"
-		;;
-	"DB2")
-		logfilename="$trgdbname"_Overlay_$(date +%a)"_$(date +%F).log"
-		srcdbname="DPTP"
-		bkupdir=$bkupbasepath"DPTP"
-		;;
-	"DB3")
-		logfilename="$trgdbname"_Overlay_$(date +%a)"_$(date +%F).log"
-		srcdbname="DBM01"
-		bkupdir=$bkupbasepath"DPTP"
 		;;
 	*)
 		echo ""
@@ -123,16 +119,16 @@ do
                 restart=true
 		echo ""
                 echo "  RESTART LOCATION: "$stepnum" ,around line: "$linenum"" 
-		echo "   SCRIPT LOCATION: /u01/app/oracle/scripts/refresh/2000_overlay_staging2.sh"
+		echo "   SCRIPT LOCATION: "$basepath"2000_overlay_staging2.sh"
                 echo "TASK LOG  LOCATION: /u01/app/oracle/scripts/refresh/targets/"$trgdbname"/"
-                echo " RUN LOG  LOCATION: /u01/app/oracle/scripts/refresh/logs/"
+                echo " RUN LOG  LOCATION: "$basepath"logs/"
 		echo ""
 	else
 		echo ""
                 echo "   NORMAL LOCATION: "$stepnum" ,line: "$linenum""
-		echo "   SCRIPT LOCATION: /u01/app/oracle/scripts/refresh/2000_overlay_staging2.sh"
+		echo "   SCRIPT LOCATION: "$basepath"2000_overlay_staging2.sh"
                 echo "TASK LOG  LOCATION: /u01/app/oracle/scripts/refresh/targets/"$trgdbname"/"
-                echo " RUN LOG  LOCATION: /u01/app/oracle/scripts/refresh/logs/"
+                echo " RUN LOG  LOCATION: "$basepath"logs/"
 		echo ""
 		stepnum=`expr $stepnum + 50`
         fi
