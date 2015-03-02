@@ -33,7 +33,7 @@ rmanbasepath="${functionbasepath}rman/"
 . ${basepath}function_lib/turn_cluster_on.sh 
 . ${basepath}function_lib/set_database_audit.sh
 . ${basepath}function_lib/delete_rman_archivelogs_backups_all.sh
-. ${basepath}function_lib/stop_database_rac.sh 
+. ${basepath}function_lib/stop_database_srvctl.sh 
 . ${basepath}function_lib/start_database_rac.sh 
 . ${basepath}function_lib/send_notification.sh
 . ${basepath}function_lib/start_rman_tst_backup.sh
@@ -270,7 +270,7 @@ do
 
 		;;
                 "350")
-			echo "START TASK: " $step "stop_database_rac"
+			echo "START TASK: " $step "stop_database_srvctl"
 			########################################
 			# update log file:                     #
 			# STOP target DATABASE                 #
@@ -278,7 +278,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Stop $trgdbname database on all nodes"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			stop_database_rac $trgdbname
+			stop_database_srvctl $instname $dbhomepath $trgdbname
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
@@ -293,7 +293,7 @@ do
 				echo ""
 				exit $step
 			fi
-			echo "END   TASK: " $step "stop_database_rac"
+			echo "END   TASK: " $step "stop_database_srvctl"
 		;;
                 "400")
 			echo "START TASK: " $step "start_mount_database_node1"
@@ -406,7 +406,7 @@ do
 			echo "END   TASK: " $step "turn_cluster_off"
 		;;
                 "600")
-			echo "START TASK: " $step "stop_database_rac"
+			echo "START TASK: " $step "stop_database_srvctl"
 			########################################
 			# update log file:                     #
 			# STOP target DATABASE                 #
@@ -414,7 +414,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Stop taget database: $trgdbname "
 			echo $now >>${logfilepath}${logfilename}
 			#
-			stop_database_rac $trgdbname
+			stop_database_srvctl $instname $dbhomepath $trgdbname
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -430,7 +430,7 @@ do
 				echo ""
 				exit $step
 			fi
-			echo "END   TASK: $step stop_database_rac"
+			echo "END   TASK: $step stop_database_srvctl"
 		;;
                 "650")
 			echo "START TASK: $step xxxxxxxxxxxxxxxxxxxx"
