@@ -33,17 +33,16 @@ rmanbasepath="${functionbasepath}rman/"
 . ${basepath}function_lib/turn_cluster_on.sh 
 . ${basepath}function_lib/set_database_audit.sh
 . ${basepath}function_lib/delete_rman_archivelogs_backups_all.sh
-. ${basepath}function_lib/stop_database_srvctl.sh 
-. ${basepath}function_lib/start_database_srvctl.sh 
+. ${basepath}function_lib/stop_database_sqlplus.sh 
+. ${basepath}function_lib/start_database_sqlplus.sh 
 . ${basepath}function_lib/send_notification.sh
 . ${basepath}function_lib/start_rman_tst_backup.sh
 . ${basepath}function_lib/check_database_status1.sh
 . ${basepath}function_lib/check_database_status2.sh
 . ${basepath}function_lib/delete_sourcedb_backups.sh
-. ${basepath}function_lib/start_mount_database_node1.sh
-. ${basepath}function_lib/start_database_mount.sh
-. ${basepath}function_lib/start_database_nomount.sh
-. ${basepath}function_lib/shutdown_database_node1.sh
+. ${basepath}function_lib/start_mount_database_sqlplus.sh
+. ${basepath}function_lib/start_nomount_database_sqlplus.sh
+. ${basepath}function_lib/shutdown_database_sqlplus.sh
 . ${basepath}function_lib/rman_register_database.sh
 . ${basepath}function_lib/list_database_recover_files.sh
 . ${basepath}function_lib/alter_database_archivelog.sh
@@ -270,7 +269,7 @@ do
 
 		;;
                 "350")
-			echo "START TASK: " $step "stop_database_srvctl"
+			echo "START TASK: " $step "stop_database_sqlplus"
 			########################################
 			# update log file:                     #
 			# STOP target DATABASE                 #
@@ -278,7 +277,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Stop $trgdbname database on all nodes"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			stop_database_srvctl $instname $dbhomepath $trgdbname
+			stop_database_sqlplus $instname $dbhomepath $trgdbname
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
@@ -293,10 +292,10 @@ do
 				echo ""
 				exit $step
 			fi
-			echo "END   TASK: " $step "stop_database_srvctl"
+			echo "END   TASK: " $step "stop_database_sqlplus"
 		;;
                 "400")
-			echo "START TASK: " $step "start_mount_database_node1"
+			echo "START TASK: " $step "start_mount_database_sqlplus"
 			########################################
 			# update log file:                     #
 			# START MOUNT DATABASE on node1        #
@@ -304,7 +303,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> START $trgdbname database in MOUNT mode"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			start_mount_database_node1 $trgdbname
+			start_mount_database_sqlplus $instname $dbhomepath $trgdbname
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -321,7 +320,7 @@ do
 				echo ""
 				exit $step
 			fi
-			echo "END   TASK: " $step "start_mount_database_node1"
+			echo "END   TASK: " $step "start_mount_database_sqlplus"
 		;;
                 "450")
 			echo "START TASK: " $step "delete_database_asm_tempfile"
@@ -406,7 +405,7 @@ do
 			echo "END   TASK: " $step "turn_cluster_off"
 		;;
                 "600")
-			echo "START TASK: " $step "stop_database_srvctl"
+			echo "START TASK: " $step "stop_database_sqlplus"
 			########################################
 			# update log file:                     #
 			# STOP target DATABASE                 #
@@ -414,7 +413,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Stop taget database: $trgdbname "
 			echo $now >>${logfilepath}${logfilename}
 			#
-			stop_database_srvctl $instname $dbhomepath $trgdbname
+			stop_database_sqlplus $instname $dbhomepath $trgdbname
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -430,7 +429,7 @@ do
 				echo ""
 				exit $step
 			fi
-			echo "END   TASK: $step stop_database_srvctl"
+			echo "END   TASK: $step stop_database_sqlplus"
 		;;
                 "650")
 			echo "START TASK: $step xxxxxxxxxxxxxxxxxxxx"
@@ -770,7 +769,7 @@ do
 			echo "END   TASK: $step shutdown_database_node1"
 		;;
                 "1300")
-			echo "START TASK: $step start_database_srvctl"
+			echo "START TASK: $step start_database_sqlplus"
 			########################################
 			#  update log files:                   #
 			#      start database rac on all nodes #
@@ -778,7 +777,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start database $trgdbname on all nodes"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			start_database_srvctl $instname $dbhomepath $trgdbname
+			start_database_sqlplus $instname $dbhomepath $trgdbname
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -795,7 +794,7 @@ do
 				exit $step
 			fi
 			sleep 30
-			echo "END   TASK: $step start_database_srvctl"
+			echo "END   TASK: $step start_database_sqlplus"
 		;;
                 "1350")
 			echo "START TASK:  $step REFRESH_post_scripts"
