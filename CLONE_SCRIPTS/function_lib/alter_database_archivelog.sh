@@ -1,6 +1,7 @@
 alter_database_archivelog()
 {
 dbname=$1
+dbhome=$2
 ldbname=`echo "$dbname" | tr [A-Z] [a-z]`
 orasid="$dbname"1
 lorasid="$ldbname"1
