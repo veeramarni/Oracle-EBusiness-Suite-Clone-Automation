@@ -78,9 +78,9 @@ trgdbname=${trgdbname// }
 case $trgdbname in
 	"CONV9EBS")
 		logfilename="$trgdbname"_Overlay_$(date +%a)"_$(date +%F).log"
-		srcdbname="DPGN"
+		srcdbname="PRODEBS"
 		instname="CONV9EBS"
-		bkupdir=$bkupbasepath"DPGN"
+		bkupdir=$bkupbasepath"PRODEBS"
 		;;
 	*)
 		echo ""
