@@ -1,7 +1,5 @@
 run 
 {
 delete noprompt archivelog all;
-DELETE noprompt BACKUPSET;
-DELETE noprompt copy;
 }
 EXIT;

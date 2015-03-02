@@ -14,6 +14,7 @@ dbhomepath="/u01/oracle/CONV9EBS/db/tech_st/11.2.0.4/"
 logfilepath="${basepath}logs/"
 functionbasepath="${basepath}function_lib/"
 sqlbasepath="${functionbasepath}sql/"
+rmanbasepath="${functionbasepath}rman/"
 #
 ####################################################################################################
 #      add functions library                                                                       #
@@ -31,7 +32,7 @@ sqlbasepath="${functionbasepath}sql/"
 . ${basepath}function_lib/turn_cluster_off.sh 
 . ${basepath}function_lib/turn_cluster_on.sh 
 . ${basepath}function_lib/set_database_audit.sh
-. ${basepath}function_lib/delete_rman_archivelogs.sh
+. ${basepath}function_lib/delete_rman_archivelogs_backups_all.sh
 . ${basepath}function_lib/stop_database_rac.sh 
 . ${basepath}function_lib/start_database_rac.sh 
 . ${basepath}function_lib/send_notification.sh
@@ -244,18 +245,18 @@ do
 			#   update log:                       #
 			#           delete archive logs       #
 			#######################################
-			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $trgdb archive logse"
+			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $trgdb archive logs"
 			echo $now >>${logfilepath}${logfilename}
 			########################################
 			#   update log file:                   #
 			#       Delete archive logs            #       
 			########################################
-			delete_rman_archivelogs  $trgdbname
+			delete_rman_archivelogs_backups_all $instname $dbhomepath
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $trgdb RMAN archive logse FAILED!!" RC=$rcode
+				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $trgdb RMAN archive logs FAILED!!" RC=$rcode
 				echo $now >>${logfilepath}${logfilename}
 				syncpoint $trgdbname $step "$LINENO"
 				########################################################################
