@@ -8,41 +8,41 @@
 ####################################################################################################
 #      add functions library                                                                       #
 ####################################################################################################
-. /u01/app/oracle/scripts/refresh/function_lib/usage.sh
-. /u01/app/oracle/scripts/refresh/function_lib/dir_empty.sh        
-. /u01/app/oracle/scripts/refresh/function_lib/syncpoint.sh        
-. /u01/app/oracle/scripts/refresh/function_lib/user_pwd_reset.sh   
-. /u01/app/oracle/scripts/refresh/function_lib/its_crt_users.sh   
-. /u01/app/oracle/scripts/refresh/function_lib/crt_directories.sh      
-. /u01/app/oracle/scripts/refresh/function_lib/crt_dblinks.sh      
-. /u01/app/oracle/scripts/refresh/function_lib/io_calibrate.sh     
-. /u01/app/oracle/scripts/refresh/function_lib/audit_settings.sh   
-. /u01/app/oracle/scripts/refresh/function_lib/purge_audit.sh      
-. /u01/app/oracle/scripts/refresh/function_lib/turn_cluster_off.sh 
-. /u01/app/oracle/scripts/refresh/function_lib/turn_cluster_on.sh 
-. /u01/app/oracle/scripts/refresh/function_lib/set_database_audit.sh
-. /u01/app/oracle/scripts/refresh/function_lib/delete_rman_archivelogs.sh
-. /u01/app/oracle/scripts/refresh/function_lib/stop_database_rac.sh 
-. /u01/app/oracle/scripts/refresh/function_lib/start_database_rac.sh 
-. /u01/app/oracle/scripts/refresh/function_lib/send_notification.sh
-. /u01/app/oracle/scripts/refresh/function_lib/start_rman_tst_backup.sh
-. /u01/app/oracle/scripts/refresh/function_lib/check_database_status1.sh
-. /u01/app/oracle/scripts/refresh/function_lib/check_database_status2.sh
-. /u01/app/oracle/scripts/refresh/function_lib/delete_sourcedb_backups.sh
-. /u01/app/oracle/scripts/refresh/function_lib/start_mount_database_node1.sh
-. /u01/app/oracle/scripts/refresh/function_lib/start_database_mount.sh
-. /u01/app/oracle/scripts/refresh/function_lib/start_database_nomount.sh
-. /u01/app/oracle/scripts/refresh/function_lib/shutdown_database_node1.sh
-. /u01/app/oracle/scripts/refresh/function_lib/rman_register_database.sh
-. /u01/app/oracle/scripts/refresh/function_lib/list_database_recover_files.sh
-. /u01/app/oracle/scripts/refresh/function_lib/alter_database_archivelog.sh
-. /u01/app/oracle/scripts/refresh/function_lib/alter_database_open.sh
-. /u01/app/oracle/scripts/refresh/function_lib/start_rman_tst_backup.sh
-. /u01/app/oracle/scripts/refresh/function_lib/start_stg_rman_replication.sh
-. /u01/app/oracle/scripts/refresh/function_lib/delete_os_trace_files.sh
-. /u01/app/oracle/scripts/refresh/function_lib/delete_os_adump_files.sh
-. /u01/app/oracle/scripts/refresh/function_lib/delete_database_asm_tempfile.sh
-. /u01/app/oracle/scripts/refresh/function_lib/delete_database_asm_datafiles.sh
+. ./function_lib/usage.sh
+. ./function_lib/dir_empty.sh        
+. ./function_lib/syncpoint.sh        
+. ./function_lib/user_pwd_reset.sh   
+. ./function_lib/its_crt_users.sh   
+. ./function_lib/crt_directories.sh      
+. ./function_lib/crt_dblinks.sh      
+. ./function_lib/io_calibrate.sh     
+. ./function_lib/audit_settings.sh   
+. ./function_lib/purge_audit.sh      
+. ./function_lib/turn_cluster_off.sh 
+. ./function_lib/turn_cluster_on.sh 
+. ./function_lib/set_database_audit.sh
+. ./function_lib/delete_rman_archivelogs.sh
+. ./function_lib/stop_database_rac.sh 
+. ./function_lib/start_database_rac.sh 
+. ./function_lib/send_notification.sh
+. ./function_lib/start_rman_tst_backup.sh
+. ./function_lib/check_database_status1.sh
+. ./function_lib/check_database_status2.sh
+. ./function_lib/delete_sourcedb_backups.sh
+. ./function_lib/start_mount_database_node1.sh
+. ./function_lib/start_database_mount.sh
+. ./function_lib/start_database_nomount.sh
+. ./function_lib/shutdown_database_node1.sh
+. ./function_lib/rman_register_database.sh
+. ./function_lib/list_database_recover_files.sh
+. ./function_lib/alter_database_archivelog.sh
+. ./function_lib/alter_database_open.sh
+. ./function_lib/start_rman_tst_backup.sh
+. ./function_lib/start_stg_rman_replication.sh
+. ./function_lib/delete_os_trace_files.sh
+. ./function_lib/delete_os_adump_files.sh
+. ./function_lib/delete_database_asm_tempfile.sh
+. ./function_lib/delete_database_asm_datafiles.sh
 #
 logfilepath="/u01/app/oracle/scripts/refresh/logs/"
 bkupbasepath="/migration/refresh/"
@@ -71,17 +71,17 @@ trgdbname=${trgdbname// }
 trgdbname=`echo "$trgdbname" | tr [a-z] [A-Z]`
 # 
 case $trgdbname in
-	"DSGN")
+	"DB1")
 		logfilename="$trgdbname"_Overlay_$(date +%a)"_$(date +%F).log"
 		srcdbname="DPGN"
 		bkupdir=$bkupbasepath"DPGN"
 		;;
-	"DSTP")
+	"DB2")
 		logfilename="$trgdbname"_Overlay_$(date +%a)"_$(date +%F).log"
 		srcdbname="DPTP"
 		bkupdir=$bkupbasepath"DPTP"
 		;;
-	"DBM01")
+	"DB3")
 		logfilename="$trgdbname"_Overlay_$(date +%a)"_$(date +%F).log"
 		srcdbname="DBM01"
 		bkupdir=$bkupbasepath"DPTP"
