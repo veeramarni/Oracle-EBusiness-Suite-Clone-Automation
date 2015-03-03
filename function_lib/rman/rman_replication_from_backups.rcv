@@ -6,6 +6,8 @@ allocate auxiliary channel a3 device type disk;
 allocate auxiliary channel a4 device type disk;
 DUPLICATE TARGET DATABASE TO &1
 BACKUP LOCATION '/orabackup/rmanbackups/&2'
+SPFILE 
+SET DB_CREATE_FILE_DEST +DATA
 NOFILENAMECHECK;
 }
 EXIT;
