@@ -487,7 +487,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start $trgdbname RMAN replication"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			start_target_rman_replication_from_backups $instname $dbhomepath $trgdbname $bkupdir
+			start_target_rman_replication_from_backups $instname $dbhomepath $trgdbname $srcdbname
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
