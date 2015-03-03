@@ -57,6 +57,7 @@ rmanbasepath="${functionbasepath}rman/"
 . ${basepath}function_lib/delete_database_asm_tempfile.sh
 . ${basepath}function_lib/delete_database_asm_datafiles.sh
 . ${basepath}function_lib/apps_fnd_clean.sh
+. ${basepath}function_lib/drop_database.sh
 
 #
 #
@@ -328,61 +329,44 @@ do
 			echo "END   TASK: " $step "start_mount_database_sqlplus"
 		;;
                 "450")
-			echo "START TASK: " $step "delete_database_asm_tempfile"
+			echo "START TASK: " $step "drop_database"
+			########################################
+			# update log file:                     #
+			# Drop Database					       #
+			########################################
+			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Drop database in MOUNT mode"
+			echo $now >>${logfilepath}${logfilename}
+			#
+			drop_database $instname $dbhomepath $trgdbname
+			#
+			rcode=$?
+			if [ $rcode -ne 0 ] 
+			then
+				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Drop $trgdbname database in MOUNT mode FAILED!!" \
+						RC=$rcode
+				echo $now >>${logfilepath}${logfilename}
+				syncpoint $trgdbname $step "$LINENO"
+				########################################################################
+				#   send notification                                                  #
+				########################################################################
+				send_notification "$trgdbname"_Overlay_abend "Drop database $trgdbname failed"
+				echo "error.......Exit."
+				echo ""
+				exit $step
+			fi
+			echo "END   TASK: " $step "drop_database"
+		;;
+			
+			#echo "START TASK: " $step "delete_database_asm_tempfile"
 			########################################
 			# update log file:                     #
 			# Delete Database ASM TEMP file        #
 			########################################
-			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $trgdbname ASM TEMP file"
-			echo $now >>${logfilepath}${logfilename}
-			#
-			delete_database_asm_tempfile $asmsid $asmhomepath $trgdbname
-			#
-			rcode=$?
-			if [ $rcode -ne 0 ] 
-			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $trgdb ASM TEMP file FAILED!!" RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Delete $trgdbname ASM TEMP files failed" 3
-				echo "error.......Exit."
-				echo ""
-				exit $step
-			fi
-			echo "END   TASK: " $step "delete_database_asm_tempfile"
-		;;
-                "500")
-			echo "START TASK: " $step "delete_database_asm_datafiles"
 			########################################
 			# update log file:                     #
 			# Delete Database ASM DATA files       #
 			########################################
-			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $trgdbname ASM DATA file"
-			echo $now >>${logfilepath}${logfilename}
-			#
-			delete_database_asm_datafiles  $asmsid $asmhomepath $trgdbname
-			#
-			rcode=$?
-			if [ $rcode -ne 0 ] 
-			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $trgdb ASM DATA files FAILED!!" RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Delete $trgdbname ASM data files failed" 3
-				syncpoint $trgdbname $step "$LINENO"
-				echo "error.......Exit."
-				echo ""
-				exit $step
-			fi
-			echo "END   TASK: " $step "delete_database_asm_datafiles"
-		;;
-                "550")
-			echo "START TASK: " $step "turn_cluster_off"
+
 			########################################
 			# update log file:                     #
 			# Turn database cluster-flag off       # 
@@ -397,6 +381,7 @@ do
 			#  update log file:                    #
 			#                                      #
 			########################################
+			   "650")
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete xxxxxx for target database $trgdbname"
 			echo $now >>${logfilepath}${logfilename}
 			#
