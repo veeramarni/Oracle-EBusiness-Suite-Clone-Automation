@@ -675,19 +675,19 @@ do
 			echo $now >>${logfilepath}${logfilename}
 			#
 					echo "      START TASK: apps_fnd_clean"
-					apps_fnd_clean $trgdbname
+					apps_fnd_clean $instname $dbhomepath
 					echo "      END   TASK: apps_fnd_clean"
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Post scripts on "$trgdbname" are  FAILED!!" RC=$rcode
+				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Post scripts (FND_CLEAN) on "$trgdbname" are  FAILED!!" RC=$rcode
 				echo $now >>${logfilepath}${logfilename}
 				syncpoint $trgdbname $step "$LINENO"
 				########################################################################
 				#   send notification                                                  #
 				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Post scripts on "$trgdbname" are  failed" 3
+				send_notification "$trgdbname"_Overlay_abend "Post scripts (FND_CLEAN) on "$trgdbname" are  failed" 3
 				echo "error.......Exit."
 				echo ""
 				exit $step
@@ -697,7 +697,7 @@ do
                 "1400")
 			########################################
 			#  update log file:                    #
-			#        ITS post scripts              #
+			#        Any post scripts              #
 			########################################
 			#
 			########################################
