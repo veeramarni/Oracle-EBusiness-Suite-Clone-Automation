@@ -56,7 +56,7 @@ rmanbasepath="${functionbasepath}rman/"
 . ${basepath}function_lib/delete_os_adump_files.sh
 . ${basepath}function_lib/delete_database_asm_tempfile.sh
 . ${basepath}function_lib/delete_database_asm_datafiles.sh
-. ${basepath}function_lib/apps_fnd_clean.txt
+. ${basepath}function_lib/apps_fnd_clean.sh
 
 #
 #
