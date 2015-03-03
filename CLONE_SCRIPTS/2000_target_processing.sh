@@ -46,7 +46,6 @@ rmanbasepath="${functionbasepath}rman/"
 . ${basepath}function_lib/delete_sourcedb_backups.sh
 . ${basepath}function_lib/start_mount_database_sqlplus.sh
 . ${basepath}function_lib/start_nomount_database_sqlplus.sh
-. ${basepath}function_lib/stop_database_sqlplus.sh
 . ${basepath}function_lib/rman_register_database.sh
 . ${basepath}function_lib/list_database_recover_files.sh
 . ${basepath}function_lib/alter_database_archivelog.sh
@@ -543,7 +542,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Shutdown database $trgdbname on node1/sqlplus"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			shutdown_database_sqlplus $instname $dbhomepath
+			stop_database_sqlplus $instname $dbhomepath
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
