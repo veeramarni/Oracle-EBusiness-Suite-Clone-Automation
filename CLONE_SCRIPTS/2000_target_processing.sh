@@ -668,14 +668,14 @@ do
 			########################################
 
 			########################################
-			#  update log file: (Custom Scripts)   #
+			#  update log file: 				   #
 			#        REFRRESH post scripts         #
 			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Execute $trgdbname REFRESH Post Scripts"
 			echo $now >>${logfilepath}${logfilename}
 			#
-					echo "      START TASK: apps_fnd_clean"
-					apps_fnd_clean $instname $dbhomepath
+			echo "      START TASK: apps_fnd_clean"
+			apps_fnd_clean $instname $dbhomepath
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
