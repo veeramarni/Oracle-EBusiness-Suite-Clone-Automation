@@ -515,7 +515,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> List database $trgdbname recover files"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			list_database_recover_files $trgdbname
+			list_database_recover_files $instname $dbhomepath
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -543,7 +543,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Shutdown database $trgdbname on node1/sqlplus"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			shutdown_database_node1 $trgdbname
+			shutdown_database_sqlplus $instname $dbhomepath
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -560,10 +560,10 @@ do
 				echo ""
 				exit $step
 			fi
-			echo "END   TASK: $step shutdown_database_node1"
+			echo "END   TASK: $step shutdown_database_sqlplus"
 		;;
                 "1000")
-			echo "START TASK: " $step "start_database_mount"
+			echo "START TASK: " $step "start_mount_database_sqlplus"
 			########################################
 			#  update log file:                    #
 			#      start database in mount mode    #
@@ -571,7 +571,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start database $trgdbname in mount mode"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			start_database_mount $trgdbname
+			start_mount_database_sqlplus $instname $dbhomepath
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -588,7 +588,7 @@ do
 				echo ""
 				exit $step
 			fi
-			echo "END   TASK: $step start_database_mount"
+			echo "END   TASK: $step start_mount_database_sqlplus"
 		;;
                 "1050")
 			echo "START TASK: $step alter_database_archivelog"
@@ -599,7 +599,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Alter database $trgdbname archivelog"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			alter_database_archivelog $trgdbname
+			alter_database_archivelog_enable $instname $dbhomepath
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -627,7 +627,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Alter $trgdbname database open"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			alter_database_open $trgdbname
+			alter_database_open $instname $dbhomepath
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -666,136 +666,25 @@ do
 			#  update log files:                   #
 			#      start database rac on all nodes #
 			########################################
-			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start database $trgdbname on all nodes"
-			echo $now >>${logfilepath}${logfilename}
-			#
-			start_database_sqlplus $instname $dbhomepath $trgdbname
-			#
-			rcode=$?
-			if [ $rcode -ne 0 ] 
-			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start database "$trgdbname" RAC FAILED!!" RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Start target database $trgdbname failed" 3
-				echo "error.......Exit."
-				echo ""
-				exit $step
-			fi
-			sleep 30
-			echo "END   TASK: $step start_database_sqlplus"
-		;;
-                "1350")
-			echo "START TASK:  $step REFRESH_post_scripts"
+
 			########################################
-			#  update log file:                    #
+			#  update log file: (Custom Scripts)   #
 			#        REFRRESH post scripts         #
 			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Execute $trgdbname REFRESH Post Scripts"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			case $trgdbname in
-				  "DSGN")
-					echo "      START TASK: io_calibrate"
-					io_calibrate $trgdbname
-					echo "      END   TASK: io_calibrate"
-					echo "      START TASK: audit_settings"
-					audit_settings $trgdbname
-					echo "      END   TASK: udit_settings"
-					echo "      START TASK: purge_audit"
-					purge_audit $trgdbname
-					echo "      END   TASK: purge_audit"
-				;;
-				   "DSTP")
-					echo "      START TASK: io_calibrate"
-					io_calibrate $trgdbname
-					echo "      END   TASK: io_calibrate"
-					echo "      START TASK: audit_settings"
-					audit_settings $trgdbname
-					echo "      END   TASK: udit_settings"
-					echo "      START TASK: purge_audit"
-					purge_audit $trgdbname
-					echo "      END   TASK: purge_audit"
-				;;
-				  "DBM01")
-					echo "      START TASK: io_calibrate"
-					io_calibrate $trgdbname
-					echo "      END   TASK: io_calibrate"
-					echo "      START TASK: audit_settings"
-					audit_settings $trgdbname
-					echo "      END   TASK: udit_settings"
-					echo "      START TASK: purge_audit"
-					purge_audit $trgdbname
-					echo "      END   TASK: purge_audit"
-				;;
-					*)
-					echo "Invalid database for REFRESH post-scripts"	
-				;;
-			esac
+					echo "      START TASK: apps_fnd_clean"
+					apps_fnd_clean $trgdbname
+					echo "      END   TASK: apps_fnd_clean"
 			#
 			echo "END   TASK: $step REFRESH_post_scripts"
 		;;
                 "1400")
-			echo "START TASK: $step ITS_post_scripts"
 			########################################
 			#  update log file:                    #
 			#        ITS post scripts              #
 			########################################
-			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Execute $trgdbname ITS Post Scripts"
-			echo $now >>${logfilepath}${logfilename}
-			#
-			case $trgdbname in
-				  "DSGN")
-					echo "      START TASK: user_pwd_reset"
-					user_pwd_reset $trgdbname
-					echo "      END TASK: user_pwd_reset"
-					echo "      START TASK: crt_directories"
-					crt_directories $trgdbname
-					echo "      END   TASK: crt_directories"
-					echo "      START TASK: crt_dblinks"
-					crt_dblinks $trgdbname
-					echo "      END   TASK: crt_dblinks"
-					echo "      START TASK: its_crt_users"
-					its_crt_users $trgdbname
-					echo "      END   TASK: its_crt_users"
-				;;
-				   "DSTP")
-					echo "      START TASK: user_pwd_reset"
-					user_pwd_reset $trgdbname
-					echo "      END	TASK: user_pwd_reset"
-					echo "      START TASK: crt_directories"
-#					crt_directories $trgdbname
-					echo "      END   TASK: crt_directories"
-					echo "      START TASK: crt_dblinks"
-#					crt_dblinks $trgdbname
-					echo "      END   TASK: crt_dblinks"
-					echo "      START TASK: its_crt_users"
-					its_crt_users $trgdbname
-					echo "      END   TASK: its_crt_users"
-				;;
-				  "DBM01")
-					echo "      START TASK: user_pwd_reset"
-					user_pwd_reset $trgdbname
-					echo "      END	TASK: user_pwd_reset"
-					echo "      START TASK: crt_directories"
-					crt_directories $trgdbname
-					echo "      END   TASK: crt_directories"
-					echo
-					crt_dblinks $trgdbname
-					echo "      END   TASK: crt_dblinks"
-				;;
-					*)
-					echo "Invalid database for ITS post scripts"
-				;;
-			esac
-			#
-			echo "END   TASK: $step ITS_post_scripts"
-		;;
-                "1450")
-			echo "START   TASK: rman_register_database"
 			#
 			########################################
 			#  update log file:                    #
@@ -803,59 +692,12 @@ do
 			#                                      #
 			########################################
 			#
-			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Register database $trgdbname in RMAN"
-			echo $now >>${logfilepath}${logfilename}
-			#
-			rman_register_database $trgdbname
-			#
-			rcode=$?
-			if [ $rcode -ne 0 ] 
-			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Register database "$trgdbname" FAILED!!" RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Register target database $trgdbname in RMAN failed" 3
-				echo "error.......Exit."
-				echo ""
-				exit $step
-			fi
-			#
-			echo "END     TASK: rman_register_database"
-		;;
-                "1500")
-			echo "START   TASK: start_rman_tst_backup"
 			#
 			########################################
 			#  update log file:                    #
 			#       database RMAN backup           #
 			########################################
 			#
-			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start database $trgdbname RMAN backup"
-			echo $now >>${logfilepath}${logfilename}
-			#
-			start_rman_tst_backup $trgdbname
-			#
-			rcode=$?
-			if [ $rcode -ne 0 ] 
-			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start database "$trgdbname" RMAN backup FAILED!!" RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Target database $trgdbname RMAN backup failed" 3
-				echo "error.......Exit."
-				echo ""
-				exit $step
-			fi
-			echo "END     TASK: start_rman_tst_backup"
-		;;
-                "1550")
-			echo "START   TASK: xxxxxxxxxxxxxxxxxxxxxxxx"
 			#
 			########################################
 			#  update log file:                    #
