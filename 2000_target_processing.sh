@@ -48,7 +48,7 @@ rmanbasepath="${functionbasepath}rman/"
 . ${basepath}function_lib/start_nomount_database_sqlplus.sh
 . ${basepath}function_lib/rman_register_database.sh
 . ${basepath}function_lib/list_database_recover_files.sh
-. ${basepath}function_lib/alter_database_archivelog.sh
+. ${basepath}function_lib/alter_database_archivelog_enable.sh
 . ${basepath}function_lib/alter_database_open.sh
 . ${basepath}function_lib/start_rman_tst_backup.sh
 . ${basepath}function_lib/start_target_rman_replication_from_backups.sh
@@ -590,7 +590,7 @@ do
 			echo "END   TASK: $step start_mount_database_sqlplus"
 		;;
                 "1050")
-			echo "START TASK: $step alter_database_archivelog"
+			echo "START TASK: $step alter_database_archivelog_enable"
 			########################################
 			#  update log file:                    #
 			#      alter database archivelog       #
@@ -615,7 +615,7 @@ do
 				echo ""
 				exit $step
 			fi
-			echo "END   TASK: $step alter_database_archivelog"
+			echo "END   TASK: $step alter_database_archivelog_enable"
 		;;
                 "1100")
 			echo "START TASK: $step alter_database_open"
