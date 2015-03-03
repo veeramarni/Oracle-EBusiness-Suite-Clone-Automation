@@ -11,7 +11,7 @@ export ORACLE_HOME=${orahome}
 #
 case $dbname in
 	$dbname)
-		rman @${rmanbasepath}rman_replication_from_backups.rcv ${dbname} ${rmandir} \
+		rman @'${rmanbasepath}rman_replication_from_backups.rcv' USING ${dbname} \
 			>${logfilepath}${dbname}_rman_replication_from_backups.log
 		;;
 	*)
