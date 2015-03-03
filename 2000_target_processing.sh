@@ -58,6 +58,8 @@ rmanbasepath="${functionbasepath}rman/"
 . ${basepath}function_lib/delete_database_asm_datafiles.sh
 . ${basepath}function_lib/apps_fnd_clean.sh
 . ${basepath}function_lib/drop_database.sh
+. ${basepath}function_lib/custom_sql_run.sh
+. ${basepath}function_lib/param_db_file_convert.sh
 
 #
 #
@@ -283,6 +285,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Stop $trgdbname database on all nodes"
 			echo $now >>${logfilepath}${logfilename}
 			#
+			param_db_file_convert $instname $dbhomepath '+DATA/prodebs' '+DATA/CONV9EBS'
 			stop_database_sqlplus $instname $dbhomepath $trgdbname
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -631,7 +634,6 @@ do
 			fi
 			echo "END   TASK: $step alter_database_open_sqlplus"
 		;;
-                "1150")
 			#echo "START TASK: $step turn_cluster_on"
 			########################################
 			#  update log file:                    #
@@ -657,6 +659,7 @@ do
 			#  update log file: 				   #
 			#        REFRRESH post scripts         #
 			########################################
+		"1150")
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Execute $trgdbname REFRESH Post Scripts"
 			echo $now >>${logfilepath}${logfilename}
 			#
@@ -679,11 +682,32 @@ do
 			fi
 			echo "END   TASK: $step REFRESH_post_scripts"
 		;;
-                "1400")
+        "1400")
 			########################################
 			#  update log file:                    #
 			#        Any post scripts              #
 			########################################
+			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Execute $trgdbname REFRESH Post Scripts"
+			echo $now >>${logfilepath}${logfilename}
+			#
+			echo "      START TASK: apps_fnd_clean"
+			custom_sql_run $instname $dbhomepath
+			#
+			rcode=$?
+			if [ $rcode -ne 0 ] 
+			then
+				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Post scripts sql on "$trgdbname" are  FAILED!!" RC=$rcode
+				echo $now >>${logfilepath}${logfilename}
+				syncpoint $trgdbname $step "$LINENO"
+				########################################################################
+				#   send notification                                                  #
+				########################################################################
+				send_notification "$trgdbname"_Overlay_abend "Post scripts (FND_CLEAN) on "$trgdbname" are  failed" 3
+				echo "error.......Exit."
+				echo ""
+				exit $step
+			fi
+			echo "END   TASK: $step REFRESH_post_scripts"
 			#
 			########################################
 			#  update log file:                    #
