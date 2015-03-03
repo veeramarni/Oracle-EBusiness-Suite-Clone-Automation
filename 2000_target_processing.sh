@@ -56,6 +56,7 @@ rmanbasepath="${functionbasepath}rman/"
 . ${basepath}function_lib/delete_os_adump_files.sh
 . ${basepath}function_lib/delete_database_asm_tempfile.sh
 . ${basepath}function_lib/delete_database_asm_datafiles.sh
+. ${basepath}function_lib/apps_fnd_clean.sh
 #
 #
 ########################################
@@ -623,10 +624,10 @@ do
 			#  update log file:                    #
 			#      alter databa open               #
 			########################################
-			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Alter $trgdbname database open"
+			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Alter $trgdbname database open using sqlplus"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			alter_database_open $instname $dbhomepath
+			alter_database_open_sqlplus $instname $dbhomepath
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -642,10 +643,10 @@ do
 				echo ""
 				exit $step
 			fi
-			echo "END   TASK: $step alter_database_open"
+			echo "END   TASK: $step alter_database_open_sqlplus"
 		;;
                 "1150")
-			echo "START TASK: $step turn_cluster_on"
+			#echo "START TASK: $step turn_cluster_on"
 			########################################
 			#  update log file:                    #
 			#      turn database cluster on        #
@@ -677,6 +678,20 @@ do
 					apps_fnd_clean $trgdbname
 					echo "      END   TASK: apps_fnd_clean"
 			#
+			rcode=$?
+			if [ $rcode -ne 0 ] 
+			then
+				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Post scripts on "$trgdbname" are  FAILED!!" RC=$rcode
+				echo $now >>${logfilepath}${logfilename}
+				syncpoint $trgdbname $step "$LINENO"
+				########################################################################
+				#   send notification                                                  #
+				########################################################################
+				send_notification "$trgdbname"_Overlay_abend "Post scripts on "$trgdbname" are  failed" 3
+				echo "error.......Exit."
+				echo ""
+				exit $step
+			fi
 			echo "END   TASK: $step REFRESH_post_scripts"
 		;;
                 "1400")
