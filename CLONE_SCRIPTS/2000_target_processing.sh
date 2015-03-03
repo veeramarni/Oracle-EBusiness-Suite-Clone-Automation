@@ -59,7 +59,7 @@ rmanbasepath="${functionbasepath}rman/"
 . ${basepath}function_lib/apps_fnd_clean.sh
 . ${basepath}function_lib/drop_database.sh
 . ${basepath}function_lib/custom_sql_run.sh
-. ${basepath}function_lib/param_db_file_convert.sh
+. ${basepath}function_lib/param_db_file_name_convert.sh
 
 #
 #
@@ -285,7 +285,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Stop $trgdbname database on all nodes"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			param_db_file_convert $instname $dbhomepath '+DATA/prodebs' '+DATA/CONV9EBS'
+			param_db_file_name_convert $instname $dbhomepath '+DATA/prodebs' '+DATA/CONV9EBS'
 			stop_database_sqlplus $instname $dbhomepath $trgdbname
 			rcode=$?
 			if [ $rcode -ne 0 ] 
