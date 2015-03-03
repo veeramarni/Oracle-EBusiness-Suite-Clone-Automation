@@ -676,7 +676,6 @@ do
 			#
 					echo "      START TASK: apps_fnd_clean"
 					apps_fnd_clean $instname $dbhomepath
-					echo "      END   TASK: apps_fnd_clean"
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
