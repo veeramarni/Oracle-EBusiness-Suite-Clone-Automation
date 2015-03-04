@@ -62,6 +62,7 @@ rmanbasepath="${functionbasepath}rman/"
 . ${basepath}function_lib/drop_database.sh
 . ${basepath}function_lib/custom_sql_run.sh
 . ${basepath}function_lib/param_db_file_name_convert.sh
+. ${basepath}function_lib/db_adconfig.sh
 
 #
 #
@@ -287,7 +288,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Stop $trgdbname database on all nodes"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			param_db_file_name_convert $instname $dbhomepath '+DATA/${srcdbname}' '+DATA/${trgdbname}'
+			param_db_file_name_convert $instname $dbhomepath +DATA/${srcdbname} +DATA/${trgdbname}
 			stop_database_sqlplus $instname $dbhomepath $trgdbname
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -692,7 +693,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Execute $trgdbname REFRESH Post Scripts"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			echo "      START TASK: apps_fnd_clean"
+			echo "      START TASK: custom_sql_run user_pwd_reset"
 			custom_sql_run $instname $dbhomepath ${custsqlbasepath}user_pwd_reset.sql ${logfilepath}${instname}_user_pwd_reset.log
 			#
 			rcode=$?
@@ -705,6 +706,32 @@ do
 				#   send notification                                                  #
 				########################################################################
 				send_notification "$trgdbname"_Overlay_abend "Post scripts on "$trgdbname" are  failed" 3
+				echo "error.......Exit."
+				echo ""
+				exit $step
+			fi
+			echo "END   TASK: $step REFRESH_post_scripts"
+		"1450")
+		    ########################################
+			#  update log file:                    #
+			#        Run DB Autoconfig             #
+			########################################
+			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Execute $trgdbname Autoconfig Scripts"
+			echo $now >>${logfilepath}${logfilename}
+			#
+			echo "      START TASK: db_adconfig"
+			db_adconfig $instname $dbhomepath 
+			#
+			rcode=$?
+			if [ $rcode -ne 0 ] 
+			then
+				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Autoconfig run for "$trgdbname" is  FAILED!!" RC=$rcode
+				echo $now >>${logfilepath}${logfilename}
+				syncpoint $trgdbname $step "$LINENO"
+				########################################################################
+				#   send notification                                                  #
+				########################################################################
+				send_notification "$trgdbname"_Overlay_abend "Autoconfig run for "$trgdbname" is  failed" 3
 				echo "error.......Exit."
 				echo ""
 				exit $step
