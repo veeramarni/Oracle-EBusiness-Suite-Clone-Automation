@@ -7,11 +7,20 @@
 #                                                                                                  #
 ####################################################################################################
 #
+###########################################################################
+# Modify settings below to suit your needs
+###########################################################################
 asmsid="+ASM"
 asmhomepath="/u01/grid/product/11.2.0/grid/"
 bkupbasepath="/orabackup/rmanbackups/"
 basepath="/home/oracle/script/script/CLONE_SCRIPTS/"
 dbhomepath="/u01/oracle/CONV9EBS/db/tech_st/11.2.0.4/"
+
+
+#################################################
+# Default Configuration							#
+#################################################
+osuser="oracle"
 trgbasepath="${basepath}targets/"
 logfilepath="${basepath}logs/"
 functionbasepath="${basepath}function_lib/"
@@ -63,6 +72,7 @@ rmanbasepath="${functionbasepath}rman/"
 . ${basepath}function_lib/custom_sql_run.sh
 . ${basepath}function_lib/param_db_file_name_convert.sh
 . ${basepath}function_lib/db_adconfig.sh
+. ${basepath}function_lib/os_user_check.sh
 
 #
 #
@@ -82,9 +92,9 @@ then
 	send_notification "$trgdbname"_Overlay_abend "Invalid target $trgdbname database" 3
         exit 3
 fi
-#
 trgdbname=$1
 trgdbname=${trgdbname// }
+#
 # To convert dbname to UPPER case
 #trgdbname=`echo "$trgdbname" | tr [a-z] [A-Z]`
 # 
@@ -107,6 +117,30 @@ case $trgdbname in
 		exit 4
 		;;
 esac
+#
+# Check user  
+#
+os_user_check ${osuser}
+	rcode=$?
+	if [ "$rcode" -gt 0 ]
+	then
+		echo "Not a valid user failed. Abrt!!! RC=" "$rcode"
+		########################################
+		#  update log file                     #
+		########################################
+		now=$(date "+%m/%d/%y %H:%M:%S")" ====> Check user failed. Abort!! \
+		RC=""$rcode"       
+		echo $now >>${logfilepath}${logfilename}
+		syncpoint $trgdbname $step "$LINENO"
+		########################################################################
+		#   send notification                                                  #
+		########################################################################
+		send_notification "$trgdbname"_Overlay_abend "Not a valid user " 3
+		echo "error.......Exit."
+		echo ""
+		exit $step
+	fi
+
 #
 #####################################################################
 #                                                                   #
