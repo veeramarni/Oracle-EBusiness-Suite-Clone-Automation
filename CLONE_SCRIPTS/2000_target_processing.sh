@@ -415,7 +415,33 @@ do
 			fi
 			echo "END   TASK: " $step "create_spfile"
 		;;
-		"600")
+		"600")				
+			echo "START TASK: " $step "stop_database_sqlplus"
+			########################################
+			# update log file:                     #
+			# STOP target DATABASE                 #
+			########################################
+			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Stop $trgdbname database on all nodes"
+			echo $now >>${logfilepath}${logfilename}
+			#
+			stop_database_sqlplus $instname $dbhomepath $trgdbname
+			rcode=$?
+			if [ $rcode -ne 0 ] 
+			then
+				now=$(date "+%m/%d/%y %H:%M:%S")" ====> STOP $trgdb database FAILED!!" RC=$rcode
+				echo $now >>${logfilepath}${logfilename}
+				syncpoint $trgdbname $step "$LINENO"
+				########################################################################
+				#   send notification                                                  #
+				########################################################################
+				send_notification "$trgdbname"_Overlay_abend "Stop target database $trgdbname failed" 3
+				echo "error.......Exit."
+				echo ""
+				exit $step
+			fi
+			echo "END   TASK: " $step "stop_database_sqlplus"
+		;;	
+		"650")
 			echo "START TASK:  $step start_database_nomount"
 			########################################
 			#  update log file:                    #
@@ -443,7 +469,7 @@ do
 			fi
 			echo "END   TASK: $step start_nomount_database_sqlplus"
 		;;
-        "650")
+        "700")
 			echo "START TASK: " $step "param_db_file_name_convert"
 			########################################
 			# update log file:                     #
@@ -469,7 +495,7 @@ do
 			fi
 			echo "END   TASK: " $step "param_db_file_name_convert"
 		;;
-        "700")				
+        "750")				
 			echo "START TASK: " $step "stop_database_sqlplus"
 			########################################
 			# update log file:                     #
@@ -519,14 +545,14 @@ do
 			#  update log file:                    #
 			#                                      #
 			########################################
-	    "750")
+	    "800")
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete xxxxxx for target database $trgdbname"
 			echo $now >>${logfilepath}${logfilename}
 			#
 			#
 			echo "END   TASK: $step xxxxxxxxxxxxxxxxxxxx"
 		;;
-        "800")
+        "850")
 			echo "START TASK: $step delete_os_trace_files"
 			########################################
 			#  update log file:                    #
@@ -550,7 +576,7 @@ do
 			fi
 			echo "END   TASK: $step delete_os_trace_files"
 		;;
-        "850")
+        "900")
 			echo "START TASK: $step delete_os_adump_files"
 			########################################
 			#  update log file:                    #
@@ -574,7 +600,7 @@ do
 			fi
 			echo "END   TASK: $step delete_os_adump_files"
 		;;
-        "900")
+        "950")
 			echo "START TASK:  $step start_database_nomount"
 			########################################
 			#  update log file:                    #
@@ -602,7 +628,7 @@ do
 			fi
 			echo "END   TASK: $step start_nomount_database_sqlplus"
 		;;
-        "950")
+        "1000")
 			echo "START TASK: " $step "start_target_rman_replication_from_backups"
 			########################################
 			#  update log file:                    #
@@ -630,7 +656,7 @@ do
 			fi
 			echo "END   TASK: " $step "start_target_rman_replication_from_backups"
 		;;
-        "1000")
+        "1050")
 			echo "START TASK: $step list_database_recover_files"
 			########################################
 			#  update log files:                   #
@@ -658,7 +684,7 @@ do
 			fi
 			echo "END   TASK: $step list_database_recover_files"
 		;;
-        "1050")
+        "1100")
 			echo "START TASK: $step shutdown_database_node1"
 			########################################
 			#  update log files:                   #
@@ -686,7 +712,7 @@ do
 			fi
 			echo "END   TASK: $step shutdown_database_sqlplus"
 		;;
-        "1100")
+        "1150")
 			echo "START TASK: " $step "start_mount_database_sqlplus"
 			########################################
 			#  update log file:                    #
@@ -714,7 +740,7 @@ do
 			fi
 			echo "END   TASK: $step start_mount_database_sqlplus"
 		;;
-        "1150")
+        "1200")
 			echo "START TASK: $step alter_database_archivelog_enable"
 			########################################
 			#  update log file:                    #
@@ -742,7 +768,7 @@ do
 			fi
 			echo "END   TASK: $step alter_database_archivelog_enable"
 		;;
-        "1200")
+        "1250")
 			echo "START TASK: $step alter_database_open_sqlplus"
 			########################################
 			#  update log file:                    #
@@ -794,7 +820,7 @@ do
 			#  update log file: 				   #
 			#        REFRRESH post scripts         #
 			########################################
-		"1250")
+		"1300")
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Execute $trgdbname REFRESH Post Scripts"
 			echo $now >>${logfilepath}${logfilename}
 			#
