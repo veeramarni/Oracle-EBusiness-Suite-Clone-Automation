@@ -156,7 +156,7 @@ echo $now >>${logfilepath}${logfilename}
 for step in $(seq "$stepnum" 50 1650)
 do
         case $step in
-                "50")
+        "50")
 			echo "START TASK: " $step "dir_empty"
 			########################################
 			#  update log file:                    #
@@ -188,8 +188,8 @@ do
 				exit $step
 			fi
 			echo "END   TASK: " $step "dir_empty"
-                ;;
-                "100")
+        ;;
+        "100")
 			echo "START TASK: " $step "check_database_status1"
 			########################################
 			#  update log file:                    #
@@ -220,8 +220,8 @@ do
 				exit $step
 			fi
 			echo "END   TASK: " $step "check_database_status1"
-                ;;
-                "150")
+        ;;
+        "150")
 			echo "START TASK: " $step "start-oem-blackout"
 			########################################
 			#  update log file:                    #
@@ -240,7 +240,7 @@ do
 			send_notification "$trgdbname"_Overlay_staging "Replication of $trgdbname database started" 3
 			echo "END   TASK: " $step "send-notification_01"
 		;;
-                "250")
+        "250")
 			echo "START TASK: " $step "send-notification_02"
  
 			########################################################################
