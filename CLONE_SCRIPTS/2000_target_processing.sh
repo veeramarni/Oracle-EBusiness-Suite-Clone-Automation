@@ -16,7 +16,7 @@ trgbasepath="${basepath}targets/"
 logfilepath="${basepath}logs/"
 functionbasepath="${basepath}function_lib/"
 custfunctionbasepath="${basepath}custom_lib/"
-custsqlbasepath="${custfunctionbasepath}sql"
+custsqlbasepath="${custfunctionbasepath}sql/"
 sqlbasepath="${functionbasepath}sql/"
 rmanbasepath="${functionbasepath}rman/"
 
@@ -398,7 +398,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Change DB parameters for $trgdbname database"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			custom_sql_run $instname $dbhomepath ${custsqlbasepath}create_spfile.sql ${logfilepath}${instname}_create_spfile.log
+			custom_sql_run $instname $dbhomepath ${sqlbasepath}create_spfile.sql ${logfilepath}${instname}_create_spfile.log
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
