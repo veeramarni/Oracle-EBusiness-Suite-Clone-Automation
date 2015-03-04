@@ -15,6 +15,8 @@ dbhomepath="/u01/oracle/CONV9EBS/db/tech_st/11.2.0.4/"
 trgbasepath="${basepath}targets/"
 logfilepath="${basepath}logs/"
 functionbasepath="${basepath}function_lib/"
+custfunctionbasepath="${basepath}custom_lib/"
+custsqlbasepath="${custfunctionbasepath}sql"
 sqlbasepath="${functionbasepath}sql/"
 rmanbasepath="${functionbasepath}rman/"
 
@@ -285,7 +287,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Stop $trgdbname database on all nodes"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			param_db_file_name_convert $instname $dbhomepath '+DATA/prodebs' '+DATA/CONV9EBS'
+			param_db_file_name_convert $instname $dbhomepath '+DATA/${srcdbname}' '+DATA/${trgdbname}'
 			stop_database_sqlplus $instname $dbhomepath $trgdbname
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -691,7 +693,7 @@ do
 			echo $now >>${logfilepath}${logfilename}
 			#
 			echo "      START TASK: apps_fnd_clean"
-			custom_sql_run $instname $dbhomepath
+			custom_sql_run $instname $dbhomepath ${custsqlbasepath}user_pwd_reset.sql ${logfilepath}${instname}_user_pwd_reset.log
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -702,7 +704,7 @@ do
 				########################################################################
 				#   send notification                                                  #
 				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Post scripts (FND_CLEAN) on "$trgdbname" are  failed" 3
+				send_notification "$trgdbname"_Overlay_abend "Post scripts on "$trgdbname" are  failed" 3
 				echo "error.......Exit."
 				echo ""
 				exit $step
