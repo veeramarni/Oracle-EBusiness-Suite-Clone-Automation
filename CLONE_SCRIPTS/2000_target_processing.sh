@@ -362,7 +362,7 @@ do
 			echo "END   TASK: " $step "drop_database"
 		;;
         "500")
-			echo "START TASK:  $step start_database_nomount"
+			echo "START TASK:  $step start_nomount_database_sqlplus"
 			########################################
 			#  update log file:                    #
 			#      start database NOMOUNT          #
@@ -442,7 +442,7 @@ do
 			echo "END   TASK: " $step "stop_database_sqlplus"
 		;;	
 		"650")
-			echo "START TASK:  $step start_database_nomount"
+			echo "START TASK:  $step start_nomount_database_sqlplus"
 			########################################
 			#  update log file:                    #
 			#      start database NOMOUNT          #
@@ -601,7 +601,7 @@ do
 			echo "END   TASK: $step delete_os_adump_files"
 		;;
         "950")
-			echo "START TASK:  $step start_database_nomount"
+			echo "START TASK:  $step start_nomount_database_sqlplus"
 			########################################
 			#  update log file:                    #
 			#      start database NOMOUNT          #
