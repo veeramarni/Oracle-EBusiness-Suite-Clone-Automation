@@ -6,4 +6,3 @@ if [ `/usr/bin/whoami` != $user ]; then
   exit 1
 fi
 }
-
