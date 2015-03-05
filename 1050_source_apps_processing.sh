@@ -1,8 +1,30 @@
 #!/usr/bin/ksh
 #
-####################################################################################################
-#                S T A G I N G    O V E R L A Y - Source Database Tasks                            #
-#                           1000_source_processing.sh
+#####################################################################################################
+#                S T A G I N G    O V E R L A Y - Source Apps Tasks                            		#
+#                           1050_source_apps_processing.sh											#
+#####################################################################################################
+###########################################################################
+# Modify settings below to suit your needs
+###########################################################################
+osuser="applmgr"
+bkupbasepath="/orabackup/rmanbackups/"
+basepath="/home/oracle/script/script/CLONE_SCRIPTS/"
+dbhomepath="/u01/oracle/CONV9EBS/db/tech_st/11.2.0.4/"
+
+
+#################################################
+# Default Configuration							#
+#################################################
+trgbasepath="${basepath}targets/"
+logfilepath="${basepath}logs/"
+functionbasepath="${basepath}function_lib/"
+custfunctionbasepath="${basepath}custom_lib/"
+custsqlbasepath="${custfunctionbasepath}sql/"
+sqlbasepath="${functionbasepath}sql/"
+rmanbasepath="${functionbasepath}rman/"
+
+
 ####################################################################################################
 #      add functions library                                                                       #
 ####################################################################################################
