@@ -3,7 +3,7 @@
 ####################################################################################################
 #               S T A G I N G   O V E R L A Y  - staging task                                      #
 ####################################################################################################
-#                        2000_overlay_staging2.sh                                                  #
+#                        2000_target_processing.sh                                                  #
 #                                                                                                  #
 ####################################################################################################
 #
@@ -15,7 +15,8 @@ asmhomepath="/u01/grid/product/11.2.0/grid/"
 bkupbasepath="/orabackup/rmanbackups/"
 basepath="/home/oracle/script/script/CLONE_SCRIPTS/"
 dbhomepath="/u01/oracle/CONV9EBS/db/tech_st/11.2.0.4/"
-
+context_file=${CONTEXT_FILE}
+appspwd="Marsha1l"
 
 #################################################
 # Default Configuration							#
@@ -913,7 +914,7 @@ do
 			echo $now >>${logfilepath}${logfilename}
 			#
 			echo "      START TASK: db_adconfig"
-			db_adconfig $instname $dbhomepath 
+			db_adconfig $instname $dbhomepath $context_file $appspwd
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
