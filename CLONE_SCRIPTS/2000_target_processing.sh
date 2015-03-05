@@ -167,16 +167,16 @@ do
                 restart=true
 		echo ""
                 echo "  RESTART LOCATION: "$stepnum" ,around line: "$linenum"" 
-		echo "   SCRIPT LOCATION: ${basepath}2000_overlay_staging2.sh"
+		echo "   SCRIPT LOCATION: ${basepath}$0"
                 echo "TASK LOG  LOCATION: ${trgbasepath}${trgdbname}/"
-                echo " RUN LOG  LOCATION: ${basepath}logs/"
+                echo " RUN LOG  LOCATION: ${logfilepath}"
 		echo ""
 	else
 		echo ""
                 echo "   NORMAL LOCATION: "$stepnum" ,line: "$linenum""
-		echo "   SCRIPT LOCATION: ${basepath}2000_overlay_staging2.sh"
+		echo "   SCRIPT LOCATION: ${basepath}$0"
                 echo "TASK LOG  LOCATION: ${trgbasepath}${trgdbname}/"
-                echo " RUN LOG  LOCATION: ${basepath}logs/"
+                echo " RUN LOG  LOCATION: ${logfilepath}"
 		echo ""
 		stepnum=`expr $stepnum + 50`
         fi
