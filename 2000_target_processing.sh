@@ -74,6 +74,7 @@ rmanbasepath="${functionbasepath}rman/"
 . ${basepath}function_lib/param_db_file_name_convert.sh
 . ${basepath}function_lib/db_adconfig.sh
 . ${basepath}function_lib/os_user_check.sh
+. ${basepath}function_lib/os_verify_or_make_directory.sh
 
 #
 #
@@ -141,7 +142,11 @@ os_user_check ${osuser}
 		echo ""
 		exit $step
 	fi
-
+#
+# Validate Directory
+#
+os_verify_or_make_directory logfilepath
+os_verify_or_make_directory trgbasepath
 #
 #####################################################################
 #                                                                   #
