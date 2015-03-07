@@ -55,7 +55,7 @@ abendfile="$srcbasepath""$srcappname"/"$srcappname"_abend_step
 ####################################################################################################
 #      add functions library                                                                       #
 ####################################################################################################
-. ${basepath}function_lib/dir_empty.sh        
+    
 . ${basepath}function_lib/syncpoint.sh   
 . ${basepath}function_lib/send_notification.sh
 . ${basepath}function_lib/os_tar_gz_file.sh
