@@ -1,6 +1,6 @@
 send_notification()
 {
-HDR="`date +%m%d%y'"
+HDR="`date +%m%d%y`"
 if [ $# -lt 3 ]
 then
         echo "Please provide MSG text"
