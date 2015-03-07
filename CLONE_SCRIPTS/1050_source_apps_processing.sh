@@ -25,13 +25,13 @@ case $trgappname in
 		logfilename="$trgappname"_Overlay_$(date +%a)"_$(date +%F).log"
 		srcappname="PRODEBS"
 		apphomepath="/ovprd-ebsapp1/applmgr/PRODEBS/apps/"
-		appbkupdir=$appbkupbasepath"PRODEBS"
+		appbkupdir=$appbkupbasepath"PRODEBS/"
 		;;
     "CONV9EBS")
 	    logfilename="$trgappname"_Overlay_$(date +%a)"_$(date +%F).log"
 		srcappname="PRODEBS"
 		apphomepath="/u01/applmgr/CONV9EBS/apps/"
-		appbkupdir=$appbkupbasepath"PRODEBS"
+		appbkupdir=$appbkupbasepath"PRODEBS/"
 		;;
         *)	
                 echo ""
@@ -65,6 +65,7 @@ abendfile="$trgbasepath""$srcappname"/"$srcappname"_abend_step
 . ${basepath}function_lib/os_user_check.sh
 . ${basepath}function_lib/os_verify_or_make_directory.sh
 . ${basepath}function_lib/os_verify_or_make_file.sh
+. ${basepath}function_lib/is_os_file_exist.sh
 #
 ########################################
 #       VALIDATIONS                    #
@@ -177,7 +178,10 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $srcappname old backups"
 			echo $now >>$logfilepath$logfilename
 			#
-			os_delete_move_file M ${appbkupdir}${srcappname}.tar.gz ${srcappname}.tar.gz.$now
+			if [ is_os_file_exist ${appbkupdir}${srcappname}.tar.gz ]
+			then
+				os_delete_move_file M ${appbkupdir}${srcappname}.tar.gz ${srcappname}.tar.gz.$now
+			fi
 			#
 	        rcode=$?
             if [ "$rcode" -gt 0 ]
