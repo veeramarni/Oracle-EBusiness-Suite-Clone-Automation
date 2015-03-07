@@ -14,10 +14,10 @@ else
 	filepath=$2
 	unset newpath
 	newpath=$3
-	if [ $ct == 2 && $type == 'D' ]
+	if [ $ct == 2 && $type == "D" ]
 	then
 	rm $filepath
-	elif [ $ct == 3 && $type == 'M' ]
+	elif [ $ct == 3 && $type == "M" ]
 	then
 	mv $filepath $newpath
 	else 
