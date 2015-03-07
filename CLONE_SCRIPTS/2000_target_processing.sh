@@ -75,6 +75,7 @@ rmanbasepath="${functionbasepath}rman/"
 . ${basepath}function_lib/db_adconfig.sh
 . ${basepath}function_lib/os_user_check.sh
 . ${basepath}function_lib/os_verify_or_make_directory.sh
+. ${basepath}function_lib/os_verify_or_make_file.sh
 
 #
 #
@@ -96,6 +97,7 @@ then
 fi
 trgdbname=$1
 trgdbname=${trgdbname// }
+abendfile="$trgbasepath""$trgdbname"/"$trgdbname"_abend_step
 #
 # To convert dbname to UPPER case
 #trgdbname=`echo "$trgdbname" | tr [a-z] [A-Z]`
@@ -148,6 +150,7 @@ os_user_check ${osuser}
 os_verify_or_make_directory ${logfilepath}
 os_verify_or_make_directory ${trgbasepath}
 os_verify_or_make_directory ${trgbasepath}${trgdbname}
+os_verify_or_make_file ${abendfile}
 #
 #####################################################################
 #                                                                   #
@@ -161,7 +164,7 @@ os_verify_or_make_directory ${trgbasepath}${trgdbname}
 #                                                                   # 
 #####################################################################
 #
-abendfile="$trgbasepath""$trgdbname"/"$trgdbname"_abend_step
+
 #
 restart=false
 while read val1 val2
