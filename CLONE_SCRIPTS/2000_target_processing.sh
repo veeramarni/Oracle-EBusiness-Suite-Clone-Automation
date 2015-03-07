@@ -147,6 +147,7 @@ os_user_check ${osuser}
 #
 os_verify_or_make_directory ${logfilepath}
 os_verify_or_make_directory ${trgbasepath}
+os_verify_or_make_directory ${trgbasepath}${trgdbname}
 #
 #####################################################################
 #                                                                   #
