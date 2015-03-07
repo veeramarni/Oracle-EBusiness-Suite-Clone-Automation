@@ -26,7 +26,7 @@ else
 	then
 		echo "email toaddress with return address"
 		mail -s $subj -r $rtnaddr $toaddr<$msg
-	elif [ $dstlist == 4 ]
+	elif [ $# == 5 ]
         then
 		echo "email toaddress and cc with return address"
 		# Now mail report out with a Return Address (not user thsat ran it)
