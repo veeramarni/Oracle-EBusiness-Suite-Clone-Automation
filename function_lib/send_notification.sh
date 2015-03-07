@@ -1,40 +1,39 @@
-#!/bin/bash
-#
 send_notification()
 {
-dist1="marni.srikanth@gmail.com"
-dist2="marni.srikanth@gmail.com"
-dist3="marni.srikanth@gmail.com"
-dist4="marni.srikanth@gmail.com"
-dist5="marni.srikanth@gmail.com"
-
+HDR="`date +%m%d%y'"
 if [ $# -lt 3 ]
 then
         echo "Please provide MSG text"
-	usage $0 :Notification Requirs  "[SUBJECT] [MSG] [DISTRIBUTION CODE 1..3]"
+	usage $0 :Notification Requires  "[SUBJECT] [MSG] [TOADDR] ...(optional)..[RTNADDR] [CCADDR] "
         return
 else
 	subj=$1
 	msg=$2
-	dstlist=$3
+	toaddr=$3
+	rtnaddr=$4
+	ccaddr=$5
 	echo "sub: " $subj
 	echo "msg: " $msg
 	echo "dislist: " $dstlist
-	if [ $dstlist == 1 ]
+	echo "toaddr: " $toaddr
+	echo "ccaddr: " $ccaddr
+	echo "rtnaddr: " $rtnaddr
+	if [ $# == 3 ]
 	then
-		echo "email group 1"
-        	echo "$msg" | mail -s "$subj" "$dist1" -c "$dist2"
-	elif [ $dstlist == 2 ]
+		echo "email toaddress"
+        mail -s $subj $toaddr<$msg
+	elif [ $# == 4 ]
 	then
-		echo "email group 2"
-		 echo "$msg" | mail -s "$subj" "$dist2" -c "$dist5"
-	elif [ $dstlist == 3 ]
+		echo "email toaddress with return address"
+		mail -s $subj -r $rtnaddr $toaddr<$msg
+	elif [ $dstlist == 4 ]
         then
-		echo "email group 3"
-                 echo "$msg" | mail -s "$subj" "$dist3" -c "$dist2"
-	else
-		echo "email group 4"
-		 echo "$msg" | mail -s "$subj" "$dist4" -c "$dist5"
+		echo "email toaddress and cc with return address"
+		# Now mail report out with a Return Address (not user thsat ran it)
+		# CC addresses and an TO
+        mail -s $subj -r $rtnaddr -c $ccaddr $toaddr<$msg
+	else 
+	    echo "In valid number of arguments"
 	fi
 fi
 }
