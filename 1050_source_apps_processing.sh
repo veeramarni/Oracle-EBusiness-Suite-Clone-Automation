@@ -179,9 +179,9 @@ do
 			#
 			os_delete_move_file M ${appbkupdir}${srcappname}.tar.gz ${srcappname}.tar.gz.$now
 			#
-	                rcode=$?
-                        if [ "$rcode" -gt 0 ]
-                        then
+	        rcode=$?
+            if [ "$rcode" -gt 0 ]
+            then
 				rcode=$?
 				echo "delete/move backup failed"
 				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $srcappname old backups FAILD!!! RC=$rcode"
@@ -211,7 +211,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start $srcappname new backups"
 			echo $now >>$logfilepath$logfilename
 			#
-			os_tar_gz_file ${appbkupdir}${srcappname}.tar.gz ${apphomepath} ${logfilepath}${srcappname}_tarbackup.log
+			os_tar_gz_file ${appbkupdir}${srcappname}.tar.gz ${apphomepath} ${srcappname}_tarbackup.log
 			rcode=$?
 			if [ $? -ne 0 ] # if RMAN connection fails
 			then
