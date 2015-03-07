@@ -8,7 +8,7 @@
 # Modify settings below to suit your needs
 ###########################################################################
 apposuser="applmgr"
-appbkupbasepath="/orabackup/rmanbackups/"
+appbkupbasepath="/ovbackup/APPS_BACKUP/"
 basepath="/ovbackup/EBS_SCRIPTS/CLONE_SCRIPTS/"
 
 ### EMAIL
@@ -25,11 +25,13 @@ case $trgappname in
 		logfilename="$trgappname"_Overlay_$(date +%a)"_$(date +%F).log"
 		srcappname="PRODEBS"
 		apphomepath="/ovprd-ebsapp1/applmgr/PRODEBS/apps/"
+		appbkupdir=$appbkupbasepath"PRODEBS"
 		;;
     "CONV9EBS")
 	    logfilename="$trgappname"_Overlay_$(date +%a)"_$(date +%F).log"
 		srcappname="PRODEBS"
 		apphomepath="/u01/applmgr/CONV9EBS/apps/"
+		appbkupdir=$appbkupbasepath"PRODEBS"
 		;;
         *)	
                 echo ""
@@ -107,6 +109,7 @@ os_user_check ${osuser}
 # Validate Directory
 #
 os_verify_or_make_directory ${logfilepath}
+os_verify_or_make_directory ${appbkupdir}
 os_verify_or_make_directory ${trgbasepath}
 os_verify_or_make_directory ${trgbasepath}${srcappname}
 os_verify_or_make_file ${abendfile} 0
@@ -174,7 +177,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $srcappname old backups"
 			echo $now >>$logfilepath$logfilename
 			#
-			os_delete_move_file M ${srcappname}.tar.gz ${srcappname}.tar.gz.$now
+			os_delete_move_file M ${appbkupdir}${srcappname}.tar.gz ${srcappname}.tar.gz.$now
 			#
 	                rcode=$?
                         if [ "$rcode" -gt 0 ]
@@ -208,7 +211,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start $srcappname new backups"
 			echo $now >>$logfilepath$logfilename
 			#
-			os_tar_gz_file ${srcappname}.tar.gz ${apphomepath} ${logfilepath}${srcappname}_tarbackup.log
+			os_tar_gz_file ${appbkupdir}${srcappname}.tar.gz ${apphomepath} ${logfilepath}${srcappname}_tarbackup.log
 			rcode=$?
 			if [ $? -ne 0 ] # if RMAN connection fails
 			then
