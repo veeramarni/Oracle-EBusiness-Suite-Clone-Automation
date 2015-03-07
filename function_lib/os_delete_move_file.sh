@@ -12,7 +12,7 @@ else
 	type=$1
     unset filepath
 	filepath=$2
-	unset
+	unset newpath
 	newpath=$3
 	if [ $ct == 2 && $type == 'D' ]
 	then
