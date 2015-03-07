@@ -42,7 +42,7 @@ case $trgdbname in
 		########################################################################
 		#   send notification                                                  #
 		########################################################################
-		send_notification "$trgdbname"_Overlay_abend "Invalid target $trgdbname database" ${TOADDR} ${RTNADDR} ${CCADDR}
+		#send_notification "$trgdbname"_Overlay_abend "Invalid target $trgdbname database" ${TOADDR} ${RTNADDR} ${CCADDR}
 		exit 4
 		;;
 esac

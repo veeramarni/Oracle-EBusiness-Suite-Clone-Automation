@@ -25,7 +25,7 @@ else
 	elif [ $# == 4 ]
 	then
 		echo "email toaddress with return address"
-		echo $msg | mail -s $subj -r $rtnaddr $toaddr
+		echo $msg | mail -s $subj $toaddr -- -f $rtnaddr
 	elif [ $# == 5 ]
         then
 		echo "email toaddress and cc with return address"
