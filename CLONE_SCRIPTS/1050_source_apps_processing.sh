@@ -7,7 +7,7 @@
 ###########################################################################
 # Modify settings below to suit your needs
 ###########################################################################
-apposuser="applmgr"
+appsosuser="applmgr"
 appbkupbasepath="/ovbackup/APPS_BACKUP/"
 basepath="/ovbackup/EBS_SCRIPTS/CLONE_SCRIPTS/"
 
@@ -86,7 +86,7 @@ fi
 #
 # Check user  
 #
-os_user_check ${osuser}
+os_user_check ${appsosuser}
 	rcode=$?
 	if [ "$rcode" -gt 0 ]
 	then
@@ -217,7 +217,7 @@ do
 			echo $now >>$logfilepath$logfilename
 			#
 			echo taring ${apphomepath} to ${appbkupdir}${srcappname}.tar.gz
-			os_tar_gz_file ${appbkupdir}${srcappname}.tar.gz ${apphomepath} ${srcappname}_tarbackup.log
+			os_tar_gz_file ${appbkupdir}${srcappname}.tar.gz "apps_st tech_st" ${apphomepath} ${srcappname}_tarbackup.log
 			rcode=$?
 			if [ $? -ne 0 ] # if RMAN connection fails
 			then
