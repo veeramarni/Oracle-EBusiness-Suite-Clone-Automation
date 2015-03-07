@@ -178,7 +178,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $srcappname old backups"
 			echo $now >>$logfilepath$logfilename
 			#
-			if [ is_os_file_exist ${appbkupdir}${srcappname}.tar.gz ]
+			if is_os_file_exist ${appbkupdir}${srcappname}.tar.gz 
 			then
 				os_delete_move_file M ${appbkupdir}${srcappname}.tar.gz ${srcappname}.tar.gz.$now
 			fi
