@@ -26,11 +26,13 @@ case $trgappname in
 		srcappname="PRODEBS"
 		apphomepath="/ovprd-ebsapp1/applmgr/PRODEBS/apps/"
 		appbkupdir=$appbkupbasepath"PRODEBS/"
+		apptargethomepath="/u01/applmgr/CONV9EBS/apps/"
 		;;
     "CONV9EBS")
 	    logfilename="$trgappname"_Overlay_$(date +%a)"_$(date +%F).log"
 		srcappname="CONV9EBS"
 		apphomepath="/u01/applmgr/CONV9EBS/apps/"
+		apptargethomepath="/u01/applmgr/CONV9EBS/apps/"
 		appbkupdir=$appbkupbasepath"CONV9EBS/"
 		;;
         *)	
@@ -58,15 +60,16 @@ abendfile="$trgbasepath""$srcappname"/"$srcappname"_abend_step
 #      add functions library                                                                       #
 ####################################################################################################
     
-. ${basepath}function_lib/syncpoint.sh   
-. ${basepath}function_lib/send_notification.sh
-. ${basepath}function_lib/os_tar_gz_file.sh
-. ${basepath}function_lib/os_delete_move_file.sh
-. ${basepath}function_lib/os_user_check.sh
-. ${basepath}function_lib/os_verify_or_make_directory.sh
-. ${basepath}function_lib/os_verify_or_make_file.sh
-. ${basepath}function_lib/is_os_file_exist.sh
-. ${basepath}function_lib/is_os_process_running.sh
+. ${functionbasepath}/syncpoint.sh   
+. ${functionbasepath}/send_notification.sh
+. ${functionbasepath}/os_tar_gz_file.sh
+. ${functionbasepath}/os_delete_move_file.sh
+. ${functionbasepath}/os_user_check.sh
+. ${functionbasepath}/os_verify_or_make_directory.sh
+. ${functionbasepath}/os_verify_or_make_file.sh
+. ${functionbasepath}/is_os_file_exist.sh
+. ${functionbasepath}/is_os_process_running.sh
+. ${custfunctionbasepath}/error_notification_exit.sh
 #
 ########################################
 #       VALIDATIONS                    #
@@ -91,21 +94,7 @@ os_user_check ${appsosuser}
 	rcode=$?
 	if [ "$rcode" -gt 0 ]
 	then
-		echo "Not a valid user failed. Abrt!!! RC=" "$rcode"
-		########################################
-		#  update log file                     #
-		########################################
-		now=$(date "+%m/%d/%y %H:%M:%S")" ====> Check user failed. Abort!! \
-		RC=""$rcode"       
-		echo $now >>${logfilepath}${logfilename}
-		syncpoint $trgappname $step "$LINENO"
-		########################################################################
-		#   send notification                                                  #
-		########################################################################
-		send_notification "$trgappname"_Overlay_abend "Not a valid user " ${TOADDR} ${RTNADDR} ${CCADDR}
-		echo "error.......Exit."
-		echo ""
-		exit $step
+		error_notification_exit $rcode "Wrong os user, user should be ${appsosuser}!!" $trgappname 0
 	fi
 #
 # Validate Directory
@@ -145,7 +134,7 @@ done < "$abendfile"
 now=$(date "+%m/%d/%y %H:%M:%S")
 echo $now >>$logfilepath$logfilename
 #
-now=$(date "+%m/%d/%y %H:%M:%S")" ====>  ########    $srcappname to $trgappname overlay has been started - PART1    ########"
+now=$(date "+%m/%d/%y %H:%M:%S")" ====>  ########    $srcappname to $trgappname overlay has been started - PART3    ########"
 echo $now >>$logfilepath$logfilename
 #
 for step in $(seq "$stepnum" 50 250)
@@ -180,8 +169,9 @@ do
 				echo "Concurrent process is not running.."
 			fi
 			echo "END   TASK: $step apps status check"
+		;;
 		"150")
-			echo "START TASK: $step os_delete_move_file"
+			echo "START TASK: $step os_untar_gz_file"
 			########################################
 			#  restore apps from  backup		   #
 			########################################
@@ -190,64 +180,33 @@ do
 			#
 			if is_os_file_exist ${appbkupdir}${srcappname}.tar.gz 
 			then
-			    appender=$(date "+%m%d%y%H%M%S")
 			    echo "Moving previous backup file ${appbkupdir}${srcappname}.tar.gz ${appbkupdir}${srcappname}.tar.gz.$appender"
-				os_delete_move_file M ${appbkupdir}${srcappname}.tar.gz ${appbkupdir}${srcappname}.tar.gz.$appender
+				os_untar_gz_file ${appbkupdir}${srcappname}.tar.gz ${apptargethomepath}
 			else 
-				echo "Apps Backup not found."
-				echo "Exiting .."
-				exit
+			    error_notification_exit $rcode "Apps Backup not found." $trgappname $step
 			fi
 			#
 	        rcode=$?
             if [ "$rcode" -gt 0 ]
             then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Moving/Deleting old backup file  FAILED!!" \
-				RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Moving/Deleting old backup file failed" ${TOADDR} ${RTNADDR} ${CCADDR}
-				echo "error.......Exit."
-				echo ""
-				exit $step
+				error_notification_exit $rcode "Restore apps files FAILED!!" $trgappname $step
 			fi
-			echo "END   TASK: $step os_delete_move_file"
+			echo "END   TASK: $step os_untar_gz_file"
 		;; 
 		"200")
+			#########################################
+			#  Run adcfgclone 					    #
+			#########################################
 			echo "START TASK: $step start_rman_prod_backups"
-			########################################
-			#  delete old  bckup completed      #
-			########################################
-			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $srcappname old backups completed"
-			echo $now >>$logfilepath$logfilename
-			#
-			########################################
-			#  Start Source apps backups       #
-			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start $srcappname new backups"
 			echo $now >>$logfilepath$logfilename
 			#
 			echo taring ${apphomepath} to ${appbkupdir}${srcappname}.tar.gz
-			os_tar_gz_file ${appbkupdir}${srcappname}.tar.gz "apps_st tech_st" ${apphomepath} ${srcappname}_tarbackup.log
+			apps_run_adcfgclone 
 			rcode=$?
 			if [ $? -ne 0 ] # if RMAN connection fails
 			then
-				########################################
-				#  update log file                     #
-				########################################
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> "$srcappname" backup FAILED. Abort!! RC=$rcode"
-				echo $now >>$logfilepath$logfilename
-				syncpoint $trgappname $step "$LINENO"
-			        ########################################################################
-			        #   send notification                                                  #
-			        ########################################################################
-			        send_notification "$trgappname"_Overlay_abend "Source $srcappname apps backup failed" ${TOADDR} ${RTNADDR} ${CCADDR}
-				echo "error in  : os_tar_gz_file"
-				echo ""
-				exit 99
+				error_notification_exit $rcode "Apps clone for $trgappname FAILED!!" $trgappname $step
 			fi
 			echo "END   TASK: $step os_tar_gz_file"
 		;;
@@ -260,12 +219,12 @@ do
 			#  check source apps after backups #
 			########################################
 		"300")
-                        echo "START TASK: $step end-of $srcappname app backup"
-                        syncpoint $srcappname "0 " "$LINENO"
-                        echo "END   TASK: $step end-of $srcappname app backup"
+            echo "START TASK: $step end-of $srcappname app backup"
+            syncpoint $srcappname "0 " "$LINENO"
+            echo "END   TASK: $step end-of $srcappname app backup"
 		;;
         *)
-                        echo "step not found - step: $step around Line ===> "  "$LINENO"
+            echo "step not found - step: $step around Line ===> "  "$LINENO"
         ;;
         esac
 done
