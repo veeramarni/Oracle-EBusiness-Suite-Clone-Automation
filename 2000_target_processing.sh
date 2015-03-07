@@ -17,6 +17,31 @@ basepath="/home/oracle/script/script/CLONE_SCRIPTS/"
 dbhomepath="/u01/oracle/CONV9EBS/db/tech_st/11.2.0.4/"
 context_file=${CONTEXT_FILE}
 appspwd="Marsha1l"
+trgdbname=$1
+trgdbname=${trgdbname// }
+#
+# To convert dbname to UPPER case
+#trgdbname=`echo "$trgdbname" | tr [a-z] [A-Z]`
+# 
+case $trgdbname in
+	"CONV9EBS")
+		logfilename="$trgdbname"_Overlay_$(date +%a)"_$(date +%F).log"
+		srcdbname="PRODEBS"
+		instname="CONV9EBS"
+		bkupdir=$bkupbasepath"PRODEBS"
+		;;
+	*)
+		echo ""
+		echo ""
+		echo " ====> Abort!!!. Invalid staging database name"
+		echo ""
+		########################################################################
+		#   send notification                                                  #
+		########################################################################
+		send_notification "$trgdbname"_Overlay_abend "Invalid target $trgdbname database" 3
+		exit 4
+		;;
+esac
 
 #################################################
 # Default Configuration							#
@@ -29,7 +54,7 @@ custfunctionbasepath="${basepath}custom_lib/"
 custsqlbasepath="${custfunctionbasepath}sql/"
 sqlbasepath="${functionbasepath}sql/"
 rmanbasepath="${functionbasepath}rman/"
-
+abendfile="$trgbasepath""$trgdbname"/"$trgdbname"_abend_step
 
 #
 ####################################################################################################
@@ -95,32 +120,7 @@ then
 	send_notification "$trgdbname"_Overlay_abend "Invalid target $trgdbname database" 3
         exit 3
 fi
-trgdbname=$1
-trgdbname=${trgdbname// }
-abendfile="$trgbasepath""$trgdbname"/"$trgdbname"_abend_step
-#
-# To convert dbname to UPPER case
-#trgdbname=`echo "$trgdbname" | tr [a-z] [A-Z]`
-# 
-case $trgdbname in
-	"CONV9EBS")
-		logfilename="$trgdbname"_Overlay_$(date +%a)"_$(date +%F).log"
-		srcdbname="PRODEBS"
-		instname="CONV9EBS"
-		bkupdir=$bkupbasepath"PRODEBS"
-		;;
-	*)
-		echo ""
-		echo ""
-		echo " ====> Abort!!!. Invalid staging database name"
-		echo ""
-		########################################################################
-		#   send notification                                                  #
-		########################################################################
-		send_notification "$trgdbname"_Overlay_abend "Invalid target $trgdbname database" 3
-		exit 4
-		;;
-esac
+
 #
 # Check user  
 #
