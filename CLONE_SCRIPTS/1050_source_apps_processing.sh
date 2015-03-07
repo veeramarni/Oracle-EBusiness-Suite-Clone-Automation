@@ -75,7 +75,7 @@ then
         ########################################################################
         #   send notification                                                  #
         ########################################################################
-        send_notification "$trgappname"_Overlay_abend "Invalid apps name for replication" 3
+        send_notification "$trgappname"_Overlay_abend "Invalid apps name for replication" ${TOADDR} ${RTNADDR} ${CCADDR}
         exit 3
 fi
 #
@@ -98,7 +98,7 @@ os_user_check ${osuser}
 		########################################################################
 		#   send notification                                                  #
 		########################################################################
-		send_notification "$trgappname"_Overlay_abend "Not a valid user " 3
+		send_notification "$trgappname"_Overlay_abend "Not a valid user " ${TOADDR} ${RTNADDR} ${CCADDR}
 		echo "error.......Exit."
 		echo ""
 		exit $step
@@ -152,7 +152,7 @@ do
 			#  send notification that APPS overlay started                                      #
 			#  Usage: send_notification SUBJECT MSG CODE [1..3]                                 #
 			#####################################################################################
-			send_notification "$srcappname"_backup_started  "$srcappname backup started" 2 
+			send_notification "$srcappname"_backup_started  "$srcappname backup started" ${TOADDR} ${RTNADDR} ${CCADDR}
 			#
 			########################################
 			#  write an audit record in the log    #
@@ -187,7 +187,7 @@ do
 			        ########################################################################
 			        #   send notification                                                  #
 			        ########################################################################
-#			        send_notification "$trgappname"_Overlay_abend "Delete $srcappname old backup failed" 3
+#			        send_notification "$trgappname"_Overlay_abend "Delete $srcappname old backup failed" ${TOADDR} ${RTNADDR} ${CCADDR}
 				echo "error.......Exit."
                                 echo ""
 				exit $rcode
@@ -221,7 +221,7 @@ do
 			        ########################################################################
 			        #   send notification                                                  #
 			        ########################################################################
-#			        send_notification "$trgappname"_Overlay_abend "Source $srcappname apps backup failed" 3
+#			        send_notification "$trgappname"_Overlay_abend "Source $srcappname apps backup failed" ${TOADDR} ${RTNADDR} ${CCADDR}
 				echo "error in  : os_tar_gz_file"
 				echo ""
 				exit 99
