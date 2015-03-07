@@ -12,6 +12,7 @@
 ###########################################################################
 asmsid="+ASM"
 asmhomepath="/u01/grid/product/11.2.0/grid/"
+osuser="oracle"
 bkupbasepath="/orabackup/rmanbackups/"
 basepath="/home/oracle/script/script/CLONE_SCRIPTS/"
 dbhomepath="/u01/oracle/CONV9EBS/db/tech_st/11.2.0.4/"
@@ -39,10 +40,6 @@ case $trgdbname in
 		echo ""
 		echo " ====> Abort!!!. Invalid staging database name"
 		echo ""
-		########################################################################
-		#   send notification                                                  #
-		########################################################################
-		#send_notification "$trgdbname"_Overlay_abend "Invalid target $trgdbname database" ${TOADDR} ${RTNADDR} ${CCADDR}
 		exit 4
 		;;
 esac
@@ -50,7 +47,6 @@ esac
 #################################################
 # Default Configuration							#
 #################################################
-osuser="oracle"
 trgbasepath="${basepath}targets/"
 logfilepath="${basepath}logs/"
 functionbasepath="${basepath}function_lib/"
@@ -60,7 +56,10 @@ sqlbasepath="${functionbasepath}sql/"
 rmanbasepath="${functionbasepath}rman/"
 abendfile="$trgbasepath""$trgdbname"/"$trgdbname"_abend_step
 
-#
+####################################################################################################
+#																								   #
+#       STOP MODIFYING BELOW CODE!!!															   #
+#																								   #
 ####################################################################################################
 #      add functions library                                                                       #
 ####################################################################################################
@@ -336,7 +335,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Stop $trgdbname database on all nodes"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			stop_database_sqlplusl $instname $dbhomepath $trgdbname
+			stop_database_sqlplus $instname $dbhomepath $trgdbname
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
@@ -978,8 +977,8 @@ do
 			syncpoint $trgdbname "0 " "$LINENO"
 			echo "END     TASK: end-of $trgdbname database refresh"
 		;;
-                   *)
-                        echo "step not found - step: $step around Line ===> " "$LINENO"
-                ;;
+        *)
+            echo "step not found - step: $step around Line ===> " "$LINENO"
+        ;;
         esac
 done
