@@ -1,14 +1,14 @@
 #!/usr/bin/ksh
 #
 #####################################################################################################
-#                S T A G I N G    O V E R L A Y - Source Apps Tasks                            		#
-#                           1050_source_apps_processing.sh											#
+#                S T A G I N G    O V E R L A Y - target Apps Tasks                            		#
+#                           3050_target_apps_processing.sh											#
 #####################################################################################################
 ###########################################################################
 # Modify settings below to suit your needs
 ###########################################################################
 appsosuser="applmgr"
-appbkupbasepath="/orabackup/APPS_BACKUP/"
+appbkupbasepath="/ovbackup/APPS_BACKUP/"
 basepath="/ovbackup/EBS_SCRIPTS/CLONE_SCRIPTS/"
 
 ### EMAIL
@@ -203,7 +203,7 @@ do
 			echo "END   TASK: $step os_delete_move_file"
 		;; 
 		"200")
-			echo "START TASK: $step os_tar_gz_file"
+			echo "START TASK: $step start_rman_prod_backups"
 			########################################
 			#  delete old  bckup completed      #
 			########################################
@@ -219,7 +219,7 @@ do
 			echo taring ${apphomepath} to ${appbkupdir}${srcappname}.tar.gz
 			os_tar_gz_file ${appbkupdir}${srcappname}.tar.gz "apps_st tech_st" ${apphomepath} ${srcappname}_tarbackup.log
 			rcode=$?
-			if [ $? -ne 0 ] 
+			if [ $? -ne 0 ] # if RMAN connection fails
 			then
 				########################################
 				#  update log file                     #
