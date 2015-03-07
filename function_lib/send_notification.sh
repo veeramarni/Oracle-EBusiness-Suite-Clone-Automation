@@ -21,17 +21,17 @@ else
 	if [ $# == 3 ]
 	then
 		echo "email toaddress"
-        mail -s $subj $toaddr<$msg
+        echo $msg | mail -s $subj $toaddr
 	elif [ $# == 4 ]
 	then
 		echo "email toaddress with return address"
-		mail -s $subj -r $rtnaddr $toaddr<$msg
+		echo $msg | mail -s $subj -r $rtnaddr $toaddr
 	elif [ $# == 5 ]
         then
 		echo "email toaddress and cc with return address"
 		# Now mail report out with a Return Address (not user thsat ran it)
 		# CC addresses and an TO
-        mail -s $subj -r $rtnaddr -c $ccaddr $toaddr<$msg
+        echo $msg | mail -s $subj -r $rtnaddr -c $ccaddr $toaddr
 	else 
 	    echo "In valid number of arguments"
 	fi
