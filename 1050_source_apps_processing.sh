@@ -29,9 +29,9 @@ case $trgappname in
 		;;
     "CONV9EBS")
 	    logfilename="$trgappname"_Overlay_$(date +%a)"_$(date +%F).log"
-		srcappname="PRODEBS"
+		srcappname="CONV9EBS"
 		apphomepath="/u01/applmgr/CONV9EBS/apps/"
-		appbkupdir=$appbkupbasepath"PRODEBS/"
+		appbkupdir=$appbkupbasepath"CONV9EBS/"
 		;;
         *)	
                 echo ""
@@ -238,10 +238,6 @@ do
 			echo "END   TASK: $step os_tar_gz_file"
 		;;
 #		"250")
-			########################################
-			#  Source database backups completed   #
-			########################################
-			#
 			########################################
 			#  check source apps after backups #
 			########################################

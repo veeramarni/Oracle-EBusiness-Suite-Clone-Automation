@@ -29,9 +29,9 @@ case $trgappname in
 		;;
     "CONV9EBS")
 	    logfilename="$trgappname"_Overlay_$(date +%a)"_$(date +%F).log"
-		srcappname="PRODEBS"
+		srcappname="CONV9EBS"
 		apphomepath="/u01/applmgr/CONV9EBS/apps/"
-		appbkupdir=$appbkupbasepath"PRODEBS/"
+		appbkupdir=$appbkupbasepath"CONV9EBS/"
 		;;
         *)	
                 echo ""
@@ -66,6 +66,7 @@ abendfile="$trgbasepath""$srcappname"/"$srcappname"_abend_step
 . ${basepath}function_lib/os_verify_or_make_directory.sh
 . ${basepath}function_lib/os_verify_or_make_file.sh
 . ${basepath}function_lib/is_os_file_exist.sh
+. ${basepath}function_lib/is_os_process_running.sh
 #
 ########################################
 #       VALIDATIONS                    #
@@ -166,14 +167,23 @@ do
 			#
 			echo "END   TASK: $step send_notification"
 		;;
-#		"100")
+		"100")
 			########################################
 			#  check source apps status            #
 			########################################
+			echo "START TASK: $step apps status check"
+			if is_os_process_running FNDLIBR 
+			then
+				echo "Concurrent process is running.."
+				os_killall_process FNDLIBR
+			else 
+				echo "Concurrent process is not running.."
+			fi
+			echo "END   TASK: $step apps status check"
 		"150")
 			echo "START TASK: $step os_delete_move_file"
 			########################################
-			#  delete or move old backup		   #
+			#  restore apps from  backup		   #
 			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $srcappname old backups"
 			echo $now >>$logfilepath$logfilename
@@ -183,6 +193,10 @@ do
 			    appender=$(date "+%m%d%y%H%M%S")
 			    echo "Moving previous backup file ${appbkupdir}${srcappname}.tar.gz ${appbkupdir}${srcappname}.tar.gz.$appender"
 				os_delete_move_file M ${appbkupdir}${srcappname}.tar.gz ${appbkupdir}${srcappname}.tar.gz.$appender
+			else 
+				echo "Apps Backup not found."
+				echo "Exiting .."
+				exit
 			fi
 			#
 	        rcode=$?

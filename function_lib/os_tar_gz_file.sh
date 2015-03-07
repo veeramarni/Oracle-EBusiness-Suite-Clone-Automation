@@ -1,6 +1,6 @@
 os_tar_gz_file()
 {
-now=$(date "+%m/%d/%y %H:%M:%S")
+tm=$(date "+%m/%d/%y %H:%M:%S")
 unset ct
 ct=$#
 if [ $ct -lt 3 ]
@@ -16,7 +16,7 @@ else
 	unset frmdir
 	frmdir=$3
 	unset logfile
-	logfile=${4:-tar"$now".log}
+	logfile=${4:-tar"$tm".log}
 	cd $frmdir
 	tar -cvzf ${tarfilename} ${srcfilename} >> ${logfilepath}${logfile}
 fi
