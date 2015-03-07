@@ -49,7 +49,7 @@ custfunctionbasepath="${basepath}custom_lib/"
 custsqlbasepath="${custfunctionbasepath}sql/"
 sqlbasepath="${functionbasepath}sql/"
 rmanbasepath="${functionbasepath}rman/"
-abendfile="$srcbasepath""$srcappname"/"$srcappname"_abend_step
+abendfile="$trgbasepath""$srcappname"/"$srcappname"_abend_step
 
 
 ####################################################################################################
