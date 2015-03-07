@@ -11,8 +11,28 @@ osuser="applmgr"
 bkupbasepath="/orabackup/rmanbackups/"
 basepath="/home/oracle/script/script/CLONE_SCRIPTS/"
 apphomepath="/ovprd-ebsapp1/applmgr/PRODEBS/apps/"
-
-
+### EMAIL
+TOADDR="marni.srikanth@gmail.com"
+CCADDR=" marni.srikanth@gmail.com,stackflow1@gmail.com"
+RTNADDR="noreply@krispycorp.com"
+#
+trgappname=$1
+trgapname=${trgappname// }
+trgappname=`echo "$trgappname" | tr [a-z] [A-Z]`
+ 
+case $trgappname in
+	"PRODEBS")
+		logfilename="$trgappname"_Overlay_$(date +%a)"_$(date +%F).log"
+		srcappname="PRODEBS"
+		;;
+        *)	
+                echo ""
+                echo ""
+                echo " ====> Abort!!!. Invalid staging database name"
+                echo ""
+                exit 4
+                ;;
+esac
 #################################################
 # Default Configuration							#
 #################################################
@@ -51,27 +71,7 @@ then
         exit 3
 fi
 #
-trgappname=$1
-trgapname=${trgappname// }
-trgappname=`echo "$trgappname" | tr [a-z] [A-Z]`
- 
-case $trgappname in
-	"PRODEBS")
-		logfilename="$trgappname"_Overlay_$(date +%a)"_$(date +%F).log"
-		srcappname="PRODEBS"
-		;;
-        *)	
-        	########################################################################
-	        #   send notification                                                  #
-	        ########################################################################
-        	send_notification "$trgappname"_Overlay_abend "Invalid database name for replication" 3
-                echo ""
-                echo ""
-                echo " ====> Abort!!!. Invalid staging database name"
-                echo ""
-                exit 4
-                ;;
-esac
+
 #
 # Check user  
 #
