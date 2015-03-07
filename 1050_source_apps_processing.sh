@@ -9,7 +9,7 @@
 ###########################################################################
 apposuser="applmgr"
 appbkupbasepath="/orabackup/rmanbackups/"
-basepath="/home/oracle/script/script/CLONE_SCRIPTS/"
+basepath="/ovbackup/EBS_SCRIPTS/CLONE_SCRIPTS/"
 
 ### EMAIL
 TOADDR="marni.srikanth@gmail.com"
