@@ -70,12 +70,12 @@ abendfile="$trgbasepath""$srcappname"/"$srcappname"_abend_step
 #
 if [ $# -lt 1 ]
 then
-	echo " ====> Abort!!!. Invalid database name for overlay"
-        usage $0 :1000_overlay_staging  "[DATABASE NAME]"
+	echo " ====> Abort!!!. Invalid apps name for overlay"
+        usage $0 :1000_overlay_staging  "[APPS NAME]"
         ########################################################################
         #   send notification                                                  #
         ########################################################################
-        send_notification "$trgappname"_Overlay_abend "Invalid database name for replication" 3
+        send_notification "$trgappname"_Overlay_abend "Invalid apps name for replication" 3
         exit 3
 fi
 #
@@ -108,7 +108,7 @@ os_user_check ${osuser}
 #
 os_verify_or_make_directory ${logfilepath}
 os_verify_or_make_directory ${trgbasepath}
-os_verify_or_make_directory ${trgbasepath}${trgdbname}
+os_verify_or_make_directory ${trgbasepath}${srcappname}
 os_verify_or_make_file ${abendfile} 0
 
 #
