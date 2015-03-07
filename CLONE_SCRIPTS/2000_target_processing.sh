@@ -19,6 +19,10 @@ context_file=${CONTEXT_FILE}
 appspwd="Marsha1l"
 trgdbname=$1
 trgdbname=${trgdbname// }
+### EMAIL
+TOADDR="marni.srikanth@gmail.com"
+CCADDR=" marni.srikanth@gmail.com,stackflow1@gmail.com"
+RTNADDR="noreply@krispycorp.com"
 #
 # To convert dbname to UPPER case
 #trgdbname=`echo "$trgdbname" | tr [a-z] [A-Z]`
@@ -38,7 +42,7 @@ case $trgdbname in
 		########################################################################
 		#   send notification                                                  #
 		########################################################################
-		send_notification "$trgdbname"_Overlay_abend "Invalid target $trgdbname database" 3
+		send_notification "$trgdbname"_Overlay_abend "Invalid target $trgdbname database" ${TOADDR} ${RTNADDR} ${CCADDR}
 		exit 4
 		;;
 esac
@@ -117,7 +121,7 @@ then
 	########################################################################
 	#   send notification                                                  #
 	########################################################################
-	send_notification "$trgdbname"_Overlay_abend "Invalid target $trgdbname database" 3
+	send_notification "$trgdbname"_Overlay_abend "Invalid target $trgdbname database" ${TOADDR} ${RTNADDR} ${CCADDR}
         exit 3
 fi
 
@@ -139,7 +143,7 @@ os_user_check ${osuser}
 		########################################################################
 		#   send notification                                                  #
 		########################################################################
-		send_notification "$trgdbname"_Overlay_abend "Not a valid user " 3
+		send_notification "$trgdbname"_Overlay_abend "Not a valid user " ${TOADDR} ${RTNADDR} ${CCADDR}
 		echo "error.......Exit."
 		echo ""
 		exit $step
@@ -227,7 +231,7 @@ do
 				########################################################################
 				#   send notification                                                  #
 				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Backup folder for $srcdbname is empty" 3
+				send_notification "$trgdbname"_Overlay_abend "Backup folder for $srcdbname is empty" ${TOADDR} ${RTNADDR} ${CCADDR}
 				echo ""
 				exit $step
 			fi
@@ -258,7 +262,7 @@ do
 				########################################################################
 				#   send notification                                                  #
 				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Check database status for $trgdbname" 3
+				send_notification "$trgdbname"_Overlay_abend "Check database status for $trgdbname" ${TOADDR} ${RTNADDR} ${CCADDR}
 				echo "error.......Exit."
 				echo ""
 				exit $step
@@ -281,7 +285,7 @@ do
 			########################################################################
 			#   send notification to start  target database replication            #
 			########################################################################
-			send_notification "$trgdbname"_Overlay_staging "Replication of $trgdbname database started" 3
+			send_notification "$trgdbname"_Overlay_staging "Replication of $trgdbname database started" ${TOADDR} ${RTNADDR} ${CCADDR}
 			echo "END   TASK: " $step "send-notification_01"
 		;;
         "250")
@@ -290,7 +294,7 @@ do
 			########################################################################
 			#   send notification to start  target database OEM blackout           #
 			########################################################################
-			send_notification "$trgdbname"_Overlay_staging "please note that $trgdbname is under OEM blackout" 3
+			send_notification "$trgdbname"_Overlay_staging "please note that $trgdbname is under OEM blackout" ${TOADDR} ${RTNADDR} ${CCADDR}
 			echo "END   TASK: " $step "send-notification_02"
 		;;
         "300")
@@ -316,7 +320,7 @@ do
 				########################################################################
 				#   send notification                                                  #
 				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Delete RMAN archive logs and backups for $trgdbname failed" 3
+				send_notification "$trgdbname"_Overlay_abend "Delete RMAN archive logs and backups for $trgdbname failed" ${TOADDR} ${RTNADDR} ${CCADDR}
 				echo ""
 				exit $step
 			fi
@@ -342,7 +346,7 @@ do
 				########################################################################
 				#   send notification                                                  #
 				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Stop target database $trgdbname failed" 3
+				send_notification "$trgdbname"_Overlay_abend "Stop target database $trgdbname failed" ${TOADDR} ${RTNADDR} ${CCADDR}
 				echo "error.......Exit."
 				echo ""
 				exit $step
@@ -370,7 +374,7 @@ do
 				########################################################################
 				#   send notification                                                  #
 				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Start database $trgdbname failed"
+				send_notification "$trgdbname"_Overlay_abend "Start database $trgdbname failed" ${TOADDR} ${RTNADDR} ${CCADDR}
 				echo "error.......Exit."
 				echo ""
 				exit $step
@@ -398,7 +402,7 @@ do
 				########################################################################
 				#   send notification                                                  #
 				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Drop database $trgdbname failed"
+				send_notification "$trgdbname"_Overlay_abend "Drop database $trgdbname failed" ${TOADDR} ${RTNADDR} ${CCADDR}
 				echo "error.......Exit."
 				echo ""
 				exit $step
@@ -426,7 +430,7 @@ do
 				########################################################################
 				#   send notification                                                  #
 				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Start target database $trgdbname failed" 3
+				send_notification "$trgdbname"_Overlay_abend "Start target database $trgdbname failed" ${TOADDR} ${RTNADDR} ${CCADDR}
 				echo "error.......Exit."
 				echo ""
 				exit $step
@@ -452,7 +456,7 @@ do
 				########################################################################
 				#   send notification                                                  #
 				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Create spfile for $trgdbname failed" 3
+				send_notification "$trgdbname"_Overlay_abend "Create spfile for $trgdbname failed" ${TOADDR} ${RTNADDR} ${CCADDR}
 				echo "error.......Exit."
 				echo ""
 				exit $step
@@ -478,7 +482,7 @@ do
 				########################################################################
 				#   send notification                                                  #
 				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Stop target database $trgdbname failed" 3
+				send_notification "$trgdbname"_Overlay_abend "Stop target database $trgdbname failed" ${TOADDR} ${RTNADDR} ${CCADDR}
 				echo "error.......Exit."
 				echo ""
 				exit $step
@@ -506,7 +510,7 @@ do
 				########################################################################
 				#   send notification                                                  #
 				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Start target database $trgdbname failed" 3
+				send_notification "$trgdbname"_Overlay_abend "Start target database $trgdbname failed" ${TOADDR} ${RTNADDR} ${CCADDR}
 				echo "error.......Exit."
 				echo ""
 				exit $step
@@ -532,7 +536,7 @@ do
 				########################################################################
 				#   send notification                                                  #
 				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Change DB parameters for $trgdbname failed" 3
+				send_notification "$trgdbname"_Overlay_abend "Change DB parameters for $trgdbname failed" ${TOADDR} ${RTNADDR} ${CCADDR}
 				echo "error.......Exit."
 				echo ""
 				exit $step
@@ -558,7 +562,7 @@ do
 				########################################################################
 				#   send notification                                                  #
 				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Stop target database $trgdbname failed" 3
+				send_notification "$trgdbname"_Overlay_abend "Stop target database $trgdbname failed" ${TOADDR} ${RTNADDR} ${CCADDR}
 				echo "error.......Exit."
 				echo ""
 				exit $step
@@ -665,7 +669,7 @@ do
 				########################################################################
 				#   send notification                                                  #
 				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Start target database $trgdbname failed" 3
+				send_notification "$trgdbname"_Overlay_abend "Start target database $trgdbname failed" ${TOADDR} ${RTNADDR} ${CCADDR}
 				echo "error.......Exit."
 				echo ""
 				exit $step
@@ -693,7 +697,7 @@ do
 				########################################################################
 				#   send notification                                                  #
 				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Start target databse $trgdbname replication failed" 3
+				send_notification "$trgdbname"_Overlay_abend "Start target databse $trgdbname replication failed" ${TOADDR} ${RTNADDR} ${CCADDR}
 				echo "error.......Exit."
 				echo ""
 				exit $step
@@ -721,7 +725,7 @@ do
 				########################################################################
 				#   send notification                                                  #
 				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "List recover files for $trgdbname failed" 3
+				send_notification "$trgdbname"_Overlay_abend "List recover files for $trgdbname failed" ${TOADDR} ${RTNADDR} ${CCADDR}
 				echo "error.......Exit."
 				echo ""
 				exit $step
@@ -749,7 +753,7 @@ do
 				########################################################################
 				#   send notification                                                  #
 				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Shutdown target database $trgdbname failed" 3
+				send_notification "$trgdbname"_Overlay_abend "Shutdown target database $trgdbname failed" ${TOADDR} ${RTNADDR} ${CCADDR}
 				echo "error.......Exit."
 				echo ""
 				exit $step
@@ -777,7 +781,7 @@ do
 				########################################################################
 				#   send notification                                                  #
 				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Start target database $trgdbname failed" 3
+				send_notification "$trgdbname"_Overlay_abend "Start target database $trgdbname failed" ${TOADDR} ${RTNADDR} ${CCADDR}
 				echo "error.......Exit."
 				echo ""
 				exit $step
@@ -805,7 +809,7 @@ do
 				########################################################################
 				#   send notification                                                  #
 				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Alter target databse $trgdbname archivelog failed" 3
+				send_notification "$trgdbname"_Overlay_abend "Alter target databse $trgdbname archivelog failed" ${TOADDR} ${RTNADDR} ${CCADDR}
 				echo "error.......Exit."
 				echo ""
 				exit $step
@@ -832,7 +836,7 @@ do
 				########################################################################
 				#   send notification                                                  #
 				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Alter target database $trgdbname archivelog failed" 3
+				send_notification "$trgdbname"_Overlay_abend "Alter target database $trgdbname archivelog failed" ${TOADDR} ${RTNADDR} ${CCADDR}
 				echo "error.......Exit."
 				echo ""
 				exit $step
@@ -880,7 +884,7 @@ do
 				########################################################################
 				#   send notification                                                  #
 				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Post scripts (FND_CLEAN) on "$trgdbname" are  failed" 3
+				send_notification "$trgdbname"_Overlay_abend "Post scripts (FND_CLEAN) on "$trgdbname" are  failed" ${TOADDR} ${RTNADDR} ${CCADDR}
 				echo "error.......Exit."
 				echo ""
 				exit $step
@@ -907,7 +911,7 @@ do
 				########################################################################
 				#   send notification                                                  #
 				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Post scripts on "$trgdbname" are  failed" 3
+				send_notification "$trgdbname"_Overlay_abend "Post scripts on "$trgdbname" are  failed" ${TOADDR} ${RTNADDR} ${CCADDR}
 				echo "error.......Exit."
 				echo ""
 				exit $step
@@ -934,7 +938,7 @@ do
 				########################################################################
 				#   send notification                                                  #
 				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Autoconfig run for "$trgdbname" is  failed" 3
+				send_notification "$trgdbname"_Overlay_abend "Autoconfig run for "$trgdbname" is  failed" ${TOADDR} ${RTNADDR} ${CCADDR}
 				echo "error.......Exit."
 				echo ""
 				exit $step
