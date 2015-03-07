@@ -188,18 +188,17 @@ do
 	        rcode=$?
             if [ "$rcode" -gt 0 ]
             then
-				rcode=$?
-				echo "delete/move backup failed"
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $srcappname old backups FAILD!!! RC=$rcode"
-				echo $now >>$logfilepath$logfilename
-				syncpoint $trgappname $step "$LINENO"
-			        ########################################################################
-			        #   send notification                                                  #
-			        ########################################################################
-#			        send_notification "$trgappname"_Overlay_abend "Delete $srcappname old backup failed" ${TOADDR} ${RTNADDR} ${CCADDR}
+				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Moving/Deleting old backup file  FAILED!!" \
+				RC=$rcode
+				echo $now >>${logfilepath}${logfilename}
+				syncpoint $trgdbname $step "$LINENO"
+				########################################################################
+				#   send notification                                                  #
+				########################################################################
+				send_notification "$trgdbname"_Overlay_abend "Moving/Deleting old backup file failed" ${TOADDR} ${RTNADDR} ${CCADDR}
 				echo "error.......Exit."
-                                echo ""
-				exit $rcode
+				echo ""
+				exit $step
 			fi
 			echo "END   TASK: $step os_delete_move_file"
 		;; 
@@ -217,6 +216,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start $srcappname new backups"
 			echo $now >>$logfilepath$logfilename
 			#
+			echo taring ${apphomepath} to ${appbkupdir}${srcappname}.tar.gz
 			os_tar_gz_file ${appbkupdir}${srcappname}.tar.gz ${apphomepath} ${srcappname}_tarbackup.log
 			rcode=$?
 			if [ $? -ne 0 ] # if RMAN connection fails
@@ -230,7 +230,7 @@ do
 			        ########################################################################
 			        #   send notification                                                  #
 			        ########################################################################
-#			        send_notification "$trgappname"_Overlay_abend "Source $srcappname apps backup failed" ${TOADDR} ${RTNADDR} ${CCADDR}
+			        send_notification "$trgappname"_Overlay_abend "Source $srcappname apps backup failed" ${TOADDR} ${RTNADDR} ${CCADDR}
 				echo "error in  : os_tar_gz_file"
 				echo ""
 				exit 99
