@@ -161,8 +161,8 @@ do
 			echo $now >>$logfilepath$logfilename
 			#
 			echo "END   TASK: $step send_notification"
-			;;
-		"100")
+		;;
+#		"100")
 			########################################
 			#  check source apps status            #
 			########################################
@@ -193,7 +193,7 @@ do
 				exit $rcode
 			fi
 			echo "END   TASK: $step os_delete_move_file"
-			;; 
+		;; 
 		"200")
 			echo "START TASK: $step start_rman_prod_backups"
 			########################################
@@ -227,8 +227,8 @@ do
 				exit 99
 			fi
 			echo "END   TASK: $step os_tar_gz_file"
-			;;
-		"250")
+		;;
+#		"250")
 			########################################
 			#  Source database backups completed   #
 			########################################
@@ -240,10 +240,10 @@ do
                         echo "START TASK: $step end-of $srcappname app backup"
                         syncpoint $srcappname "0 " "$LINENO"
                         echo "END   TASK: $step end-of $srcappname app backup"
-			;;
-                   *)
+		;;
+        *)
                         echo "step not found - step: $step around Line ===> "  "$LINENO"
-                ;;
+        ;;
         esac
 done
 
