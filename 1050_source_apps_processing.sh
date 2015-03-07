@@ -180,6 +180,7 @@ do
 			#
 			if is_os_file_exist ${appbkupdir}${srcappname}.tar.gz 
 			then
+			    echo "Moving previous backup file ${appbkupdir}${srcappname}.tar.gz ${srcappname}.tar.gz.$now"
 				os_delete_move_file M ${appbkupdir}${srcappname}.tar.gz ${srcappname}.tar.gz.$now
 			fi
 			#
