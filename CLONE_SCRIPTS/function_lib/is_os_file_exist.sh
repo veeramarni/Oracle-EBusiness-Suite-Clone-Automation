@@ -2,7 +2,7 @@ is_os_file_exist()
 {
 unset bfile
 bfile=$1
-if [[  -f "$bfile" ]]; then
+if [  -f "$bfile" ]
  then
     return 0
  else
