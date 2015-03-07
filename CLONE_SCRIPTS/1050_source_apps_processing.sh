@@ -181,8 +181,8 @@ do
 			if is_os_file_exist ${appbkupdir}${srcappname}.tar.gz 
 			then
 			    appender=$(date "+%m%d%y%H%M%S")
-			    echo "Moving previous backup file ${appbkupdir}${srcappname}.tar.gz ${srcappname}.tar.gz.$appender"
-				os_delete_move_file M ${appbkupdir}${srcappname}.tar.gz ${srcappname}.tar.gz.$appender
+			    echo "Moving previous backup file ${appbkupdir}${srcappname}.tar.gz ${appbkupdir}${srcappname}.tar.gz.$appender"
+				os_delete_move_file M ${appbkupdir}${srcappname}.tar.gz ${appbkupdir}${srcappname}.tar.gz.$appender
 			fi
 			#
 	        rcode=$?
