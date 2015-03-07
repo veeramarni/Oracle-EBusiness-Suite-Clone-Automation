@@ -336,7 +336,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Stop $trgdbname database on all nodes"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			stop_database_sqlplus $instname $dbhomepath $trgdbname
+			stop_database_sqlplusl $instname $dbhomepath $trgdbname
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
