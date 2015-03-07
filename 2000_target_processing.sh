@@ -12,10 +12,9 @@
 ###########################################################################
 asmsid="+ASM"
 asmhomepath="/u01/grid/product/11.2.0/grid/"
-osuser="oracle"
+dbosuser="oracle"
 bkupbasepath="/orabackup/rmanbackups/"
 basepath="/home/oracle/script/script/CLONE_SCRIPTS/"
-dbhomepath="/u01/oracle/CONV9EBS/db/tech_st/11.2.0.4/"
 context_file=${CONTEXT_FILE}
 appspwd="Marsha1l"
 trgdbname=$1
@@ -33,6 +32,7 @@ case $trgdbname in
 		logfilename="$trgdbname"_Overlay_$(date +%a)"_$(date +%F).log"
 		srcdbname="PRODEBS"
 		instname="CONV9EBS"
+		dbhomepath="/u01/oracle/CONV9EBS/db/tech_st/11.2.0.4/"
 		bkupdir=$bkupbasepath"PRODEBS"
 		;;
 	*)
@@ -127,7 +127,7 @@ fi
 #
 # Check user  
 #
-os_user_check ${osuser}
+os_user_check ${dbosuser}
 	rcode=$?
 	if [ "$rcode" -gt 0 ]
 	then
@@ -261,7 +261,7 @@ do
 				########################################################################
 				#   send notification                                                  #
 				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Check database status for $trgdbname" ${TOADDR} ${RTNADDR} ${CCADDR}
+				send_notification "$trgdbname"_Overlay_abend "Check database status for $trgdbname failed." ${TOADDR} ${RTNADDR} ${CCADDR}
 				echo "error.......Exit."
 				echo ""
 				exit $step
@@ -968,7 +968,7 @@ do
 			########################################################################
 			#   send notification that target database overlay has been completed  #
 			########################################################################
-			send_notification "$trgdbname Overlay completed" "$trgdbname overlay has been completed" 1
+			send_notification "$trgdbname Overlay completed" "$trgdbname overlay has been completed" ${TOADDR} ${RTNADDR} ${CCADDR}
 			#	
 			echo "END     TASK: send_notification"
 		;;
