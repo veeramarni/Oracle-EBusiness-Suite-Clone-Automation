@@ -31,7 +31,7 @@ else
 		echo "email toaddress and cc with return address"
 		# Now mail report out with a Return Address (not user thsat ran it)
 		# CC addresses and an TO
-        echo $msg | mail -s $subj -r $rtnaddr -c $ccaddr $toaddr
+        echo $msg | mail -s $subj -c $ccaddr $toaddr -- -f $rtnaddr
 	else 
 	    echo "In valid number of arguments"
 	fi
