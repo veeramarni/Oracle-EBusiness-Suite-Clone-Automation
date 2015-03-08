@@ -310,7 +310,7 @@ do
 			then
 				error_notification_exit $rcode "Start database "$trgdbname" NOMOUNT FAILED!!" $trgdbname $step $LINENO
 			fi
-			echo "END   TASK: $step start_nomount_database_sqlplus"
+			echo "END   TASK: " $step "start_nomount_database_sqlplus"
 		;;
 		"550")
 			echo "START TASK: " $step "create_spfile"

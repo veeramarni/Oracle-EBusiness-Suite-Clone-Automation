@@ -43,7 +43,7 @@ else
 	_at="@"
 	fi
 # Avoid using TAB when using EOF
-sqlplus -s /nolog > ${_lgfile} <<EOFsql
+${ORACLE_HOME}/bin/sqlplus -s /nolog > ${_lgfile} <<EOFsql
 connect ${_user}/$5${_at}${_dbstring}
 START ${_sqlfile} ${_spoolfile} ${_sqlparm1} ${_sqlparm2} ${_sqlparm3}
 EOFsql
