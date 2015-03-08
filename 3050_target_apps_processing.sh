@@ -24,7 +24,7 @@ abendfile="$trgbasepath""$trgappname"/"$trgappname"_3050_abend_step
 ####################################################################################################
 #      add functions library                                                                       #
 ####################################################################################################
-    
+. ${functionbasepath}/usage.sh    
 . ${functionbasepath}/syncpoint.sh   
 . ${functionbasepath}/send_notification.sh
 . ${functionbasepath}/os_tar_gz_file.sh
