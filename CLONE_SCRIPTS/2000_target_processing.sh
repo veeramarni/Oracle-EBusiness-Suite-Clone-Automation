@@ -20,7 +20,7 @@ custfunctionbasepath="${basepath}custom_lib/"
 custsqlbasepath="${custfunctionbasepath}sql/"
 sqlbasepath="${functionbasepath}sql/"
 rmanbasepath="${functionbasepath}rman/"
-abendfile="$trgbasepath""$trgdbname"/"$trgdbname"_abend_step
+abendfile="$trgbasepath""$trgdbname"/"$trgdbname"_2000_abend_step
 
 ####################################################################################################
 #																								   #
