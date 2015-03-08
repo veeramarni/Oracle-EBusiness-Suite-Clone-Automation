@@ -19,6 +19,7 @@ custsqlbasepath="${custfunctionbasepath}sql/"
 sqlbasepath="${functionbasepath}sql/"
 rmanbasepath="${functionbasepath}rman/"
 abendfile="$trgbasepath""$trgappname"/"$trgappname"_3050_abend_step
+logfilename="$trgdbname"_Overlay_$(date +%a)"_$(date +%F).log"
 
 
 ####################################################################################################
@@ -37,6 +38,8 @@ abendfile="$trgbasepath""$trgappname"/"$trgappname"_3050_abend_step
 . ${functionbasepath}/is_os_file_exist.sh
 . ${functionbasepath}/is_os_dir_exist.sh
 . ${functionbasepath}/is_os_process_running.sh
+. ${functionbasepath}/apps_run_adcfgclone.sh
+. ${functionbasepath}/apps_run_autoconfig.sh
 . ${custfunctionbasepath}/error_notification_exit.sh
 #
 ########################################
@@ -203,18 +206,18 @@ do
 			#########################################
 			#  Run adcfgclone 					    #
 			#########################################
-			echo "START TASK: $step start_rman_prod_backups"
-			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start $srcappname new backups"
+			echo "START TASK: $step apps_run_adcfgclone"
+			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start $srcappname cloning"
 			echo $now >>$logfilepath$logfilename
 			#
-			echo taring ${appsourcehomepath} to ${appsourcebkupdir}${srcappname}${tier}.tar.gz
+			echo application cloning to $trgappname
 			apps_run_adcfgclone 
 			rcode=$?
 			if [ "$rcode" -ne 0 ]
 			then
 				error_notification_exit $rcode "Apps clone for $trgappname FAILED!!" $trgappname $step $LINENO
 			fi
-			echo "END   TASK: $step os_tar_gz_file"
+			echo "END   TASK: $step apps_run_adcfgclone"
 		;;
 #		"300")
 			########################################
