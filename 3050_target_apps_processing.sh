@@ -38,9 +38,11 @@ logfilename="$trgdbname"_Overlay_$(date +%a)"_$(date +%F).log"
 . ${functionbasepath}/is_os_file_exist.sh
 . ${functionbasepath}/is_os_dir_exist.sh
 . ${functionbasepath}/is_os_process_running.sh
+. ${functionbasepath}/os_kill_process_homepath.sh
 . ${functionbasepath}/apps_run_adcfgclone.sh
 . ${functionbasepath}/apps_run_autoconfig.sh
-. ${custfunctionbasepath}/error_notification_exit.sh
+. ${functionbasepath}/error_notification_exit.sh
+. ${custfunctionbasepath}/db*$trgappname.sh
 #
 ########################################
 #       VALIDATIONS                    #
@@ -49,7 +51,7 @@ logfilename="$trgdbname"_Overlay_$(date +%a)"_$(date +%F).log"
 if [ $# -lt 2 ]
 then
 	echo " ====> Abort!!!. Invalid apps arguments for overlay"
-        usage $0 :1000_overlay_staging  "[APPS NAME] [TIER NO]"
+        usage $0 :1000_overlay_staging  "[APPS NAME] [TIER NO 1..3]"
         ########################################################################
         #   send notification  and exit                                        #
         ########################################################################
@@ -118,7 +120,7 @@ echo $now >>$logfilepath$logfilename
 now=$(date "+%m/%d/%y %H:%M:%S")" ====>  ########    $srcappname to $trgappname overlay has been started - PART3    ########"
 echo $now >>$logfilepath$logfilename
 #
-for step in $(seq "$stepnum" 50 350)
+for step in $(seq "$stepnum" 50 650)
 do
         case $step in
         "50")
@@ -142,12 +144,11 @@ do
 			#  check source apps status            #
 			########################################
 			echo "START TASK: $step apps status check"
-			if is_os_process_running FNDLIBR 
+			if is_os_process_running ${apptargethomepath} 
 			then
 				echo "Concurrent process is running.."
-#				os_killall_process FNDLIBR -- Kills all the process which can kill other EBS's FNDLIBR
-				 error_notification_exit $rcode "Old Apps processor still running, need clean up. Failed!!" $trgappname $step $LINENO
-			else 
+				os_kill_process_homepath ${apptargethomepath} 
+				else 
 				echo "Concurrent process is not running.."
 			fi
 			echo "END   TASK: $step apps status check"
@@ -207,11 +208,11 @@ do
 			#  Run adcfgclone 					    #
 			#########################################
 			echo "START TASK: $step apps_run_adcfgclone"
-			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start $srcappname cloning"
+			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start $srcappname cloning.s"
 			echo $now >>$logfilepath$logfilename
 			#
 			echo application cloning to $trgappname
-			apps_run_adcfgclone "${apptargethomepath}apps_st/comn/clone/bin" ${context_file} ${appspwd}
+			apps_run_adcfgclone "${apptargethomepath}apps_st/comn/clone/bin" ${context_file} ${srcappspwd}
 			rcode=$?
 			if [ "$rcode" -ne 0 ]
 			then
@@ -219,15 +220,109 @@ do
 			fi
 			echo "END   TASK: $step apps_run_adcfgclone"
 		;;
-#		"300")
+		"300")
 			########################################
-			#  Source database backups completed   #
+			#  Set new apps environment 		   #
 			########################################
+			echo "START TASK: $step set apps environment"
+						now=$(date "+%m/%d/%y %H:%M:%S")" ====> Set apps enviroment."
+			echo $now >>$logfilepath$logfilename
 			#
-			########################################
-			#  check source apps after backups #
-			########################################
+			echo application cloning to $trgappname
+			. ${apptargethomepath}apps_st/appl/$trgappname*.env
+			rcode=$?
+			if [ "$rcode" -ne 0 ]
+			then
+				error_notification_exit $rcode "Set Apps enviornment FAILED!!" $trgappname $step $LINENO
+			fi
+			echo "END   TASK: $step set apps environment"
+		;;
 		"350")
+			########################################
+			#  Change FND Users password 		   #
+			########################################
+			echo "START TASK: $step Change FND Users passwords"
+						now=$(date "+%m/%d/%y %H:%M:%S")" ====> Change FND Users passwords."
+			echo $now >>$logfilepath$logfilename
+			#
+			echo Change FND Users passwords for $trgappname
+			appschangepassword ${srcappspwd} ${trgappspwd}
+			rcode=$?
+			if [ "$rcode" -ne 0 ]
+			then
+				error_notification_exit $rcode "Set Apps enviornment FAILED!!" $trgappname $step $LINENO
+			fi
+			echo "END   TASK: $step Change FND Users passwords"
+		;;
+		"400")
+			########################################
+			#  Run Autoconfig			 		   #
+			########################################
+			echo "START TASK: $step run auto config"
+						now=$(date "+%m/%d/%y %H:%M:%S")" ====> Run Apps AutoConfig."
+			echo $now >>$logfilepath$logfilename
+			#
+			echo run apps autoconfig on $trgappname
+			apps_run_autoconfig  $ADMIN_SCRIPTS  ${trgappspwd}
+			rcode=$?
+			if [ "$rcode" -ne 0 ]
+			then
+				error_notification_exit $rcode "Run AutoConfig on $trgappname FAILED!!" $trgappname $step $LINENO
+			fi
+			echo "END   TASK: $step run auto config"
+		;;
+		"450")
+			########################################
+			#  Start Apps				 		   #
+			########################################
+			echo "START TASK: $step Start Apps process"
+						now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start Apps Process."
+			echo $now >>$logfilepath$logfilename
+			#
+			echo start apps on $trgappname
+			$ADMIN_SCRIPTS/adstrtal.sh  apps/${trgappspwd}
+			rcode=$?
+			if [ "$rcode" -ne 0 ]
+			then
+				error_notification_exit $rcode "Starting apps process on $trgappname FAILED!!" $trgappname $step $LINENO
+			fi
+			echo "END   TASK: $step Start Apps process"
+		;;
+		"500")
+			########################################
+			#  Sitename change			 		   #
+			########################################
+			echo "START TASK: $step Change sitename properties"
+						now=$(date "+%m/%d/%y %H:%M:%S")" ====> Change sitename properties."
+			echo $now >>$logfilepath$logfilename
+			#
+			echo start apps on $trgappname
+			
+			rcode=$?
+			if [ "$rcode" -ne 0 ]
+			then
+				error_notification_exit $rcode "Changing sitename properties on $trgappname FAILED!!" $trgappname $step $LINENO
+			fi
+			echo "END   TASK: $step Change sitename properties"
+		;;
+		"550")
+			########################################
+			#  Start Apps				 		   #
+			########################################
+			echo "START TASK: $step Start Apps process"
+						now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start Apps Process."
+			echo $now >>$logfilepath$logfilename
+			#
+			echo start apps on $trgappname
+			
+			rcode=$?
+			if [ "$rcode" -ne 0 ]
+			then
+				error_notification_exit $rcode "Starting apps process on $trgappname FAILED!!" $trgappname $step $LINENO
+			fi
+			echo "END   TASK: $step Start Apps process"
+		;;
+		"600")
             echo "START TASK: $step end-of $srcappname app backup"
             syncpoint $srcappname "0 " "$LINENO"
             echo "END   TASK: $step end-of $srcappname app backup"

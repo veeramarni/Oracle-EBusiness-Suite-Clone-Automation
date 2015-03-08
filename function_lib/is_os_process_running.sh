@@ -1,13 +1,13 @@
 is_os_process_running()
 {
-SERVICE="$1"
-RESULT=`ps axho comm| grep -w ${SERVICE}`
-
-if [ "${RESULT:-null}" = null ]; then
-    echo "`date`: $SERVICE service running"
+unset _service
+_service="$1"
+_res=`ps -ef|grep ${_service}|grep -v grep`
+if [ "${_res:-null}" = null ]; then
+    echo "`date`: ${_service} service running"
     return 1
 else
-	echo "`date`: $SERVICE service NOT running"
+	echo "`date`: ${_service} service NOT running"
     return 0
 fi
 }

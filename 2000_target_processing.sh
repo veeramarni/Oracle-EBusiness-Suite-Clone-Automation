@@ -71,7 +71,8 @@ logfilename="$trgdbname"_Overlay_$(date +%a)"_$(date +%F).log"
 . ${functionbasepath}/os_user_check.sh
 . ${functionbasepath}/os_verify_or_make_directory.sh
 . ${functionbasepath}/os_verify_or_make_file.sh
-. ${custfunctionbasepath}/error_notification_exit.sh
+. ${functionbasepath}/error_notification_exit.sh
+. ${custfunctionbasepath}/db*$trgdbname.sh
 #
 #
 ########################################
@@ -637,7 +638,7 @@ do
 			echo $now >>${logfilepath}${logfilename}
 			#
 			echo "      START TASK: custom_sql_run user_pwd_reset"
-			custom_sql_run $trginstname $dbtargethomepath ${custsqlbasepath}user_pwd_reset.sql ${logfilepath}${trginstname}_user_pwd_reset.log
+			custom_sql_run $trginstname $dbtargethomepath "" "" "as sysdba" ${custsqlbasepath}user_pwd_reset.sql 
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -655,7 +656,7 @@ do
 			echo $now >>${logfilepath}${logfilename}
 			#
 			echo "      START TASK: db_adconfig"
-			db_adconfig $trginstname $dbtargethomepath $context_file $appspwd
+			db_adconfig $trginstname $dbtargethomepath $context_file $srcappspwd
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
