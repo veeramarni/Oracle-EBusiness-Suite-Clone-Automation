@@ -122,7 +122,7 @@ do
 			###################################################
 			#  send notification that APPS overlay started    #
 			###################################################		
-			echo "START TASK: $step send_notification"
+			echo "START   TASK: $step send_notification"
 			send_notification "$srcappname"_backup_started  "$srcappname backup started" ${TOADDR} ${RTNADDR} ${CCADDR}
 			#
 			########################################
@@ -131,7 +131,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Send start $srcappname apps backup Notification"
 			echo $now >>$logfilepath$logfilename
 			#
-			echo "END   TASK: $step send_notification"
+			echo "END     TASK: $step send_notification"
 		;;
 #		"100")
 			########################################
@@ -141,7 +141,7 @@ do
 			########################################
 			#  delete or move old backup		   #
 			########################################		
-			echo "START TASK: $step os_delete_move_file"
+			echo "START   TASK: $step os_delete_move_file"
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete/Move $srcappname old backups"
 			echo $now >>$logfilepath$logfilename
 			#
@@ -157,13 +157,13 @@ do
             then
 				error_notification_exit $rcode "Moving/Deleting old backup file  FAILED!!" $trgappname $step $LINENO
 			fi
-			echo "END   TASK: $step os_delete_move_file"
+			echo "END     TASK: $step os_delete_move_file"
 		;; 
 		"200")
 			#########################################
 			#  delete old  bckup completed      	#
 			#########################################
-			echo "START TASK: $step os_tar_gz_file"
+			echo "START   TASK: $step os_tar_gz_file"
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $srcappname old backups completed"
 			echo $now >>$logfilepath$logfilename
 			#
@@ -180,16 +180,16 @@ do
 			then
 				error_notification_exit $rcode "$srcappname apps backup FAILED. Abort!!" $trgappname $step $LINENO
 			fi
-			echo "END   TASK: $step os_tar_gz_file"
+			echo "END     TASK: $step os_tar_gz_file"
 		;;
 #		"250")
 			########################################
 			#  check source apps after backups #
 			########################################
 		"300")
-            echo "START TASK: $step end-of $srcappname app backup"
+            echo "START   TASK: $step end-of $srcappname app backup"
             syncpoint $srcappname "0 " "$LINENO"
-            echo "END   TASK: $step end-of $srcappname app backup"
+            echo "END     TASK: $step end-of $srcappname app backup"
 		;;
         *)
             echo "step not found - step: $step around Line ===> "  "$LINENO"
