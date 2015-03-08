@@ -35,14 +35,15 @@ else
 	_lgfile=${logfilepath}${_orasid}sqlexecution"$tm".log
 	export ORACLE_SID=${orasid}
 	export ORACLE_HOME=${orahome}
-	sqlplus -s /nolog > ${_lgfile} <<EOFsql 
-	if [[ -z "${_dbstring// }" && ! -z "${_orasid //}" ]]
-	then
-		connect ${_user}/$5
-	else
-		connect ${_user}/$5@${_dbstring}
-	fi
-	START ${_sqlfile} ${_spoolfile} ${_sqlparm1} ${_sqlparm2} ${_sqlparm3}
-	EOFsql
+# Avoid using TAB when using EOF
+sqlplus -s /nolog > ${_lgfile} <<EOFsql 
+if [[ -z "${_dbstring// }" && ! -z "${_orasid //}" ]]
+then
+connect ${_user}/$5
+else
+connect ${_user}/$5@${_dbstring}
+fi
+START ${_sqlfile} ${_spoolfile} ${_sqlparm1} ${_sqlparm2} ${_sqlparm3}
+EOFsql
 fi
 }
