@@ -5,7 +5,7 @@ _clondir=$1
 tm=$(date "+%m%d%y%H%M%S")
 unset _logfile
 _logfile=${3:-adautoconfig"$tm".log}
-${_clondir}adautoconfig.sh >${logfilepath}${_logfile} <<EOF
+${_clondir}adautoconfig.sh > ${logfilepath}${_logfile} <<EOF
 ${2}
 EOF
 }
