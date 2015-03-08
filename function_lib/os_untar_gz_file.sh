@@ -15,5 +15,6 @@ else
 	srcfilename=$2
 	unset logfile
 	logfile=${3:-untar"$tm".log}
-	tar -xvzf ${tarfilename} -C ${srcfilename} >> ${logfilepath}${logfile}
+	tar -xvzf ${tarfilename} -C ${srcfilename} > ${logfilepath}${logfile}
+fi
 }
