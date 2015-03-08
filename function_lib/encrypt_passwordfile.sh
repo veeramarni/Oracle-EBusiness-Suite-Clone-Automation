@@ -5,7 +5,7 @@ _passfile=$1
 tm=$(date "+%m%d%y%H%M%S")
 _tempfile=tempfile$tm
 >${_tempfile}
-cat ${_passfile} | awk -F"=" '{print $1,$2}' | while read arg arg2
+cat ${_passfile} | awk -F"=" '{print $1,$2"="$3}' | while read arg arg2
 do 
 echo "Read first user as $arg2"
 lnt=`echo ${#arg2}` 
