@@ -38,7 +38,7 @@ else
 	unset _at
 	if [[ -z "${_dbstring// }" ]]
 	then
-		if [[ -z "${_orasid //}" ]]
+		if [[ -z "${_orasid// }" ]]
 		then	
 			echo "Need to define ORASID or DBSTRING, but both cannot be empty"
 		else
