@@ -1,6 +1,6 @@
 os_untar_gz_file()
 {
-tm=$(date "+%m/%d/%y %H:%M:%S")
+tm=$(date "+%m%d%y%H%M%S")
 unset ct
 ct=$#
 if [ $ct -lt 2 ]
