@@ -35,7 +35,7 @@ else
 	_lgfile=${logfilepath}${_orasid}sqlexecution"$tm".log
 	export ORACLE_SID=${orasid}
 	export ORACLE_HOME=${orahome}
-	sqlplus -s /nolog << EOFsql >> ${_lgfile}
+	sqlplus -s /nolog > ${_lgfile} << EOFsql 
 	if [[ -z "${_dbstring// }" && ! -z "${_orasid //}" ]]
 	then
 		connect ${_user}/$5
