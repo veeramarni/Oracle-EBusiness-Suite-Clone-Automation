@@ -90,8 +90,8 @@ else
 	echo "Environment is not set or wrong environment to clone."
 	error_notification_exit $rcode "Wrong Enviornment to clone $trgappname !!" $trgappname 0 $LINENO
 fi
-trgappspwd=$( get_decrypted_password trgappspwd )
-srcappspwd=$( get_decrypted_password srcappspwd )
+trgappspwd=$( get_decrypted_password $trgappspwd )
+srcappspwd=$( get_decrypted_password $srcappspwd )
 echo "password for trg $trgappspwd"
 echo "password for src $srcappspwd"
 ############################################################
