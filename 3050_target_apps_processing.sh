@@ -80,7 +80,7 @@ then
 	echo " ====> Abort!!!. Invalid apps name for overlay"
         usage $0 :1000_overlay_staging  "[APPS NAME]"
         ########################################################################
-        #   send notification                                                  #
+        #   send notification  and exit                                        #
         ########################################################################
         send_notification "$trgappname"_Overlay_abend "Invalid apps name for replication" ${TOADDR} ${RTNADDR} ${CCADDR}
         exit 3
@@ -94,7 +94,7 @@ os_user_check ${appsosuser}
 	rcode=$?
 	if [ "$rcode" -gt 0 ]
 	then
-		error_notification_exit $rcode "Wrong os user, user should be ${appsosuser}!!" $trgappname 0
+		error_notification_exit $rcode "Wrong os user, user should be ${appsosuser}!!" $trgappname 0 $LINENO
 	fi
 #
 # Validate Directory
@@ -113,8 +113,9 @@ then
 	echo "Environment is correct!"
 else 
 	echo "Environment is not set or wrong environment to clone."
-	error_notification_exit $rcode "Wrong Enviornment to clone $trgappname !!" $trgappname 0
+	error_notification_exit $rcode "Wrong Enviornment to clone $trgappname !!" $trgappname 0 $LINENO
 fi
+############################################################
 restart=false
 while read val1 val2
 do
@@ -150,11 +151,11 @@ for step in $(seq "$stepnum" 50 250)
 do
         case $step in
         "50")
-			echo "START TASK: $step send_notification"
 			#####################################################################################
 			#  send notification that APPS overlay started                                      #
-			#  Usage: send_notification SUBJECT MSG CODE [1..3]                                 #
+			#  													                                #
 			#####################################################################################
+			echo "START TASK: $step send_notification"
 			send_notification "$srcappname"_backup_started  "$srcappname backup started" ${TOADDR} ${RTNADDR} ${CCADDR}
 			#
 			########################################
@@ -180,10 +181,10 @@ do
 			echo "END   TASK: $step apps status check"
 		;;
 		"150")
-			echo "START TASK: $step os_untar_gz_file"
 			########################################
 			#  restore apps from  backup		   #
 			########################################
+			echo "START TASK: $step os_untar_gz_file"
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $srcappname old backups"
 			echo $now >>$logfilepath$logfilename
 			#
@@ -192,13 +193,13 @@ do
 			    echo "Moving previous backup file ${appbkupdir}${srcappname}.tar.gz ${appbkupdir}${srcappname}.tar.gz.$appender"
 				os_untar_gz_file ${appbkupdir}${srcappname}.tar.gz ${apptargethomepath}
 			else 
-			    error_notification_exit $rcode "Apps Backup not found." $trgappname $step
+			    error_notification_exit $rcode "Apps Backup not found." $trgappname $step $LINENO
 			fi
 			#
 	        rcode=$?
             if [ "$rcode" -gt 0 ]
             then
-				error_notification_exit $rcode "Restore apps files FAILED!!" $trgappname $step
+				error_notification_exit $rcode "Restore apps files FAILED!!" $trgappname $step $LINENO
 			fi
 			echo "END   TASK: $step os_untar_gz_file"
 		;; 
@@ -215,7 +216,7 @@ do
 			rcode=$?
 			if [ $? -ne 0 ] # if RMAN connection fails
 			then
-				error_notification_exit $rcode "Apps clone for $trgappname FAILED!!" $trgappname $step
+				error_notification_exit $rcode "Apps clone for $trgappname FAILED!!" $trgappname $step $LINENO
 			fi
 			echo "END   TASK: $step os_tar_gz_file"
 		;;
