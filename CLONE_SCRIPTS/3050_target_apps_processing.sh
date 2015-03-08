@@ -140,10 +140,6 @@ do
 			echo $now >>$logfilepath$logfilename
 			#
 			echo "END     TASK: $step send_notification"
-			trgappspwd=get_decrypted_password $srcappname.pwd trgappspwd
-			srcappspwd=get_decrypted_password $srcappname.pwd srcappspwd
-			echo "Password for $trgappspwd"
-			echo "Password for $srcappspwd"
 		;;
 		"100")
 			########################################
