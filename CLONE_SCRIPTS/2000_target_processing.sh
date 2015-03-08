@@ -7,43 +7,9 @@
 #                                                                                                  #
 ####################################################################################################
 #
-###########################################################################
-# Modify settings below to suit your needs
-###########################################################################
-asmsid="+ASM"
-asmhomepath="/u01/grid/product/11.2.0/grid/"
-dbosuser="oracle"
-bkupbasepath="/orabackup/rmanbackups/"
-basepath="/ovbackup/EBS_SCRIPTS/CLONE_SCRIPTS/"
-context_file=${CONTEXT_FILE}
-appspwd="Marsha1l"
-trgdbname=$1
-trgdbname=${trgdbname// }
-### EMAIL
-TOADDR="marni.srikanth@gmail.com"
-CCADDR=" marni.srikanth@gmail.com,stackflow1@gmail.com"
-RTNADDR="noreply@krispycorp.com"
+# Import properties file
 #
-# To convert dbname to UPPER case
-#trgdbname=`echo "$trgdbname" | tr [a-z] [A-Z]`
-# 
-case $trgdbname in
-	"CONV9EBS")
-		logfilename="$trgdbname"_Overlay_$(date +%a)"_$(date +%F).log"
-		srcdbname="PRODEBS"
-		instname="CONV9EBS"
-		dbhomepath="/u01/oracle/CONV9EBS/db/tech_st/11.2.0.4/"
-		bkupdir=$bkupbasepath"PRODEBS"
-		;;
-	*)
-		echo ""
-		echo ""
-		echo " ====> Abort!!!. Invalid staging database name"
-		echo ""
-		exit 4
-		;;
-esac
-
+. clone_environment.properties
 #################################################
 # Default Configuration							#
 #################################################
@@ -216,7 +182,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Check $trgdbname status on node1"       
 			echo $now >>${logfilepath}${logfilename}
 			#
-			check_database_status1 $instname $dbhomepath
+			check_database_status1 $trginstname $dbtargethomepath
 			#
 			rcode=$?
 			if [ "$rcode" -gt 0 ]
@@ -264,7 +230,7 @@ do
 			#   update log file:                   #
 			#       Delete archive logs            #       
 			########################################
-			delete_rman_archivelogs_backups_all $instname $dbhomepath
+			delete_rman_archivelogs_backups_all $trginstname $dbtargethomepath
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -282,7 +248,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Stop $trgdbname database on all nodes"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			stop_database_sqlplus $instname $dbhomepath $trgdbname
+			stop_database_sqlplus $trginstname $dbtargethomepath $trgdbname
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
@@ -299,7 +265,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> START $trgdbname database in MOUNT mode"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			start_mount_database_sqlplus $instname $dbhomepath $trgdbname
+			start_mount_database_sqlplus $trginstname $dbtargethomepath $trgdbname
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -317,7 +283,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Drop database in MOUNT mode"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			drop_database $instname $dbhomepath $trgdbname
+			drop_database $trginstname $dbtargethomepath $trgdbname
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -335,7 +301,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start target Database $trgdbname NOMOUNT"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			start_nomount_database_sqlplus $instname $dbhomepath $trgdbname
+			start_nomount_database_sqlplus $trginstname $dbtargethomepath $trgdbname
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -353,7 +319,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Change DB parameters for $trgdbname database"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			custom_sql_run $instname $dbhomepath ${sqlbasepath}create_spfile.sql ${logfilepath}${instname}_create_spfile.log
+			custom_sql_run $trginstname $dbtargethomepath ${sqlbasepath}create_spfile.sql ${logfilepath}${trginstname}_create_spfile.log
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
@@ -369,7 +335,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Stop $trgdbname database on all nodes"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			stop_database_sqlplus $instname $dbhomepath $trgdbname
+			stop_database_sqlplus $trginstname $dbtargethomepath $trgdbname
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
@@ -386,7 +352,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start target Database $trgdbname NOMOUNT"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			start_nomount_database_sqlplus $instname $dbhomepath $trgdbname
+			start_nomount_database_sqlplus $trginstname $dbtargethomepath $trgdbname
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -404,7 +370,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Change DB parameters for $trgdbname database"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			param_db_file_name_convert $instname $dbhomepath +DATA/${srcdbname} +DATA/${trgdbname}
+			param_db_file_name_convert $trginstname $dbtargethomepath +DATA/${srcdbname} +DATA/${trgdbname}
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
@@ -421,7 +387,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Stop $trgdbname database on all nodes"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			stop_database_sqlplus $instname $dbhomepath $trgdbname
+			stop_database_sqlplus $trginstname $dbtargethomepath $trgdbname
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
@@ -505,7 +471,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start target Database $trgdbname NOMOUNT"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			start_nomount_database_sqlplus $instname $dbhomepath $trgdbname
+			start_nomount_database_sqlplus $trginstname $dbtargethomepath $trgdbname
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -523,7 +489,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start $trgdbname RMAN replication"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			start_target_rman_replication_from_backups $instname $dbhomepath $trgdbname $srcdbname
+			start_target_rman_replication_from_backups $trginstname $dbtargethomepath $trgdbname $srcdbname
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -541,7 +507,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> List database $trgdbname recover files"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			list_database_recover_files $instname $dbhomepath
+			list_database_recover_files $trginstname $dbtargethomepath
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -559,7 +525,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Shutdown database $trgdbname on node1/sqlplus"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			stop_database_sqlplus $instname $dbhomepath
+			stop_database_sqlplus $trginstname $dbtargethomepath
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -577,7 +543,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start database $trgdbname in mount mode"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			start_mount_database_sqlplus $instname $dbhomepath
+			start_mount_database_sqlplus $trginstname $dbtargethomepath
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -595,7 +561,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Alter database $trgdbname archivelog"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			alter_database_archivelog_enable $instname $dbhomepath
+			alter_database_archivelog_enable $trginstname $dbtargethomepath
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -613,7 +579,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Alter $trgdbname database open using sqlplus"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			alter_database_open_sqlplus $instname $dbhomepath
+			alter_database_open_sqlplus $trginstname $dbtargethomepath
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -652,7 +618,7 @@ do
 			echo $now >>${logfilepath}${logfilename}
 			#
 			echo "      START TASK: apps_fnd_clean"
-			apps_fnd_clean $instname $dbhomepath
+			apps_fnd_clean $trginstname $dbtargethomepath
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -670,7 +636,7 @@ do
 			echo $now >>${logfilepath}${logfilename}
 			#
 			echo "      START TASK: custom_sql_run user_pwd_reset"
-			custom_sql_run $instname $dbhomepath ${custsqlbasepath}user_pwd_reset.sql ${logfilepath}${instname}_user_pwd_reset.log
+			custom_sql_run $trginstname $dbtargethomepath ${custsqlbasepath}user_pwd_reset.sql ${logfilepath}${trginstname}_user_pwd_reset.log
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -688,7 +654,7 @@ do
 			echo $now >>${logfilepath}${logfilename}
 			#
 			echo "      START TASK: db_adconfig"
-			db_adconfig $instname $dbhomepath $context_file $appspwd
+			db_adconfig $trginstname $dbtargethomepath $context_file $appspwd
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
