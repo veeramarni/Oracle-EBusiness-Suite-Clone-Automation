@@ -65,7 +65,6 @@ os_user_check ${appsosuser}
 # Validate Directory
 #
 os_verify_or_make_directory ${logfilepath}
-os_verify_or_make_directory ${appbkupdir}
 os_verify_or_make_directory ${trgbasepath}
 os_verify_or_make_directory ${trgbasepath}${srcappname}
 os_verify_or_make_file ${abendfile} 0
@@ -153,10 +152,10 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $srcappname old backups"
 			echo $now >>$logfilepath$logfilename
 			#
-			if is_os_file_exist ${appbkupdir}${srcappname}.tar.gz 
+			if is_os_file_exist ${appsourcebkupdir}${srcappname}.tar.gz 
 			then
-			    echo "Moving previous backup file ${appbkupdir}${srcappname}.tar.gz ${appbkupdir}${srcappname}.tar.gz.$appender"
-				os_untar_gz_file ${appbkupdir}${srcappname}.tar.gz ${apptargethomepath}
+			    echo "Moving previous backup file ${appsourcebkupdir}${srcappname}.tar.gz ${appsourcebkupdir}${srcappname}.tar.gz.$appender"
+				os_untar_gz_file ${appsourcebkupdir}${srcappname}.tar.gz ${apptargethomepath}
 			else 
 			    error_notification_exit $rcode "Apps Backup not found." $trgappname $step $LINENO
 			fi
@@ -176,7 +175,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start $srcappname new backups"
 			echo $now >>$logfilepath$logfilename
 			#
-			echo taring ${apphomepath} to ${appbkupdir}${srcappname}.tar.gz
+			echo taring ${appsourcehomepath} to ${appsourcebkupdir}${srcappname}.tar.gz
 			apps_run_adcfgclone 
 			rcode=$?
 			if [ $? -ne 0 ] # if RMAN connection fails

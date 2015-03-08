@@ -164,7 +164,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> check $srcdbname database backup directory"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			dir_empty $bkupdir
+			dir_empty $dbsourcebkupdir
 			#
 			rcode=$?
 			if [ "$rcode" -gt 0 ]
