@@ -42,6 +42,7 @@ logfilename="$trgdbname"_Overlay_Apps_PART2$(date +%a)"_$(date +%F).log"
 . ${functionbasepath}/apps_run_adcfgclone.sh
 . ${functionbasepath}/apps_run_autoconfig.sh
 . ${functionbasepath}/error_notification_exit.sh
+. ${functionbasepath}/custom_sql_run.sh
 . ${custfunctionbasepath}/apps*$trgappname.sh
 #
 ########################################
