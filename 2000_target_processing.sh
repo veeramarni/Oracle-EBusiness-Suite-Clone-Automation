@@ -21,7 +21,7 @@ custsqlbasepath="${custfunctionbasepath}sql/"
 sqlbasepath="${functionbasepath}sql/"
 rmanbasepath="${functionbasepath}rman/"
 abendfile="$trgbasepath""$trgdbname"/"$trgdbname"_2000_abend_step
-logfilename="$trgdbname"_Overlay_$(date +%a)"_$(date +%F).log"
+logfilename="$trgdbname"_DB_Overlay_$(date +%a)"_$(date +%F).log"
 
 ####################################################################################################
 #																								   #
