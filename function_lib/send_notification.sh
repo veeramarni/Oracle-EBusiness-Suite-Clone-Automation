@@ -14,12 +14,6 @@ else
 	toaddr=$3
 	rtnaddr=$4
 	ccaddr=$5
-	echo "sub: " $subj
-	echo "msg: " $msg
-	echo "dislist: " $dstlist
-	echo "toaddr: " $toaddr
-	echo "ccaddr: " $ccaddr
-	echo "rtnaddr: " $rtnaddr
 	if [ $ct == 3 ]
 	then
 		echo "email toaddress"
