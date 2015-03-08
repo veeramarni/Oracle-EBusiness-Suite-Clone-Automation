@@ -42,7 +42,7 @@ logfilename="$trgdbname"_Overlay_Apps_PART2$(date +%a)"_$(date +%F).log"
 . ${functionbasepath}/apps_run_adcfgclone.sh
 . ${functionbasepath}/apps_run_autoconfig.sh
 . ${functionbasepath}/error_notification_exit.sh
-. ${custfunctionbasepath}/db*$trgappname.sh
+. ${custfunctionbasepath}/apps*$trgappname.sh
 #
 ########################################
 #       VALIDATIONS                    #
@@ -250,7 +250,7 @@ do
 			rcode=$?
 			if [ "$rcode" -ne 0 ]
 			then
-				error_notification_exit $rcode "Set Apps enviornment FAILED!!" $trgappname $step $LINENO
+				error_notification_exit $rcode "Change FND Users passwords!!" $trgappname $step $LINENO
 			fi
 			echo "END     TASK: $step Change FND Users passwords"
 		;;
@@ -307,7 +307,7 @@ do
 		;;
 		"550")
 			########################################
-			#  Start Apps				 		   #
+			#  Custom Post Clone steps   		   #
 			########################################
 			echo "START   TASK: $step Start Apps process"
 						now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start Apps Process."
