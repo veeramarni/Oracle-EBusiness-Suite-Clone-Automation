@@ -28,6 +28,7 @@ abendfile="$trgbasepath""$trgappname"/"$trgappname"_3050_abend_step
 . ${functionbasepath}/syncpoint.sh   
 . ${functionbasepath}/send_notification.sh
 . ${functionbasepath}/os_tar_gz_file.sh
+. ${functionbasepath}/os_untar_gz_file.sh
 . ${functionbasepath}/os_delete_move_file.sh
 . ${functionbasepath}/os_delete_move_dir.sh
 . ${functionbasepath}/os_user_check.sh
@@ -163,7 +164,7 @@ do
 			if is_os_dir_exist ${apptargethomepath}/apps_st && is_os_dir_exist ${apptargethomepath}/tech_st
 			then
 			    echo "Deleting apps_st and tech_st"
-				os_delete_move_dir D "apps_st tech_st"
+				os_delete_move_dir D "${apptargethomepath}/apps_st ${apptargethomepath}/tech_st"
 			else 
 			    error_notification_exit $rcode "Apps Backup not found." $trgappname $step $LINENO
 			fi
