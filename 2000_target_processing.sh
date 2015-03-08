@@ -308,7 +308,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				error_notification_exit $rcode "Start database "$trgdbname" NOMOUNT FAILED!!" $trgdbname $step $LINENO
+				error_notification_exit $rcode "Start database $trgdbname NOMOUNT FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: " $step "start_nomount_database_sqlplus"
 		;;
@@ -359,7 +359,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				error_notification_exit $rcode "Start database "$trgdbname" NOMOUNT FAILED!!" $trgdbname $step $LINENO
+				error_notification_exit $rcode "Start database $trgdbname NOMOUNT FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: $step start_nomount_database_sqlplus"
 		;;
@@ -442,7 +442,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-#				error_notification_exit $rcode "Delete OS old database "$trgdbname" trace files FAILED!!" $trgdbname $step $LINENO
+#				error_notification_exit $rcode "Delete OS old database $trgdbname trace files FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: $step delete_os_trace_files"
 		;;
@@ -460,7 +460,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-#				error_notification_exit $rcode "Delete OS old database adump "$trgdbname" FAILED!!" $trgdbname $step $LINENO
+#				error_notification_exit $rcode "Delete OS old database adump $trgdbname FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: $step delete_os_adump_files"
 		;;
@@ -478,7 +478,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				error_notification_exit $rcode "Start database "$trgdbname" NOMOUNT FAILED!!" $trgdbname $step $LINENO
+				error_notification_exit $rcode "Start database $trgdbname NOMOUNT FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: $step start_nomount_database_sqlplus"
 		;;
@@ -496,7 +496,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				error_notification_exit $rcode "Start database "$trgdbname" replication FAILED!!" $trgdbname $step $LINENO
+				error_notification_exit $rcode "Start database $trgdbname replication FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: " $step "start_target_rman_replication_from_backups"
 		;;
@@ -514,7 +514,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				error_notification_exit $rcode "List recover files for "$trgdbname" FAILED!!" $trgdbname $step $LINENO
+				error_notification_exit $rcode "List recover files for $trgdbname FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: $step list_database_recover_files"
 		;;
@@ -532,7 +532,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				error_notification_exit $rcode "Shutdown database "$trgdbname" node1 using SQLPLUS FAILED!!" $trgdbname $step $LINENO
+				error_notification_exit $rcode "Shutdown database $trgdbname node1 using SQLPLUS FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: $step shutdown_database_sqlplus"
 		;;
@@ -550,7 +550,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				error_notification_exit $rcode "Start database "$trgdbname" in mount mode FAILED!!" $trgdbname $step $LINENO
+				error_notification_exit $rcode "Start database $trgdbname in mount mode FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: $step start_mount_database_sqlplus"
 		;;
@@ -568,7 +568,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				error_notification_exit $rcode "Alter database "$trgdbname" archivelog FAILED!!" $trgdbname $step $LINENO
+				error_notification_exit $rcode "Alter database $trgdbname archivelog FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: $step alter_database_archivelog_enable"
 		;;
@@ -586,7 +586,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				error_notification_exit $rcode "Alter database "$trgdbname" OPEN  FAILED!!" $trgdbname $step $LINENO
+				error_notification_exit $rcode "Alter database $trgdbname OPEN  FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: $step alter_database_open_sqlplus"
 		;;
@@ -625,7 +625,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				error_notification_exit $rcode "Post scripts (FND_CLEAN) on "$trgdbname" are  FAILED!!" $trgdbname $step $LINENO
+				error_notification_exit $rcode "Post scripts (FND_CLEAN) on $trgdbname are  FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: $step REFRESH_post_scripts"
 		;;
@@ -643,7 +643,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				error_notification_exit $rcode "Post scripts sql on "$trgdbname" are  FAILED!!" $trgdbname $step $LINENO
+				error_notification_exit $rcode "Post scripts sql on $trgdbname are  FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: $step REFRESH_post_scripts"
 		;;
@@ -661,7 +661,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				error_notification_exit $rcode "Autoconfig run for "$trgdbname" is  FAILED!!" $trgdbname $step $LINENO
+				error_notification_exit $rcode "Autoconfig run for $trgdbname is  FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: $step REFRESH_post_scripts"
 			#
