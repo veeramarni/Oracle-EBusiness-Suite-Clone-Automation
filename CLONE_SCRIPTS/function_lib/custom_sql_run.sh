@@ -1,12 +1,48 @@
 custom_sql_run()
 {
-orasid=$1
-orahome=$2
-sqlfile=$3
-lgfile=$4
-export ORACLE_SID=${orasid}
-export ORACLE_HOME=${orahome}
-"$ORACLE_HOME"/bin/sqlplus /" as sysdba"  \
-			@${sqlfile} \
-			> ${lgfile}
+unset ct
+ct=$#
+if [ $ct -lt 4 ]
+then
+	## the calling script should set the following variables prior to calling this function:
+	## _sqlfile should be set to the .sql file to be executed in SQL Plus (fully qualified path).
+	## Takes upto 3 sql params
+        echo "Please provide atleast 4 arguments as shown below"
+	usage $0 :SQL Execution Requires  "[ORASID] [ORAHOME] [DBSTRING] [USERNAME] [PASSWORD] [SQLFILE] ...(optional)..[SQL PARAM1] [SQL PARAM2] [SQL PARAM3]"
+		echo "If DBSTRING or ORASID are not known then set as empty string but make sure one of them is set"
+        return
+else
+	unset _orasid
+	_orasid=$1
+	unset _orahome
+	_orahome=$2
+	unset _dbstring
+	_dbstring=$3
+	unset _user
+	_user=$4
+	unset _sqlfile
+	_sqlfile=$6
+	unset _sqlparm1
+	_sqlparm1=$7
+	unset _sqlparm2
+	_sqlparm2=$8
+	unset _sqlparm3
+	_sqlparm3=$9
+	unset _spoolfile
+	_spoolfile=${logfilepath}${_orasid}sqlspool"$tm".log
+	tm=$(date "+%m%d%y%H%M%S")
+	unset _lgfile
+	_lgfile=${logfilepath}${_orasid}sqlexecution"$tm".log
+	export ORACLE_SID=${orasid}
+	export ORACLE_HOME=${orahome}
+	sqlplus -s /nolog << EOFsql >> ${_lgfile}
+	if [[ -z "${_dbstring// }" && ! -z "${_orasid //}" ]]
+	then
+		connect ${_user}/$5
+	else
+		connect ${_user}/$5@${_dbstring}
+	fi
+	START ${_sqlfile} ${_spoolfile} ${_sqlparm1} ${_sqlparm2} ${_sqlparm3}
+	EOFsql
+fi
 }

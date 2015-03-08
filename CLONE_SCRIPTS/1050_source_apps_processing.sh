@@ -34,7 +34,7 @@ logfilename="$trgdbname"_Overlay_$(date +%a)"_$(date +%F).log"
 . ${functionbasepath}/os_verify_or_make_directory.sh
 . ${functionbasepath}/os_verify_or_make_file.sh
 . ${functionbasepath}/is_os_file_exist.sh
-. ${custfunctionbasepath}/error_notification_exit.sh
+. ${functionbasepath}/error_notification_exit.sh
 #
 ########################################
 #       VALIDATIONS                    #
@@ -43,7 +43,7 @@ logfilename="$trgdbname"_Overlay_$(date +%a)"_$(date +%F).log"
 if [ $# -lt 2 ]
 then
 	echo " ====> Abort!!!. Invalid apps arguments for overlay"
-        usage $0 :1000_overlay_staging  "[APPS NAME] [TIER NO]"
+        usage $0 :1000_overlay_staging  "[APPS NAME] [TIER NO 1..3]"
         ########################################################################
         #   send notification  and exit                                        #
         ########################################################################
