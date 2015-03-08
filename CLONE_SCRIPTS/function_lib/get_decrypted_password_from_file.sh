@@ -8,5 +8,5 @@ cat ${_passfile} |grep -wF ${_user} | awk -F"=" '{print $2"="$3}' | while read a
 do
 lpp=`echo $arg | openssl aes-256-cbc -d -a -salt -k aes-256-cbc`
 done
-return $lpp
+echo $lpp
 }
