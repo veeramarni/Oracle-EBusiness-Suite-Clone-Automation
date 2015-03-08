@@ -30,8 +30,8 @@ case $trgappname in
 		;;
     "CONV9EBS")
 	    logfilename="$trgappname"_Overlay_$(date +%a)"_$(date +%F).log"
-		srcappname="CONV9EBS"
-		apphomepath="/u01/applmgr/CONV9EBS/apps/"
+		srcappname="PRODEBS"
+		apphomepath="/ovprd-ebsapp1/applmgr/PRODEBS/apps/"
 		apptargethomepath="/u01/applmgr/CONV9EBS/apps/"
 		appbkupdir=$appbkupbasepath"CONV9EBS/"
 		;;
