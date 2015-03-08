@@ -39,16 +39,19 @@ abendfile="$trgbasepath""$trgappname"/"$trgappname"_1050_abend_step
 #       VALIDATIONS                    #
 ########################################
 #
-if [ $# -lt 1 ]
+if [ $# -lt 2 ]
 then
-	echo " ====> Abort!!!. Invalid apps name for overlay"
-        usage $0 :1000_overlay_staging  "[APPS NAME]"
+	echo " ====> Abort!!!. Invalid apps arguments for overlay"
+        usage $0 :1000_overlay_staging  "[APPS NAME] [TIER NO]"
         ########################################################################
         #   send notification  and exit                                        #
         ########################################################################
         send_notification "$trgappname"_Overlay_abend "Invalid apps name for replication" ${TOADDR} ${RTNADDR} ${CCADDR}
         exit 3
 fi
+#
+unset tier
+tier=$2
 #
 
 #
@@ -115,11 +118,10 @@ for step in $(seq "$stepnum" 50 300)
 do
         case $step in
         "50")
+			###################################################
+			#  send notification that APPS overlay started    #
+			###################################################		
 			echo "START TASK: $step send_notification"
-			#####################################################################################
-			#  send notification that APPS overlay started                                      #
-			# 													                                #
-			#####################################################################################
 			send_notification "$srcappname"_backup_started  "$srcappname backup started" ${TOADDR} ${RTNADDR} ${CCADDR}
 			#
 			########################################
@@ -135,18 +137,18 @@ do
 			#  check source apps status            #
 			########################################
 		"150")
-			echo "START TASK: $step os_delete_move_file"
 			########################################
 			#  delete or move old backup		   #
-			########################################
-			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $srcappname old backups"
+			########################################		
+			echo "START TASK: $step os_delete_move_file"
+			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete/Move $srcappname old backups"
 			echo $now >>$logfilepath$logfilename
 			#
-			if is_os_file_exist ${appsourcebkupdir}${srcappname}.tar.gz 
+			if is_os_file_exist ${appsourcebkupdir}${srcappname}${tier}.tar.gz 
 			then
 			    appender=$(date "+%m%d%y%H%M%S")
-			    echo "Moving previous backup file ${appsourcebkupdir}${srcappname}.tar.gz ${appsourcebkupdir}${srcappname}.tar.gz.$appender"
-				os_delete_move_file M ${appsourcebkupdir}${srcappname}.tar.gz ${appsourcebkupdir}${srcappname}.tar.gz.$appender
+			    echo "Moving previous backup file ${appsourcebkupdir}${srcappname}${tier}.tar.gz ${appsourcebkupdir}${srcappname}${tier}.tar.gz.$appender"
+				os_delete_move_file M ${appsourcebkupdir}${srcappname}${tier}.tar.gz ${appsourcebkupdir}${srcappname}${tier}.tar.gz.$appender
 			fi
 			#
 	        rcode=$?
@@ -157,10 +159,10 @@ do
 			echo "END   TASK: $step os_delete_move_file"
 		;; 
 		"200")
+			#########################################
+			#  delete old  bckup completed      	#
+			#########################################
 			echo "START TASK: $step os_tar_gz_file"
-			########################################
-			#  delete old  bckup completed      #
-			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $srcappname old backups completed"
 			echo $now >>$logfilepath$logfilename
 			#
@@ -170,8 +172,8 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start $srcappname new backups"
 			echo $now >>$logfilepath$logfilename
 			#
-			echo taring ${appsourcehomepath} to ${appsourcebkupdir}${srcappname}.tar.gz
-			os_tar_gz_file ${appsourcebkupdir}${srcappname}.tar.gz "apps_st tech_st" ${appsourcehomepath} ${srcappname}_tarbackup.log
+			echo taring ${appsourcehomepath} to ${appsourcebkupdir}${srcappname}${tier}.tar.gz
+			os_tar_gz_file ${appsourcebkupdir}${srcappname}${tier}.tar.gz "apps_st tech_st" ${appsourcehomepath} ${srcappname}${tier}_tarbackup.log
 			rcode=$?
 			if [ $? -ne 0 ] 
 			then
