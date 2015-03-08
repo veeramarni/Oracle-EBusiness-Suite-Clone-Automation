@@ -4,45 +4,10 @@
 #                S T A G I N G    O V E R L A Y - target Apps Tasks                            		#
 #                           3050_target_apps_processing.sh											#
 #####################################################################################################
-###########################################################################
-# Modify settings below to suit your needs
-###########################################################################
-appsosuser="applmgr"
-appbkupbasepath="/ovbackup/APPS_BACKUP/"
-basepath="/ovbackup/EBS_SCRIPTS/CLONE_SCRIPTS/"
-
-### EMAIL
-TOADDR="marni.srikanth@gmail.com"
-CCADDR=" marni.srikanth@gmail.com,stackflow1@gmail.com"
-RTNADDR="noreply@krispycorp.com"
 #
-trgappname=$1
-trgapname=${trgappname// }
-trgappname=`echo "$trgappname" | tr [a-z] [A-Z]`
- 
-case $trgappname in
-	"PRODEBS")
-		logfilename="$trgappname"_Overlay_$(date +%a)"_$(date +%F).log"
-		srcappname="PRODEBS"
-		apphomepath="/ovprd-ebsapp1/applmgr/PRODEBS/apps/"
-		appbkupdir=$appbkupbasepath"PRODEBS/"
-		apptargethomepath="/u01/applmgr/CONV9EBS/apps/"
-		;;
-    "CONV9EBS")
-	    logfilename="$trgappname"_Overlay_$(date +%a)"_$(date +%F).log"
-		srcappname="PRODEBS"
-		apphomepath="/ovprd-ebsapp1/applmgr/PRODEBS/apps/"
-		apptargethomepath="/u01/applmgr/CONV9EBS/apps/"
-		appbkupdir=$appbkupbasepath"CONV9EBS/"
-		;;
-        *)	
-                echo ""
-                echo ""
-                echo " ====> Abort!!!. Invalid staging app name"
-                echo ""
-                exit 4
-                ;;
-esac
+# Import properties file
+#
+. clone_environment.properties
 #################################################
 # Default Configuration							#
 #################################################
