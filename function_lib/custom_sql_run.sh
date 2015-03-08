@@ -36,11 +36,16 @@ else
 	export ORACLE_SID=${orasid}
 	export ORACLE_HOME=${orahome}
 	unset _at
-	if [[ -z "${_dbstring// }" && ! -z "${_orasid //}" ]]
+	if [[ -z "${_dbstring// }" ]]
 	then
-	_at=""
+		if [[ -z "${_orasid //}" ]]
+		then	
+			echo "Need to define ORASID or DBSTRING, but both cannot be empty"
+		else
+			_at=""
+		fi
 	else
-	_at="@"
+		_at="@"
 	fi
 # Avoid using TAB when using EOF
 ${ORACLE_HOME}/bin/sqlplus -s /nolog > ${_lgfile} <<EOFsql
