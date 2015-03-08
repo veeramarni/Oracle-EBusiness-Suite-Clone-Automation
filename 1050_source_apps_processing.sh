@@ -64,7 +64,7 @@ os_user_check ${appsosuser}
 # Validate Directory
 #
 os_verify_or_make_directory ${logfilepath}
-os_verify_or_make_directory ${appbkupdir}
+os_verify_or_make_directory ${appsourcebkupdir}
 os_verify_or_make_directory ${trgbasepath}
 os_verify_or_make_directory ${trgbasepath}${srcappname}
 os_verify_or_make_file ${abendfile} 0
@@ -142,11 +142,11 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $srcappname old backups"
 			echo $now >>$logfilepath$logfilename
 			#
-			if is_os_file_exist ${appbkupdir}${srcappname}.tar.gz 
+			if is_os_file_exist ${appsourcebkupdir}${srcappname}.tar.gz 
 			then
 			    appender=$(date "+%m%d%y%H%M%S")
-			    echo "Moving previous backup file ${appbkupdir}${srcappname}.tar.gz ${appbkupdir}${srcappname}.tar.gz.$appender"
-				os_delete_move_file M ${appbkupdir}${srcappname}.tar.gz ${appbkupdir}${srcappname}.tar.gz.$appender
+			    echo "Moving previous backup file ${appsourcebkupdir}${srcappname}.tar.gz ${appsourcebkupdir}${srcappname}.tar.gz.$appender"
+				os_delete_move_file M ${appsourcebkupdir}${srcappname}.tar.gz ${appsourcebkupdir}${srcappname}.tar.gz.$appender
 			fi
 			#
 	        rcode=$?
@@ -170,8 +170,8 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start $srcappname new backups"
 			echo $now >>$logfilepath$logfilename
 			#
-			echo taring ${apphomepath} to ${appbkupdir}${srcappname}.tar.gz
-			os_tar_gz_file ${appbkupdir}${srcappname}.tar.gz "apps_st tech_st" ${apphomepath} ${srcappname}_tarbackup.log
+			echo taring ${appsourcehomepath} to ${appsourcebkupdir}${srcappname}.tar.gz
+			os_tar_gz_file ${appsourcebkupdir}${srcappname}.tar.gz "apps_st tech_st" ${appsourcehomepath} ${srcappname}_tarbackup.log
 			rcode=$?
 			if [ $? -ne 0 ] 
 			then
