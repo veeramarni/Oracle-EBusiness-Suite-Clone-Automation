@@ -6,9 +6,8 @@ appspass=$3
 tm=$(date "+%m%d%y%H%M%S")
 unset _logfile
 _logfile=${4:-adcfgclone"$tm".log}
-perl ${clondir}/adcfgclone.pl appsTier $contxtfile <<EOF 
-${appspass} -
-n 
+perl $ORACLE_HOME/appsutil/bin/adconfig.pl contextfile=${contextfile} log=${logfilepath}${orasid}_adconfig.log << EOF
+${appspass}
 EOF \
-> ${logfilepath}${_logfile}
+> ${logfilepath}${orasid}_db_adconfig.log
 }
