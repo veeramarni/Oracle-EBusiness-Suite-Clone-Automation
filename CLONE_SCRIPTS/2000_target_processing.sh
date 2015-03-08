@@ -158,7 +158,7 @@ for step in $(seq "$stepnum" 50 1650)
 do
         case $step in
         "50")
-			echo "START TASK: " $step "dir_empty"
+			echo "START   TASK: " $step "dir_empty"
 			########################################
 			#  update log file:                    #
 			#  check backup directory              #
@@ -173,10 +173,10 @@ do
 			then
 				error_notification_exit $rcode "Backup folder for ${srcdbname} does not exists or folder is empty." $trgdbname $step $LINENO
 			fi
-			echo "END   TASK: " $step "dir_empty"
+			echo "END     TASK: " $step "dir_empty"
         ;;
         "100")
-			echo "START TASK: " $step "check_database_status1"
+			echo "START   TASK: " $step "check_database_status1"
 			########################################
 			#  update log file:                    #
 			#          check  DB status            #
@@ -191,37 +191,37 @@ do
 			then
 				error_notification_exit $rcode "Check database status for $trgdbname failed." $trgdbname $step $LINENO
 			fi
-			echo "END   TASK: " $step "check_database_status1"
+			echo "END     TASK: " $step "check_database_status1"
         ;;
         "150")
-			echo "START TASK: " $step "start-oem-blackout"
+			echo "START   TASK: " $step "start-oem-blackout"
 			########################################
 			#  update log file:                    #
 			#          OEM database blackout       #
 			########################################
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start $trgdbname OEM Blackout"
 			echo $now >>${logfilepath}${logfilename}
-			echo "END   TASK: " $step "start-oem-blackout"
+			echo "END     TASK: " $step "start-oem-blackout"
                 ;;
                 "200")
-			echo "START TASK: " $step "send-notification_01"
+			echo "START   TASK: " $step "send-notification_01"
 
 			########################################################################
 			#   send notification to start  target database replication            #
 			########################################################################
 			send_notification "$trgdbname"_Overlay_staging "Replication of $trgdbname database started" ${TOADDR} ${RTNADDR} ${CCADDR}
-			echo "END   TASK: " $step "send-notification_01"
+			echo "END     TASK: " $step "send-notification_01"
 		;;
         "250")
-			echo "START TASK: " $step "send-notification_02"
+			echo "START   TASK: " $step "send-notification_02"
  			########################################################################
 			#   send notification to start  target database OEM blackout           #
 			########################################################################
 			send_notification "$trgdbname"_Overlay_staging "please note that $trgdbname is under OEM blackout" ${TOADDR} ${RTNADDR} ${CCADDR}
-			echo "END   TASK: " $step "send-notification_02"
+			echo "END     TASK: " $step "send-notification_02"
 		;;
         "300")
-			echo "START TASK: " $step "delete_rman_archivelogs"
+			echo "START   TASK: " $step "delete_rman_archivelogs"
 			#######################################
 			#   update log:                       #
 			#           delete archive logs       #
@@ -239,10 +239,10 @@ do
 			then
 				error_notification_exit $rcode "Delete RMAN archive logs and backups for $trgdbname failed." $trgdbname $step $LINENO
 			fi
-			echo "END   TASK: " $step "delete_rman_archivelogs_backups_all"
+			echo "END     TASK: " $step "delete_rman_archivelogs_backups_all"
 		;;
         "350")				
-			echo "START TASK: " $step "stop_database_sqlplus"
+			echo "START   TASK: " $step "stop_database_sqlplus"
 			########################################
 			# update log file:                     #
 			# STOP target DATABASE                 #
@@ -256,10 +256,10 @@ do
 			then
 				error_notification_exit $rcode "STOP $trgdb database FAILED!!" $trgdbname $step $LINENO
 			fi
-			echo "END   TASK: " $step "stop_database_sqlplus"
+			echo "END     TASK: " $step "stop_database_sqlplus"
 		;;
         "400")
-			echo "START TASK: " $step "start_mount_database_sqlplus"
+			echo "START   TASK: " $step "start_mount_database_sqlplus"
 			########################################
 			# update log file:                     #
 			# START MOUNT DATABASE on node1        #
@@ -274,10 +274,10 @@ do
 			then
 				error_notification_exit $rcode "START $trgdb database in MOUNT mode FAILED!!" $trgdbname $step $LINENO
 			fi
-			echo "END   TASK: " $step "start_mount_database_sqlplus"
+			echo "END     TASK: " $step "start_mount_database_sqlplus"
 		;;
         "450")
-			echo "START TASK: " $step "drop_database"
+			echo "START   TASK: " $step "drop_database"
 			########################################
 			# update log file:                     #
 			# Drop Database					       #
@@ -292,10 +292,10 @@ do
 			then
 				error_notification_exit $rcode "Drop $trgdbname database in MOUNT mode FAILED!!" $trgdbname $step $LINENO
 			fi
-			echo "END   TASK: " $step "drop_database"
+			echo "END     TASK: " $step "drop_database"
 		;;
         "500")
-			echo "START TASK:  $step start_nomount_database_sqlplus"
+			echo "START   TASK:  $step start_nomount_database_sqlplus"
 			########################################
 			#  update log file:                    #
 			#      start database NOMOUNT          #
@@ -310,10 +310,10 @@ do
 			then
 				error_notification_exit $rcode "Start database $trgdbname NOMOUNT FAILED!!" $trgdbname $step $LINENO
 			fi
-			echo "END   TASK: " $step "start_nomount_database_sqlplus"
+			echo "END     TASK: " $step "start_nomount_database_sqlplus"
 		;;
 		"550")
-			echo "START TASK: " $step "create_spfile"
+			echo "START   TASK: " $step "create_spfile"
 			########################################
 			# update log file:                     #
 			# STOP target DATABASE                 #
@@ -327,10 +327,10 @@ do
 			then
 				error_notification_exit $rcode "Create spfile for $trgdb database FAILED!!" $trgdbname $step $LINENO
 			fi
-			echo "END   TASK: " $step "create_spfile"
+			echo "END     TASK: " $step "create_spfile"
 		;;
 		"600")				
-			echo "START TASK: " $step "stop_database_sqlplus"
+			echo "START   TASK: " $step "stop_database_sqlplus"
 			########################################
 			# update log file:                     #
 			# STOP target DATABASE                 #
@@ -344,10 +344,10 @@ do
 			then
 				error_notification_exit $rcode "STOP $trgdb database FAILED!!" $trgdbname $step $LINENO
 			fi
-			echo "END   TASK: " $step "stop_database_sqlplus"
+			echo "END     TASK: " $step "stop_database_sqlplus"
 		;;	
 		"650")
-			echo "START TASK:  $step start_nomount_database_sqlplus"
+			echo "START   TASK:  $step start_nomount_database_sqlplus"
 			########################################
 			#  update log file:                    #
 			#      start database NOMOUNT          #
@@ -362,10 +362,10 @@ do
 			then
 				error_notification_exit $rcode "Start database $trgdbname NOMOUNT FAILED!!" $trgdbname $step $LINENO
 			fi
-			echo "END   TASK: $step start_nomount_database_sqlplus"
+			echo "END     TASK: $step start_nomount_database_sqlplus"
 		;;
         "700")
-			echo "START TASK: " $step "param_db_file_name_convert"
+			echo "START   TASK: " $step "param_db_file_name_convert"
 			########################################
 			# update log file:                     #
 			# STOP target DATABASE                 #
@@ -379,10 +379,10 @@ do
 			then
 				error_notification_exit $rcode "Change DB parameters for $trgdb database FAILED!!" $trgdbname $step $LINENO
 			fi
-			echo "END   TASK: " $step "param_db_file_name_convert"
+			echo "END     TASK: " $step "param_db_file_name_convert"
 		;;
         "750")				
-			echo "START TASK: " $step "stop_database_sqlplus"
+			echo "START   TASK: " $step "stop_database_sqlplus"
 			########################################
 			# update log file:                     #
 			# STOP target DATABASE                 #
@@ -396,9 +396,9 @@ do
 			then
 				error_notification_exit $rcode "STOP $trgdb database FAILED!!" $trgdbname $step $LINENO
 			fi
-			echo "END   TASK: " $step "stop_database_sqlplus"
+			echo "END     TASK: " $step "stop_database_sqlplus"
 		;;		
-			#echo "START TASK: " $step "delete_database_asm_tempfile"
+			#echo "START   TASK: " $step "delete_database_asm_tempfile"
 			########################################
 			# update log file:                     #
 			# Delete Database ASM TEMP file        #
@@ -427,10 +427,10 @@ do
 			echo $now >>${logfilepath}${logfilename}
 			#
 			#
-			echo "END   TASK: $step xxxxxxxxxxxxxxxxxxxx"
+			echo "END     TASK: " $step "xxxxxxxxxxxxxxxxxxxx"
 		;;
         "850")
-			echo "START TASK: $step delete_os_trace_files"
+			echo "START   TASK: " $step "delete_os_trace_files"
 			########################################
 			#  update log file:                    #
 			#      delete OS old trace files       #
@@ -446,10 +446,10 @@ do
 				echo "Skipping trace file deletion"
 #				error_notification_exit $rcode "Delete OS old database $trgdbname trace files FAILED!!" $trgdbname $step $LINENO
 			fi
-			echo "END   TASK: $step delete_os_trace_files"
+			echo "END     TASK: " $step "delete_os_trace_files"
 		;;
         "900")
-			echo "START TASK: $step delete_os_adump_files"
+			echo "START   TASK: " $step "delete_os_adump_files"
 			########################################
 			#  update log file:                    #
 			#      delete OS old adump files       #
@@ -465,10 +465,10 @@ do
 				echo "Skipping Audit log purging"
 #				error_notification_exit $rcode "Delete OS old database adump $trgdbname FAILED!!" $trgdbname $step $LINENO
 			fi
-			echo "END   TASK: $step delete_os_adump_files"
+			echo "END     TASK: " $step "delete_os_adump_files"
 		;;
         "950")
-			echo "START TASK:  $step start_nomount_database_sqlplus"
+			echo "START   TASK:  " $step "start_nomount_database_sqlplus"
 			########################################
 			#  update log file:                    #
 			#      start database NOMOUNT          #
@@ -483,10 +483,10 @@ do
 			then
 				error_notification_exit $rcode "Start database $trgdbname NOMOUNT FAILED!!" $trgdbname $step $LINENO
 			fi
-			echo "END   TASK: $step start_nomount_database_sqlplus"
+			echo "END     TASK: "$step "start_nomount_database_sqlplus"
 		;;
         "1000")
-			echo "START TASK: " $step "start_target_rman_replication_from_backups"
+			echo "START   TASK: " $step "start_target_rman_replication_from_backups"
 			########################################
 			#  update log file:                    #
 			#  start target database replication   #
@@ -501,10 +501,10 @@ do
 			then
 				error_notification_exit $rcode "Start database $trgdbname replication FAILED!!" $trgdbname $step $LINENO
 			fi
-			echo "END   TASK: " $step "start_target_rman_replication_from_backups"
+			echo "END     TASK: " $step "start_target_rman_replication_from_backups"
 		;;
         "1050")
-			echo "START TASK: $step list_database_recover_files"
+			echo "START   TASK: " $step "list_database_recover_files"
 			########################################
 			#  update log files:                   #
 			#      list recover files              #
@@ -519,10 +519,10 @@ do
 			then
 				error_notification_exit $rcode "List recover files for $trgdbname FAILED!!" $trgdbname $step $LINENO
 			fi
-			echo "END   TASK: $step list_database_recover_files"
+			echo "END     TASK: " $step "list_database_recover_files"
 		;;
         "1100")
-			echo "START TASK: $step shutdown_database_node1"
+			echo "START   TASK: " $step "shutdown_database_node1"
 			########################################
 			#  update log files:                   #
 			#      shutdown database node1/sqlplus #
@@ -537,10 +537,10 @@ do
 			then
 				error_notification_exit $rcode "Shutdown database $trgdbname node1 using SQLPLUS FAILED!!" $trgdbname $step $LINENO
 			fi
-			echo "END   TASK: $step shutdown_database_sqlplus"
+			echo "END     TASK: " $step "shutdown_database_sqlplus"
 		;;
         "1150")
-			echo "START TASK: " $step "start_mount_database_sqlplus"
+			echo "START   TASK: " $step "start_mount_database_sqlplus"
 			########################################
 			#  update log file:                    #
 			#      start database in mount mode    #
@@ -555,10 +555,10 @@ do
 			then
 				error_notification_exit $rcode "Start database $trgdbname in mount mode FAILED!!" $trgdbname $step $LINENO
 			fi
-			echo "END   TASK: $step start_mount_database_sqlplus"
+			echo "END     TASK: " $step "start_mount_database_sqlplus"
 		;;
         "1200")
-			echo "START TASK: $step alter_database_archivelog_enable"
+			echo "START   TASK: " $step "alter_database_archivelog_enable"
 			########################################
 			#  update log file:                    #
 			#      alter database archivelog       #
@@ -573,10 +573,10 @@ do
 			then
 				error_notification_exit $rcode "Alter database $trgdbname archivelog FAILED!!" $trgdbname $step $LINENO
 			fi
-			echo "END   TASK: $step alter_database_archivelog_enable"
+			echo "END     TASK: " $step "alter_database_archivelog_enable"
 		;;
         "1250")
-			echo "START TASK: $step alter_database_open_sqlplus"
+			echo "START   TASK: " $step "alter_database_open_sqlplus"
 			########################################
 			#  update log file:                    #
 			#      alter databa open               #
@@ -591,9 +591,9 @@ do
 			then
 				error_notification_exit $rcode "Alter database $trgdbname OPEN  FAILED!!" $trgdbname $step $LINENO
 			fi
-			echo "END   TASK: $step alter_database_open_sqlplus"
+			echo "END     TASK: " $step "alter_database_open_sqlplus"
 		;;
-			#echo "START TASK: $step turn_cluster_on"
+			#echo "START   TASK: $step turn_cluster_on"
 			########################################
 			#  update log file:                    #
 			#      turn database cluster on        #
@@ -622,7 +622,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Execute $trgdbname REFRESH Post Scripts"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			echo "      START TASK: apps_fnd_clean"
+			echo "START   TASK: " $step "apps_fnd_clean"
 			apps_fnd_clean $trginstname $dbtargethomepath
 			#
 			rcode=$?
@@ -630,7 +630,7 @@ do
 			then
 				error_notification_exit $rcode "Post scripts (FND_CLEAN) on $trgdbname are  FAILED!!" $trgdbname $step $LINENO
 			fi
-			echo "END   TASK: $step REFRESH_post_scripts"
+			echo "END     TASK: " $step "REFRESH_post_scripts"
 		;;
         "1400")
 			########################################
@@ -640,7 +640,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Execute $trgdbname REFRESH Post Scripts"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			echo "      START TASK: custom_sql_run user_pwd_reset"
+			echo "START   TASK: " $step "custom_sql_run user_pwd_reset"
 			custom_sql_run $trginstname $dbtargethomepath "" "" "as sysdba" ${custsqlbasepath}user_pwd_reset.sql 
 			#
 			rcode=$?
@@ -648,7 +648,7 @@ do
 			then
 				error_notification_exit $rcode "Post scripts sql on $trgdbname are  FAILED!!" $trgdbname $step $LINENO
 			fi
-			echo "END   TASK: $step REFRESH_post_scripts"
+			echo "END     TASK: " $step "REFRESH_post_scripts"
 		;;
 		"1450")
 		    ########################################
@@ -658,7 +658,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Execute $trgdbname Autoconfig Scripts"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			echo "      START TASK: db_adconfig"
+			echo "START   TASK: " $step "db_adconfig"
 			db_adconfig $trginstname $dbtargethomepath $context_file $srcappspwd
 			#
 			rcode=$?
@@ -666,7 +666,7 @@ do
 			then
 				error_notification_exit $rcode "Autoconfig run for $trgdbname is  FAILED!!" $trgdbname $step $LINENO
 			fi
-			echo "END   TASK: $step REFRESH_post_scripts"
+			echo "END     TASK: " $step "db_adconfig"
 			#
 			########################################
 			#  update log file:                    #
@@ -688,18 +688,18 @@ do
 			echo "END     TASK: xxxxxxxxxxxxxxxxxxxxxxxx"
 		;;
         "1600")
-			echo "START   TASK: send_notification"
+			echo "START   TASK: " $step "send_notification"
 			########################################################################
 			#   send notification that target database overlay has been completed  #
 			########################################################################
 			send_notification "$trgdbname Overlay completed" "$trgdbname overlay has been completed" ${TOADDR} ${RTNADDR} ${CCADDR}
 			#	
-			echo "END     TASK: send_notification"
+			echo "END     TASK: " $step "send_notification"
 		;;
         "1650")
-			echo "START   TASK: end-of $trgdbname database refresh"
+			echo "START   TASK: " $step "end-of $trgdbname database refresh"
 			syncpoint $trgdbname "0 " "$LINENO"
-			echo "END     TASK: end-of $trgdbname database refresh"
+			echo "END     TASK: " $step "end-of $trgdbname database refresh"
 		;;
         *)
             echo "step not found - step: $step around Line ===> " "$LINENO"
