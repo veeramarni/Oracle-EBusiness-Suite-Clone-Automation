@@ -1,6 +1,6 @@
 apps_run_autoconfig()
 {
-adautoconfig.sh << EOF
+adautoconfig.sh >${logfilepath} << EOF
 apps
 EOF
 }
