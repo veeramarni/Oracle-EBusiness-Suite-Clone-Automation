@@ -106,6 +106,15 @@ os_verify_or_make_directory ${trgbasepath}${srcappname}
 os_verify_or_make_file ${abendfile} 0
 
 #
+# Verify Apps environment
+#
+if [[ -z "$TWO_TASK" && $TWO_TASK == $trgappname ]]
+then
+	echo "Environment is correct!"
+else 
+	echo "Environment is not set or wrong environment to clone."
+	error_notification_exit $rcode "Wrong Enviornment to clone $trgappname !!" $trgappname 0
+fi
 restart=false
 while read val1 val2
 do
