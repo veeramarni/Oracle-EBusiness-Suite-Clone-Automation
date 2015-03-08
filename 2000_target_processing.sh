@@ -443,6 +443,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
+				echo "Skipping trace file deletion"
 #				error_notification_exit $rcode "Delete OS old database $trgdbname trace files FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: $step delete_os_trace_files"
@@ -461,6 +462,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
+				echo "Skipping Audit log purging"
 #				error_notification_exit $rcode "Delete OS old database adump $trgdbname FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: $step delete_os_adump_files"
