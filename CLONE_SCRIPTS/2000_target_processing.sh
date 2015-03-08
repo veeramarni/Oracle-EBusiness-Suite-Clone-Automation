@@ -640,15 +640,15 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Execute $trgdbname REFRESH Post Scripts"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			echo "START   TASK: " $step "custom_sql_run user_pwd_reset"
-			custom_sql_run $trginstname $dbtargethomepath "" "" "as sysdba" ${custsqlbasepath}user_pwd_reset.sql 
+			echo "START   TASK: " $step "custom_sql_run postsqlexecution$trgdbname"
+			custom_sql_run $trginstname $dbtargethomepath "" "" "as sysdba" ${custsqlbasepath}postsqlexecution$trgdbname.sql 
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
 				error_notification_exit $rcode "Post scripts sql on $trgdbname are  FAILED!!" $trgdbname $step $LINENO
 			fi
-			echo "END     TASK: " $step "REFRESH_post_scripts"
+			echo "END     TASK: " $step "custom_sql_run postsqlexecution$trgdbname"
 		;;
 		"1450")
 		    ########################################
