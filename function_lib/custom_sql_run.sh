@@ -33,8 +33,8 @@ else
 	tm=$(date "+%m%d%y%H%M%S")
 	unset _lgfile
 	_lgfile=${logfilepath}${_orasid}sqlexecution"$tm".log
-	export ORACLE_SID=${orasid}
-	export ORACLE_HOME=${orahome}
+	export ORACLE_SID=${_orasid}
+	export ORACLE_HOME=${_orahome}
 	unset _at
 	if [[ -z "${_dbstring// }" ]]
 	then
