@@ -1,11 +1,12 @@
 apps_run_adcfgclone()
 {
-contxtfile=$1
-appspass=$2
+clondir=$1
+contxtfile=$2
+appspass=$3
 tm=$(date "+%m%d%y%H%M%S")
 unset _logfile
 _logfile=${3:-adcfgclone"$tm".log}
-perl adcfgclone.pl appsTier $contxtfile  << EOF
+perl ${clondir}/adcfgclone.pl appsTier $contxtfile  << EOF
 ${appspass} -
 n
 EOF \

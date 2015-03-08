@@ -211,7 +211,7 @@ do
 			echo $now >>$logfilepath$logfilename
 			#
 			echo application cloning to $trgappname
-			apps_run_adcfgclone ${context_file} ${appspwd}
+			apps_run_adcfgclone "${apptargethomepath}apps_st/comn/clone/bin" ${context_file} ${appspwd}
 			rcode=$?
 			if [ "$rcode" -ne 0 ]
 			then
