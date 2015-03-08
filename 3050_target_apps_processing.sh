@@ -43,6 +43,7 @@ logfilename="$trgdbname"_Overlay_Apps_PART2$(date +%a)"_$(date +%F).log"
 . ${functionbasepath}/apps_run_autoconfig.sh
 . ${functionbasepath}/error_notification_exit.sh
 . ${functionbasepath}/custom_sql_run.sh
+. ${functionbasepath}/get_decrypted_password.sh
 . ${custfunctionbasepath}/apps*$trgappname.sh
 #
 ########################################
@@ -139,6 +140,10 @@ do
 			echo $now >>$logfilepath$logfilename
 			#
 			echo "END     TASK: $step send_notification"
+			trgappspwd=get_decrypted_password $srcappname.pwd trgappspwd
+			srcappspwd=get_decrypted_password $srcappname.pwd srcappspwd
+			echo "Password for $trgappspwd"
+			echo "Password for $srcappspwd"
 		;;
 		"100")
 			########################################
@@ -147,10 +152,17 @@ do
 			echo "START   TASK: $step apps status check"
 			if is_os_process_running ${apptargethomepath} 
 			then
-				echo "Concurrent process is running.."
-				os_kill_process_homepath ${apptargethomepath} 
+				echo "Apps process is running.."
+				. ${apptargethomepath}apps_st/appl/$trgappname*.env
+				$ADMIN_SCRIPTS_HOME/adstpall.sh  apps/${trgappspwd}
+				sleep 100
+				if is_os_process_running ${apptargethomepath} 
+				then
+					echo "Some of the apps process is still running.."
+					os_kill_process_homepath ${apptargethomepath} 
 				else 
-				echo "Concurrent process is not running.."
+					echo "Apps process is not running.."
+				fi
 			fi
 			echo "END     TASK: $step apps status check"
 		;;
@@ -229,7 +241,7 @@ do
 						now=$(date "+%m/%d/%y %H:%M:%S")" ====> Set apps enviroment."
 			echo $now >>$logfilepath$logfilename
 			#
-			echo application cloning to $trgappname
+			echo set apps environment for $trgappname
 			. ${apptargethomepath}apps_st/appl/$trgappname*.env
 			rcode=$?
 			if [ "$rcode" -ne 0 ]
@@ -292,10 +304,10 @@ do
 		;;
 		"500")
 			########################################
-			#  Sitename change			 		   #
+			#  Profile change			 		   #
 			########################################
-			echo "START   TASK: $step Change sitename properties"
-						now=$(date "+%m/%d/%y %H:%M:%S")" ====> Change sitename properties."
+			echo "START   TASK: $step Change profile properties"
+						now=$(date "+%m/%d/%y %H:%M:%S")" ====> Change profile properties."
 			echo $now >>$logfilepath$logfilename
 			#
 			echo start apps on $trgappname
@@ -303,28 +315,37 @@ do
 			rcode=$?
 			if [ "$rcode" -ne 0 ]
 			then
-				error_notification_exit $rcode "Changing sitename properties on $trgappname FAILED!!" $trgappname $step $LINENO
+				error_notification_exit $rcode "Changing apps profile properties on $trgappname FAILED!!" $trgappname $step $LINENO
 			fi
-			echo "END     TASK: $step Change sitename properties"
+			echo "END     TASK: $step Change profile properties"
 		;;
 		"550")
 			########################################
 			#  Custom Post Clone steps   		   #
 			########################################
-			echo "START   TASK: $step Start Apps process"
-						now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start Apps Process."
+			echo "START   TASK: $step Start post clone process"
+						now=$(date "+%m/%d/%y %H:%M:%S")" ====> Post clone steps."
 			echo $now >>$logfilepath$logfilename
 			#
-			echo start apps on $trgappname
-			
+			echo executing post clone steps on $trgappname
+			appspostclonesteps
 			rcode=$?
 			if [ "$rcode" -ne 0 ]
 			then
 				error_notification_exit $rcode "Starting apps process on $trgappname FAILED!!" $trgappname $step $LINENO
 			fi
-			echo "END     TASK: $step Start Apps process"
+			echo "END     TASK: $step post clone process"
 		;;
 		"600")
+			echo "START   TASK: " $step "send_notification"
+			########################################################################
+			#   send notification that target apps overlay has been completed	   #
+			########################################################################
+			send_notification "$trgappname Apps Overlay completed" "$trgappname overlay has been completed" ${TOADDR} ${RTNADDR} ${CCADDR}
+			#	
+			echo "END     TASK: " $step "send_notification"
+		;;
+		"650")
             echo "START   TASK: $step end-of $srcappname app backup"
             syncpoint $srcappname "0 " "$LINENO"
             echo "END     TASK: $step end-of $srcappname app backup"
