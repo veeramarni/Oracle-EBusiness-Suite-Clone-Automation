@@ -63,48 +63,48 @@ abendfile="$trgbasepath""$trgdbname"/"$trgdbname"_abend_step
 ####################################################################################################
 #      add functions library                                                                       #
 ####################################################################################################
-. ${basepath}function_lib/usage.sh
-. ${basepath}function_lib/dir_empty.sh        
-. ${basepath}function_lib/syncpoint.sh        
-. ${basepath}function_lib/user_pwd_reset.sh   
-. ${basepath}function_lib/its_crt_users.sh   
-. ${basepath}function_lib/crt_directories.sh      
-. ${basepath}function_lib/crt_dblinks.sh      
-. ${basepath}function_lib/io_calibrate.sh     
-. ${basepath}function_lib/audit_settings.sh   
-. ${basepath}function_lib/purge_audit.sh      
-. ${basepath}function_lib/turn_cluster_off.sh 
-. ${basepath}function_lib/turn_cluster_on.sh 
-. ${basepath}function_lib/set_database_audit.sh
-. ${basepath}function_lib/delete_rman_archivelogs_backups_all.sh
-. ${basepath}function_lib/stop_database_sqlplus.sh 
-. ${basepath}function_lib/start_database_sqlplus.sh 
-. ${basepath}function_lib/send_notification.sh
-. ${basepath}function_lib/start_rman_tst_backup.sh
-. ${basepath}function_lib/check_database_status1.sh
-. ${basepath}function_lib/check_database_status2.sh
-. ${basepath}function_lib/delete_sourcedb_backups.sh
-. ${basepath}function_lib/start_mount_database_sqlplus.sh
-. ${basepath}function_lib/start_nomount_database_sqlplus.sh
-. ${basepath}function_lib/rman_register_database.sh
-. ${basepath}function_lib/list_database_recover_files.sh
-. ${basepath}function_lib/alter_database_archivelog_enable.sh
-. ${basepath}function_lib/alter_database_open_sqlplus.sh
-. ${basepath}function_lib/start_rman_tst_backup.sh
-. ${basepath}function_lib/start_target_rman_replication_from_backups.sh
-. ${basepath}function_lib/delete_os_trace_files.sh
-. ${basepath}function_lib/delete_os_adump_files.sh
-. ${basepath}function_lib/delete_database_asm_tempfile.sh
-. ${basepath}function_lib/delete_database_asm_datafiles.sh
-. ${basepath}function_lib/apps_fnd_clean.sh
-. ${basepath}function_lib/drop_database.sh
-. ${basepath}function_lib/custom_sql_run.sh
-. ${basepath}function_lib/param_db_file_name_convert.sh
-. ${basepath}function_lib/db_adconfig.sh
-. ${basepath}function_lib/os_user_check.sh
-. ${basepath}function_lib/os_verify_or_make_directory.sh
-. ${basepath}function_lib/os_verify_or_make_file.sh
-
+. ${functionbasepath}/usage.sh
+. ${functionbasepath}/dir_empty.sh        
+. ${functionbasepath}/syncpoint.sh        
+. ${functionbasepath}/user_pwd_reset.sh   
+. ${functionbasepath}/its_crt_users.sh   
+. ${functionbasepath}/crt_directories.sh      
+. ${functionbasepath}/crt_dblinks.sh      
+. ${functionbasepath}/io_calibrate.sh     
+. ${functionbasepath}/audit_settings.sh   
+. ${functionbasepath}/purge_audit.sh      
+. ${functionbasepath}/turn_cluster_off.sh 
+. ${functionbasepath}/turn_cluster_on.sh 
+. ${functionbasepath}/set_database_audit.sh
+. ${functionbasepath}/delete_rman_archivelogs_backups_all.sh
+. ${functionbasepath}/stop_database_sqlplus.sh 
+. ${functionbasepath}/start_database_sqlplus.sh 
+. ${functionbasepath}/send_notification.sh
+. ${functionbasepath}/start_rman_tst_backup.sh
+. ${functionbasepath}/check_database_status1.sh
+. ${functionbasepath}/check_database_status2.sh
+. ${functionbasepath}/delete_sourcedb_backups.sh
+. ${functionbasepath}/start_mount_database_sqlplus.sh
+. ${functionbasepath}/start_nomount_database_sqlplus.sh
+. ${functionbasepath}/rman_register_database.sh
+. ${functionbasepath}/list_database_recover_files.sh
+. ${functionbasepath}/alter_database_archivelog_enable.sh
+. ${functionbasepath}/alter_database_open_sqlplus.sh
+. ${functionbasepath}/start_rman_tst_backup.sh
+. ${functionbasepath}/start_target_rman_replication_from_backups.sh
+. ${functionbasepath}/delete_os_trace_files.sh
+. ${functionbasepath}/delete_os_adump_files.sh
+. ${functionbasepath}/delete_database_asm_tempfile.sh
+. ${functionbasepath}/delete_database_asm_datafiles.sh
+. ${functionbasepath}/apps_fnd_clean.sh
+. ${functionbasepath}/drop_database.sh
+. ${functionbasepath}/custom_sql_run.sh
+. ${functionbasepath}/param_db_file_name_convert.sh
+. ${functionbasepath}/db_adconfig.sh
+. ${functionbasepath}/os_user_check.sh
+. ${functionbasepath}/os_verify_or_make_directory.sh
+. ${functionbasepath}/os_verify_or_make_file.sh
+. ${custfunctionbasepath}/error_notification_exit.sh
 #
 #
 ########################################
@@ -131,21 +131,7 @@ os_user_check ${dbosuser}
 	rcode=$?
 	if [ "$rcode" -gt 0 ]
 	then
-		echo "Not a valid user failed. Abrt!!! RC=" "$rcode"
-		########################################
-		#  update log file                     #
-		########################################
-		now=$(date "+%m/%d/%y %H:%M:%S")" ====> Check user failed. Abort!! \
-		RC=""$rcode"       
-		echo $now >>${logfilepath}${logfilename}
-		syncpoint $trgdbname $step "$LINENO"
-		########################################################################
-		#   send notification                                                  #
-		########################################################################
-		send_notification "$trgdbname"_Overlay_abend "Not a valid user " ${TOADDR} ${RTNADDR} ${CCADDR}
-		echo "error.......Exit."
-		echo ""
-		exit $step
+		error_notification_exit $rcode "Wrong os user, user should be ${dbosuser}!!" $trgdbname 0  $LINENO
 	fi
 #
 # Validate Directory
@@ -217,22 +203,7 @@ do
 			rcode=$?
 			if [ "$rcode" -gt 0 ]
 			then
-				echo "Backup folder for ${srcdbname} does not exists or folder is empty. \
-						Abort!!! RC=" "$rcode"
-				########################################
-				#  update log file                     #
-				########################################
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Backup folder for ${srcdbname} does \
-					not exist or folder is empty. Abort!! RC=""$rcode"       
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				echo "error.......Exit."
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Backup folder for $srcdbname is empty" ${TOADDR} ${RTNADDR} ${CCADDR}
-				echo ""
-				exit $step
+				error_notification_exit $rcode "Backup folder for ${srcdbname} does not exists or folder is empty." $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: " $step "dir_empty"
         ;;
@@ -250,21 +221,7 @@ do
 			rcode=$?
 			if [ "$rcode" -gt 0 ]
 			then
-				echo "Check database "$trgdbname" failed. Abrt!!! RC=" "$rcode"
-				########################################
-				#  update log file                     #
-				########################################
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Check database ${srcdbname} failed. Abort!! \
-						RC=""$rcode"       
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Check database status for $trgdbname failed." ${TOADDR} ${RTNADDR} ${CCADDR}
-				echo "error.......Exit."
-				echo ""
-				exit $step
+				error_notification_exit $rcode "Check database status for $trgdbname failed." $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: " $step "check_database_status1"
         ;;
@@ -289,8 +246,7 @@ do
 		;;
         "250")
 			echo "START TASK: " $step "send-notification_02"
- 
-			########################################################################
+ 			########################################################################
 			#   send notification to start  target database OEM blackout           #
 			########################################################################
 			send_notification "$trgdbname"_Overlay_staging "please note that $trgdbname is under OEM blackout" ${TOADDR} ${RTNADDR} ${CCADDR}
@@ -313,18 +269,9 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete $trgdb RMAN archive logs and backups FAILED!!" RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Delete RMAN archive logs and backups for $trgdbname failed" ${TOADDR} ${RTNADDR} ${CCADDR}
-				echo ""
-				exit $step
+				error_notification_exit $rcode "Delete RMAN archive logs and backups for $trgdbname failed." $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: " $step "delete_rman_archivelogs_backups_all"
-
 		;;
         "350")				
 			echo "START TASK: " $step "stop_database_sqlplus"
@@ -339,16 +286,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> STOP $trgdb database FAILED!!" RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Stop target database $trgdbname failed" ${TOADDR} ${RTNADDR} ${CCADDR}
-				echo "error.......Exit."
-				echo ""
-				exit $step
+				error_notification_exit $rcode "STOP $trgdb database FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: " $step "stop_database_sqlplus"
 		;;
@@ -366,17 +304,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> START $trgdb database in MOUNT mode FAILED!!" \
-						RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Start database $trgdbname failed" ${TOADDR} ${RTNADDR} ${CCADDR}
-				echo "error.......Exit."
-				echo ""
-				exit $step
+				error_notification_exit $rcode "START $trgdb database in MOUNT mode FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: " $step "start_mount_database_sqlplus"
 		;;
@@ -394,17 +322,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Drop $trgdbname database in MOUNT mode FAILED!!" \
-						RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Drop database $trgdbname failed" ${TOADDR} ${RTNADDR} ${CCADDR}
-				echo "error.......Exit."
-				echo ""
-				exit $step
+				error_notification_exit $rcode "Drop $trgdbname database in MOUNT mode FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: " $step "drop_database"
 		;;
@@ -422,17 +340,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start database "$trgdbname" NOMOUNT FAILED!!" \
-						RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Start target database $trgdbname failed" ${TOADDR} ${RTNADDR} ${CCADDR}
-				echo "error.......Exit."
-				echo ""
-				exit $step
+				error_notification_exit $rcode "Start database "$trgdbname" NOMOUNT FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: $step start_nomount_database_sqlplus"
 		;;
@@ -449,17 +357,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Create spfile for $trgdb database FAILED!!" RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Create spfile for $trgdbname failed" ${TOADDR} ${RTNADDR} ${CCADDR}
-				echo "error.......Exit."
-				echo ""
-				exit $step
-			fi
+				error_notification_exit $rcode "Create spfile for $trgdb database FAILED!!" $trgdbname $step $LINENO
 			echo "END   TASK: " $step "create_spfile"
 		;;
 		"600")				
@@ -475,16 +373,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> STOP $trgdb database FAILED!!" RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Stop target database $trgdbname failed" ${TOADDR} ${RTNADDR} ${CCADDR}
-				echo "error.......Exit."
-				echo ""
-				exit $step
+				error_notification_exit $rcode "STOP $trgdb database FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: " $step "stop_database_sqlplus"
 		;;	
@@ -502,17 +391,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start database "$trgdbname" NOMOUNT FAILED!!" \
-						RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Start target database $trgdbname failed" ${TOADDR} ${RTNADDR} ${CCADDR}
-				echo "error.......Exit."
-				echo ""
-				exit $step
+				error_notification_exit $rcode "Start database "$trgdbname" NOMOUNT FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: $step start_nomount_database_sqlplus"
 		;;
@@ -529,16 +408,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Change DB parameters for $trgdb database FAILED!!" RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Change DB parameters for $trgdbname failed" ${TOADDR} ${RTNADDR} ${CCADDR}
-				echo "error.......Exit."
-				echo ""
-				exit $step
+				error_notification_exit $rcode "Change DB parameters for $trgdb database FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: " $step "param_db_file_name_convert"
 		;;
@@ -555,16 +425,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> STOP $trgdb database FAILED!!" RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Stop target database $trgdbname failed" ${TOADDR} ${RTNADDR} ${CCADDR}
-				echo "error.......Exit."
-				echo ""
-				exit $step
+				error_notification_exit $rcode "STOP $trgdb database FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: " $step "stop_database_sqlplus"
 		;;		
@@ -613,13 +474,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete OS old database "$trgdbname" trace files \
-				FAILED!!!" RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-#######				syncpoint $trgdbname $step "$LINENO"
-				echo "error.......Exit."
-				echo ""
-#######				exit $step
+#				error_notification_exit $rcode "Delete OS old database "$trgdbname" trace files FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: $step delete_os_trace_files"
 		;;
@@ -637,13 +492,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete OS old database adump "$trgdbname" \
-				FAILED!!" RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-#####				syncpoint $trgdbname $step "$LINENO"
-				echo "error.......Exit."
-				echo ""
-#####				exit $step
+#				error_notification_exit $rcode "Delete OS old database adump "$trgdbname" FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: $step delete_os_adump_files"
 		;;
@@ -661,17 +510,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start database "$trgdbname" NOMOUNT FAILED!!" \
-						RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Start target database $trgdbname failed" ${TOADDR} ${RTNADDR} ${CCADDR}
-				echo "error.......Exit."
-				echo ""
-				exit $step
+				error_notification_exit $rcode "Start database "$trgdbname" NOMOUNT FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: $step start_nomount_database_sqlplus"
 		;;
@@ -689,17 +528,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start database "$trgdbname" replication FAILED!!" \
-							RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Start target databse $trgdbname replication failed" ${TOADDR} ${RTNADDR} ${CCADDR}
-				echo "error.......Exit."
-				echo ""
-				exit $step
+				error_notification_exit $rcode "Start database "$trgdbname" replication FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: " $step "start_target_rman_replication_from_backups"
 		;;
@@ -717,17 +546,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> List recover files for "$trgdbname" FAILED!!" \
-						RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "List recover files for $trgdbname failed" ${TOADDR} ${RTNADDR} ${CCADDR}
-				echo "error.......Exit."
-				echo ""
-				exit $step
+				error_notification_exit $rcode "List recover files for "$trgdbname" FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: $step list_database_recover_files"
 		;;
@@ -745,17 +564,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Shutdown database "$trgdbname" node1 using SQLPLUS \
-							FAILED!!" RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Shutdown target database $trgdbname failed" ${TOADDR} ${RTNADDR} ${CCADDR}
-				echo "error.......Exit."
-				echo ""
-				exit $step
+				error_notification_exit $rcode "Shutdown database "$trgdbname" node1 using SQLPLUS FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: $step shutdown_database_sqlplus"
 		;;
@@ -773,17 +582,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start database "$trgdbname" in mount \
-						mode FAILED!!" RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Start target database $trgdbname failed" ${TOADDR} ${RTNADDR} ${CCADDR}
-				echo "error.......Exit."
-				echo ""
-				exit $step
+				error_notification_exit $rcode "Start database "$trgdbname" in mount mode FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: $step start_mount_database_sqlplus"
 		;;
@@ -801,17 +600,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Alter database "$trgdbname" archivelog FAILED!!" \
-							RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Alter target databse $trgdbname archivelog failed" ${TOADDR} ${RTNADDR} ${CCADDR}
-				echo "error.......Exit."
-				echo ""
-				exit $step
+				error_notification_exit $rcode "Alter database "$trgdbname" archivelog FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: $step alter_database_archivelog_enable"
 		;;
@@ -829,16 +618,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Alter database "$trgdbname" OPEN  FAILED!!" RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Alter target database $trgdbname archivelog failed" ${TOADDR} ${RTNADDR} ${CCADDR}
-				echo "error.......Exit."
-				echo ""
-				exit $step
+				error_notification_exit $rcode "Alter database "$trgdbname" OPEN  FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: $step alter_database_open_sqlplus"
 		;;
@@ -877,16 +657,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Post scripts (FND_CLEAN) on "$trgdbname" are  FAILED!!" RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Post scripts (FND_CLEAN) on "$trgdbname" are  failed" ${TOADDR} ${RTNADDR} ${CCADDR}
-				echo "error.......Exit."
-				echo ""
-				exit $step
+				error_notification_exit $rcode "Post scripts (FND_CLEAN) on "$trgdbname" are  FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: $step REFRESH_post_scripts"
 		;;
@@ -904,16 +675,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Post scripts sql on "$trgdbname" are  FAILED!!" RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Post scripts on "$trgdbname" are  failed" ${TOADDR} ${RTNADDR} ${CCADDR}
-				echo "error.......Exit."
-				echo ""
-				exit $step
+				error_notification_exit $rcode "Post scripts sql on "$trgdbname" are  FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: $step REFRESH_post_scripts"
 		;;
@@ -931,16 +693,7 @@ do
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Autoconfig run for "$trgdbname" is  FAILED!!" RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Autoconfig run for "$trgdbname" is  failed" ${TOADDR} ${RTNADDR} ${CCADDR}
-				echo "error.......Exit."
-				echo ""
-				exit $step
+				error_notification_exit $rcode "Autoconfig run for "$trgdbname" is  FAILED!!" $trgdbname $step $LINENO
 			fi
 			echo "END   TASK: $step REFRESH_post_scripts"
 			#

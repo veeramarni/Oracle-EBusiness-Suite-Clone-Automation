@@ -58,14 +58,15 @@ abendfile="$trgbasepath""$srcappname"/"$srcappname"_abend_step
 #      add functions library                                                                       #
 ####################################################################################################
     
-. ${basepath}function_lib/syncpoint.sh   
-. ${basepath}function_lib/send_notification.sh
-. ${basepath}function_lib/os_tar_gz_file.sh
-. ${basepath}function_lib/os_delete_move_file.sh
-. ${basepath}function_lib/os_user_check.sh
-. ${basepath}function_lib/os_verify_or_make_directory.sh
-. ${basepath}function_lib/os_verify_or_make_file.sh
-. ${basepath}function_lib/is_os_file_exist.sh
+. ${functionbasepath}/syncpoint.sh   
+. ${functionbasepath}/send_notification.sh
+. ${functionbasepath}/os_tar_gz_file.sh
+. ${functionbasepath}/os_delete_move_file.sh
+. ${functionbasepath}/os_user_check.sh
+. ${functionbasepath}/os_verify_or_make_directory.sh
+. ${functionbasepath}/os_verify_or_make_file.sh
+. ${functionbasepath}/is_os_file_exist.sh
+. ${custfunctionbasepath}/error_notification_exit.sh
 #
 ########################################
 #       VALIDATIONS                    #
@@ -76,7 +77,7 @@ then
 	echo " ====> Abort!!!. Invalid apps name for overlay"
         usage $0 :1000_overlay_staging  "[APPS NAME]"
         ########################################################################
-        #   send notification                                                  #
+        #   send notification  and exit                                        #
         ########################################################################
         send_notification "$trgappname"_Overlay_abend "Invalid apps name for replication" ${TOADDR} ${RTNADDR} ${CCADDR}
         exit 3
@@ -90,21 +91,7 @@ os_user_check ${appsosuser}
 	rcode=$?
 	if [ "$rcode" -gt 0 ]
 	then
-		echo "Not a valid user failed. Abrt!!! RC=" "$rcode"
-		########################################
-		#  update log file                     #
-		########################################
-		now=$(date "+%m/%d/%y %H:%M:%S")" ====> Check user failed. Abort!! \
-		RC=""$rcode"       
-		echo $now >>${logfilepath}${logfilename}
-		syncpoint $trgappname $step "$LINENO"
-		########################################################################
-		#   send notification                                                  #
-		########################################################################
-		send_notification "$trgappname"_Overlay_abend "Not a valid user " ${TOADDR} ${RTNADDR} ${CCADDR}
-		echo "error.......Exit."
-		echo ""
-		exit $step
+		error_notification_exit $rcode "Wrong os user, user should be ${appsosuser}!!" $trgappname 0 $LINENO
 	fi
 #
 # Validate Directory
@@ -116,6 +103,16 @@ os_verify_or_make_directory ${trgbasepath}${srcappname}
 os_verify_or_make_file ${abendfile} 0
 
 #
+# Verify Apps environment
+#
+if [[ -n "${TWO_TASK+1}" && $TWO_TASK == $srcappname ]]
+then
+	echo "Environment is correct!"
+else 
+	echo "Environment is not set or wrong environment to clone."
+	error_notification_exit $rcode "Wrong Enviornment to clone $trgappname !!" $srcappname 0 $LINENO
+fi
+############################################################
 restart=false
 while read val1 val2
 do
@@ -147,14 +144,14 @@ echo $now >>$logfilepath$logfilename
 now=$(date "+%m/%d/%y %H:%M:%S")" ====>  ########    $srcappname to $trgappname overlay has been started - PART1    ########"
 echo $now >>$logfilepath$logfilename
 #
-for step in $(seq "$stepnum" 50 250)
+for step in $(seq "$stepnum" 50 300)
 do
         case $step in
         "50")
 			echo "START TASK: $step send_notification"
 			#####################################################################################
 			#  send notification that APPS overlay started                                      #
-			#  Usage: send_notification SUBJECT MSG CODE [1..3]                                 #
+			# 													                                #
 			#####################################################################################
 			send_notification "$srcappname"_backup_started  "$srcappname backup started" ${TOADDR} ${RTNADDR} ${CCADDR}
 			#
@@ -188,17 +185,7 @@ do
 	        rcode=$?
             if [ "$rcode" -gt 0 ]
             then
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> Moving/Deleting old backup file  FAILED!!" \
-				RC=$rcode
-				echo $now >>${logfilepath}${logfilename}
-				syncpoint $trgdbname $step "$LINENO"
-				########################################################################
-				#   send notification                                                  #
-				########################################################################
-				send_notification "$trgdbname"_Overlay_abend "Moving/Deleting old backup file failed" ${TOADDR} ${RTNADDR} ${CCADDR}
-				echo "error.......Exit."
-				echo ""
-				exit $step
+				error_notification_exit $rcode "Moving/Deleting old backup file  FAILED!!" $trgappname $step $LINENO
 			fi
 			echo "END   TASK: $step os_delete_move_file"
 		;; 
@@ -221,19 +208,7 @@ do
 			rcode=$?
 			if [ $? -ne 0 ] 
 			then
-				########################################
-				#  update log file                     #
-				########################################
-				now=$(date "+%m/%d/%y %H:%M:%S")" ====> "$srcappname" backup FAILED. Abort!! RC=$rcode"
-				echo $now >>$logfilepath$logfilename
-				syncpoint $trgappname $step "$LINENO"
-			        ########################################################################
-			        #   send notification                                                  #
-			        ########################################################################
-			        send_notification "$trgappname"_Overlay_abend "Source $srcappname apps backup failed" ${TOADDR} ${RTNADDR} ${CCADDR}
-				echo "error in  : os_tar_gz_file"
-				echo ""
-				exit 99
+				error_notification_exit $rcode "$srcappname apps backup FAILED. Abort!!" $trgappname $step $LINENO
 			fi
 			echo "END   TASK: $step os_tar_gz_file"
 		;;
@@ -242,12 +217,12 @@ do
 			#  check source apps after backups #
 			########################################
 		"300")
-                        echo "START TASK: $step end-of $srcappname app backup"
-                        syncpoint $srcappname "0 " "$LINENO"
-                        echo "END   TASK: $step end-of $srcappname app backup"
+            echo "START TASK: $step end-of $srcappname app backup"
+            syncpoint $srcappname "0 " "$LINENO"
+            echo "END   TASK: $step end-of $srcappname app backup"
 		;;
         *)
-                        echo "step not found - step: $step around Line ===> "  "$LINENO"
+            echo "step not found - step: $step around Line ===> "  "$LINENO"
         ;;
         esac
 done
