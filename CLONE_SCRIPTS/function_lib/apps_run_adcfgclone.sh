@@ -6,7 +6,7 @@ tm=$(date "+%m%d%y%H%M%S")
 unset _logfile
 _logfile=${3:-adcfgclone"$tm".log}
 perl adcfgclone.pl appsTier $contxtfile  << EOF
-${appspass}
+${appspass} -
 n
 EOF \
 > ${logfilepath}${_logfile}
