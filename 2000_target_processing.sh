@@ -326,6 +326,7 @@ do
 			if [ $rcode -ne 0 ] 
 			then
 				error_notification_exit $rcode "Create spfile for $trgdb database FAILED!!" $trgdbname $step $LINENO
+			fi
 			echo "END   TASK: " $step "create_spfile"
 		;;
 		"600")				
