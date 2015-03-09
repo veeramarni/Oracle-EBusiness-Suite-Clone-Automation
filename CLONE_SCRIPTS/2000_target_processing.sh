@@ -109,6 +109,8 @@ os_verify_or_make_directory ${trgbasepath}
 os_verify_or_make_directory ${trgbasepath}${trgdbname}
 os_verify_or_make_file ${abendfile} 0
 #
+trgappspwd=$( get_decrypted_password $trgappspwd )
+srcappspwd=$( get_decrypted_password $srcappspwd )
 #####################################################################
 #                                                                   #
 # Write an block condition to stop running the job with condition   #

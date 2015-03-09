@@ -93,8 +93,6 @@ else
 fi
 trgappspwd=$( get_decrypted_password $trgappspwd )
 srcappspwd=$( get_decrypted_password $srcappspwd )
-echo "password for trg $trgappspwd"
-echo "password for src $srcappspwd"
 ############################################################
 restart=false
 while read val1 val2
