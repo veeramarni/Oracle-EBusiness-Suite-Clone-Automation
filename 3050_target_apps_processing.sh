@@ -262,8 +262,7 @@ do
 			rcode=$?
 			if [ "$rcode" -ne 0 ]
 			then
-				echo "Skipping verification"
-#				error_notification_exit $rcode "Change FND Users passwords!!" $trgappname $step $LINENO
+				error_notification_exit $rcode "Change FND Users passwords FAILED!!" $trgappname $step $LINENO
 			fi
 			echo "END     TASK: $step Change FND Users passwords"
 		;;
@@ -331,7 +330,7 @@ do
 			rcode=$?
 			if [ "$rcode" -ne 0 ]
 			then
-				error_notification_exit $rcode "Starting apps process on $trgappname FAILED!!" $trgappname $step $LINENO
+				error_notification_exit $rcode "Post clone steps on $trgappname FAILED!!" $trgappname $step $LINENO
 			fi
 			echo "END     TASK: $step post clone process"
 		;;
