@@ -72,7 +72,8 @@ logfilename="$trgdbname"_DB_Overlay_$(date +%a)"_$(date +%F).log"
 . ${functionbasepath}/os_verify_or_make_directory.sh
 . ${functionbasepath}/os_verify_or_make_file.sh
 . ${functionbasepath}/error_notification_exit.sh
-. ${custfunctionbasepath}/db*$trgdbname.sh
+. ${functionbasepath}/get_decrypted_password.sh
+
 #
 #
 ########################################
