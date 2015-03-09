@@ -695,7 +695,7 @@ do
 			########################################################################
 			#   send notification that target database overlay has been completed  #
 			########################################################################
-			send_notification "$trgdbname Overlay completed" "$trgdbname overlay has been completed" ${TOADDR} ${RTNADDR} ${CCADDR}
+			send_notification "$trgdbname Overlay DB part completed" "$trgdbname overlay DB refresh has been completed" ${TOADDR} ${RTNADDR} ${CCADDR}
 			#	
 			echo "END     TASK: " $step "send_notification"
 		;;
