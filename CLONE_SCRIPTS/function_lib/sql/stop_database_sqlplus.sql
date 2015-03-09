@@ -1,2 +1,2 @@
 shutdown immediate;
-
+exit
