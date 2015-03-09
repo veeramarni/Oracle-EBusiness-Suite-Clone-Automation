@@ -44,7 +44,8 @@ logfilename="$trgdbname"_Overlay_Apps_PART2$(date +%a)"_$(date +%F).log"
 . ${functionbasepath}/error_notification_exit.sh
 . ${functionbasepath}/custom_sql_run.sh
 . ${functionbasepath}/get_decrypted_password.sh
-. ${custfunctionbasepath}/apps*$trgappname.sh
+. ${custfunctionbasepath}/appschangepassword$trgappname.sh
+. ${custfunctionbasepath}/appspostclonesteps$trgappname.sh
 #
 ########################################
 #       VALIDATIONS                    #
