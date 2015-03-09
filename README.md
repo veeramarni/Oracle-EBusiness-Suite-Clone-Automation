@@ -6,7 +6,7 @@ To make it run for other environment, the environment settings need to be set in
 
 Below are main scripts which does the whole EBS cloning process in three steps and can be run as single job by scheduling through OEM. 
 
-1. 1050_source_apps_processing.sh will take the backup of the production apps environment, it is run from production apps server. 
+1. 1050_source_apps_processing.sh will take the backup of the production apps environment, it is run from source apps server. 
 2. 2000_target_processing.sh will refresh the target database and it is run from the target server. 
 3. 3050_target_apps_processing.sh will clone the apps and it is run from the target server. After completion of this step, you should be able to login to the webconsole. 
 
