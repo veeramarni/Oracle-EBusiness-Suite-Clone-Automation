@@ -13,6 +13,8 @@ echo $lnt
 if [ $lnt -lt 15 ]
 then 
 echo "Encrypting password for $arg"
+# remove double quotes at prifix and suffix if exist
+arg2=`echo $arg2 | sed -e 's/^"//' -e 's/"$//'`
 arg2=`echo $arg2 | openssl enc -e -aes-256-cbc -a -salt -k aes-256-cbc`
 echo "encrypted pass is $arg2"
 echo $arg=\"$arg2\" >> ${_tempfile}
