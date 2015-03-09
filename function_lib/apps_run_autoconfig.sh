@@ -1,6 +1,6 @@
 apps_run_autoconfig()
 {
-unser _clondir
+unset _clondir
 _clondir=$1
 tm=$(date "+%m%d%y%H%M%S")
 unset _logfile

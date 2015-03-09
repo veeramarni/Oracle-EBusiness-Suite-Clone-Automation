@@ -182,7 +182,7 @@ do
 			    echo "Deleting apps_st and tech_st"
 				os_delete_move_dir D "${apptargethomepath}/apps_st ${apptargethomepath}/tech_st"
 			else 
-			    error_notification_exit $rcode "Apps Backup not found." $trgappname $step $LINENO
+			    error_notification_exit $rcode "old apps_st and old tech_st directory may don't exist." $trgappname $step $LINENO
 			fi
 			#
 	        rcode=$?
