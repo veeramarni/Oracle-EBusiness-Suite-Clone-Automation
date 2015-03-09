@@ -4,68 +4,68 @@
 #                S T A G I N G    O V E R L A Y - Source Database Tasks                            #
 #                           1000_source_processing.sh
 ####################################################################################################
+#
+# Import properties file
+#
+. clone_environment.properties
+#################################################
+# Default Configuration							#
+#################################################
+trgbasepath="${basepath}targets/"
+logfilepath="${basepath}logs/"
+functionbasepath="${basepath}function_lib/"
+custfunctionbasepath="${basepath}custom_lib/"
+custsqlbasepath="${custfunctionbasepath}sql/"
+sqlbasepath="${functionbasepath}sql/"
+rmanbasepath="${functionbasepath}rman/"
+abendfile="$trgbasepath""$trgdbname"/"$trgdbname"_1000_abend_step
+logfilename="$trgdbname"_DB_Overlay_$(date +%a)"_$(date +%F).log"
+
+####################################################################################################
 #      add functions library                                                                       #
 ####################################################################################################
-. /u01/app/oracle/scripts/refresh/function_lib/usage.sh
-. /u01/app/oracle/scripts/refresh/function_lib/syncpoint.sh
-. /u01/app/oracle/scripts/refresh/function_lib/send_notification.sh
-. /u01/app/oracle/scripts/refresh/function_lib/check_database_status1.sh
-. /u01/app/oracle/scripts/refresh/function_lib/check_database_status2.sh
-. /u01/app/oracle/scripts/refresh/function_lib/start_rman_prod_backup.sh
-. /u01/app/oracle/scripts/refresh/function_lib/delete_sourcedb_backups.sh
-#
-logfilepath="/u01/app/oracle/scripts/refresh/logs/"
-bkupbasepath="/migration/refresh/"
-basepath="/u01/app/oracle/scripts/refresh/"
-srcbasepath="/u01/app/oracle/scripts/refresh/source/"
+. ${functionbasepath}/usage.sh
+. ${functionbasepath}/syncpoint.sh
+. ${functionbasepath}/send_notification.sh
+. ${functionbasepath}/check_database_status1.sh
+. ${functionbasepath}/check_database_status2.sh
+. ${functionbasepath}/start_rman_prod_backup.sh
+. ${functionbasepath}/delete_sourcedb_backups.sh
 #
 ########################################
 #       VALIDATIONS                    #
 ########################################
 #
-if [ $# -lt 1 ]
+if [ $# -lt 2 ]
 then
-	echo " ====> Abort!!!. Invalid database name for overlay"
+	echo " ====> Abort!!!. Invalid database arguments for overlay"
         usage $0 :1000_overlay_staging  "[DATABASE NAME]"
         ########################################################################
-        #   send notification                                                  #
+        #   send notification  and exit                                        #
         ########################################################################
-        send_notification "$trgdbname"_Overlay_abend "Invalid database name for replication" 3
+        send_notification "$trgappname"_Overlay_abend "Invalid database name for replication" ${TOADDR} ${RTNADDR} ${CCADDR}
         exit 3
 fi
+echo "SCRIPT IS IN UNDER CONSTRUCTION !!!"
+exit 99
 #
-trgdbname=$1
-trgdbname=${trgdbname// }
-trgdbname=`echo "$trgdbname" | tr [a-z] [A-Z]`
- 
-case $trgdbname in
-	"DSGN")
-		logfilename="$trgdbname"_Overlay_$(date +%a)"_$(date +%F).log"
-		srcdbname="DPGN"
-		;;
-	"DSTP")
-		logfilename="$trgdbname"_Overlay_$(date +%a)"_$(date +%F).log"
-		srcdbname="DPTP"
-		;;
-	"DBM01")
-		logfilename="$trgdbname"_Overlay_$(date +%a)"_$(date +%F).log"
-		srcdbname="DBM01"
-		;;
-        *)	
-        	########################################################################
-	        #   send notification                                                  #
-	        ########################################################################
-        	send_notification "$trgdbname"_Overlay_abend "Invalid database name for replication" 3
-                echo ""
-                echo ""
-                echo " ====> Abort!!!. Invalid staging database name"
-                echo ""
-                exit 4
-                ;;
-esac
+# Check user  
 #
-abendfile="$srcbasepath""$srcdbname"/"$srcdbname"_abend_step
+os_user_check ${dbosuser}
+	rcode=$?
+	if [ "$rcode" -gt 0 ]
+	then
+		error_notification_exit $rcode "Wrong os user, user should be ${dbosuser}!!" $trgdbname 0  $LINENO
+	fi
 #
+# Validate Directory
+#
+os_verify_or_make_directory ${logfilepath}
+os_verify_or_make_directory ${trgbasepath}
+os_verify_or_make_directory ${trgbasepath}${trgdbname}
+os_verify_or_make_file ${abendfile} 0
+
+#######################################################################################
 restart=false
 while read val1 val2
 do
@@ -103,11 +103,7 @@ do
                 "50")
 			echo "START TASK: $step send_notification"
 			#####################################################################################
-			#  send notification that DSGN overlay started                                      #
-			#  Usage: send_notification SUBJECT MSG CODE [1..3]                                 #
-			#  CODE [1..3] - 1:dor-oracle-oncall@dor.ga.gov     CC:dor-oracle-dba@dor.ga.gov    #
-		        #    - 2:dor-its-batch-support@dor.ga.gov CC:dor-oracle-dba@dor.ga.gov              #
-			#                3:Managed-Ops-Support_us@oracle.com CC:dor-oracle-dba@dor.ga.gov   # 
+			#  send notification that DB overlay started                                      #
 			#####################################################################################
 #			send_notification "$srcdbname"_backup_started  "$srcdbname backup started" 2 
 			#

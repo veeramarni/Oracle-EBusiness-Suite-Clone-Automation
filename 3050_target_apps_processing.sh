@@ -1,4 +1,4 @@
-#!/usr/bin/ksh
+#!/bin/bash
 #
 #####################################################################################################
 #                S T A G I N G    O V E R L A Y - target Apps Tasks                            		#
@@ -310,6 +310,7 @@ do
 			#
 			echo start apps on $trgappname
 			custom_sql_run "" $ORACLE_HOME $trgappname "apps" ${trgappspwd} ${sqlbasepath}/apps_profile_set_sitename.sql ${sitename}
+			custom_sql_run "" $ORACLE_HOME $trgappname "apps" ${trgappspwd} ${sqlbasepath}/apps_profile_set_javacolorscheme.sql ${fnd_color_scheme}
 			rcode=$?
 			if [ "$rcode" -ne 0 ]
 			then
