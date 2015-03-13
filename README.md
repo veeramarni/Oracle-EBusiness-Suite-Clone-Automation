@@ -12,4 +12,4 @@ Below are main scripts which does the whole EBS cloning process in three steps a
 
 Any custom code need to be placed in the custom_lib suffix with Environment name. 
 
-If the script fails with any error, it sends notification with the step number where it is failed. After fixing the issue, just execute the script again it will continue from failed step (not from first step). 
+If the script fails with any error, it sends notification with the step number where it is failed. After fixing the issue manually, just execute the script again it will continue from failed step (not from first step). 
