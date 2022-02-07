@@ -1,0 +1,32 @@
+run
+{
+
+allocate channel ch01 device type disk
+format '/migration/refresh/DSGN/%U';
+
+allocate channel ch02 device type disk
+format '/migration/refresh/DSGN/%U';
+
+allocate channel ch03 device type disk
+format '/migration/refresh/DSGN/%U';
+
+allocate channel ch04 device type disk
+format '/migration/refresh/DSGN/%U';
+
+allocate channel ch05 device type disk
+format '/migration/refresh/DSGN/%U';
+
+allocate channel ch06 device type disk
+format '/migration/refresh/DSGN/%U';
+
+allocate channel ch07 device type disk
+format '/migration/refresh/DSGN/%U';
+
+allocate channel ch08 device type disk
+format '/migration/refresh/DSGN/%U';
+
+backup as backupset incremental level 0 section size 32g database
+tag 'FULLBACKUPSET_L0' plus archivelog delete input tag 'FULLBACKUPSET_L0';
+backup current controlfile;
+}
+EXIT;

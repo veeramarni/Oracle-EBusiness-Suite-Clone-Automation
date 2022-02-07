@@ -1,0 +1,2 @@
+unregister database noprompt;
+Exit;

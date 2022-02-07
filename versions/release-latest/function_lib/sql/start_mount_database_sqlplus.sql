@@ -1,0 +1,4 @@
+WHENEVER SQLERROR EXIT FAILURE;
+startup mount;
+Exit;
+

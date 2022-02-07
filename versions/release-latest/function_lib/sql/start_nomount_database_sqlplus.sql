@@ -1,0 +1,3 @@
+WHENEVER SQLERROR EXIT FAILURE;
+Startup nomount;
+Exit;

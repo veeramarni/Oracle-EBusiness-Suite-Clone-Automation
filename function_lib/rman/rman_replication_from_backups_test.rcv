@@ -1,0 +1,11 @@
+CONNECT AUXILIARY /
+run {
+allocate auxiliary channel a1 device type disk;
+allocate auxiliary channel a2 device type disk;
+allocate auxiliary channel a3 device type disk;
+allocate auxiliary channel a4 device type disk;
+DUPLICATE TARGET DATABASE TO "TEST"
+BACKUP LOCATION '&2'
+NOFILENAMECHECK;
+}
+EXIT;

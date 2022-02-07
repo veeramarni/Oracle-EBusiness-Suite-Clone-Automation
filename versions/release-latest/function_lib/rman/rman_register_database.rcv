@@ -1,0 +1,6 @@
+CONNECT target /
+CONNECT catalog rman/welcome1@devcatdb
+
+register database;
+
+EXIT;

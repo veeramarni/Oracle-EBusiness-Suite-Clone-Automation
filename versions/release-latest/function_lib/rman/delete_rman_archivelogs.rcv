@@ -1,0 +1,5 @@
+run 
+{
+delete noprompt archivelog all;
+}
+EXIT;
