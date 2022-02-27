@@ -326,7 +326,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Change DB parameters for $trgdbname database"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			custom_sql_run $trginstname $dbtargethomepath "" "" "as sysdba" ${sqlbasepath}create_spfile.sql 
+			custom_sql_run $trginstname $trgpdb $dbtargethomepath "" "" "as sysdba" ${sqlbasepath}create_spfile.sql 
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
@@ -378,7 +378,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Change DB parameters for $trgdbname database"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			param_db_file_name_convert $trginstname $dbtargethomepath ${srcdbdisk}/${srcdbname} ${trgdbdisk}/${trgdbname}
+			param_db_file_name_convert $trginstname $dbtargethomepath ${srcdbdisk}/${srcdbname} ${trgdbdisk}/${trgdbname} ${srcdbdisk}/${srcpdb} ${trgdbdisk}/${trgpdb}
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
