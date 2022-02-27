@@ -14,12 +14,14 @@ then
 else
 	unset _orasid
 	_orasid=$1
+	unset _orapdb
+	_orapdb=$2
 	unset _orahome
-	_orahome=$2
+	_orahome=$3
 	unset _dbstring
-	_dbstring=$3
+	_dbstring=$4
 	unset _user
-	_user=$4
+	_user=$5
 	unset _sqlfile
 	_sqlfile=$6
 	unset _sqlparm1
@@ -34,6 +36,7 @@ else
 	unset _lgfile
 	_lgfile=${logfilepath}${_orasid}sqlexecution"$tm".log
 	export ORACLE_SID=${_orasid}
+	export ORACLE_PDB_SID=${_orapdb}
 	export ORACLE_HOME=${_orahome}
 	unset _at
 	if [[ -z "${_dbstring// }" ]]

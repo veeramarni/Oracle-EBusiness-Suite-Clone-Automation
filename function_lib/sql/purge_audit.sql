@@ -1,4 +1,3 @@
-spool /u01/app/oracle/scripts/refresh/logs/DSGN_purge_audit.log
 BEGIN
  DBMS_AUDIT_MGMT.INIT_CLEANUP(
   AUDIT_TRAIL_TYPE            => DBMS_AUDIT_MGMT.AUDIT_TRAIL_ALL,

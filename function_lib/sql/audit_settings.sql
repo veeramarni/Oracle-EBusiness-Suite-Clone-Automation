@@ -1,4 +1,3 @@
-spool /u01/app/oracle/scripts/refresh/logs/audit_settings.log
 noaudit CREATE SESSION;
 noaudit CREATE USER;
 noaudit ALTER USER;
@@ -23,5 +22,4 @@ END;
 --to create audit user and enable auditing agent, uncomment the following
 --alter user avcollector identified by "xxxxxx";
 --@/u01/app/oracle/product/avagent/av/plugins/com.oracle.av.plugin.oracle/config/oracle_user_setup.sql avcollector setup
-spool off
 exit;

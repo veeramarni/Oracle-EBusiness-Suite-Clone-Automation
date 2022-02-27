@@ -18,6 +18,7 @@ logfilepath="${basepath}logs/"
 functionbasepath="${basepath}function_lib/"
 custfunctionbasepath="${basepath}custom_lib/"
 custsqlbasepath="${custfunctionbasepath}sql/"
+customxmlbasepath="${custfunctionbasepath}xml/"
 sqlbasepath="${functionbasepath}sql/"
 rmanbasepath="${functionbasepath}rman/"
 abendfile="$trgbasepath""$trgdbname"/"$trgdbname"_2000_abend_step
@@ -33,12 +34,7 @@ logfilename="$trgdbname"_DB_Overlay_$(date +%a)"_$(date +%F).log"
 . ${functionbasepath}/usage.sh
 . ${functionbasepath}/dir_empty.sh        
 . ${functionbasepath}/syncpoint.sh        
-. ${functionbasepath}/user_pwd_reset.sh   
-. ${functionbasepath}/its_crt_users.sh   
-. ${functionbasepath}/crt_directories.sh      
-. ${functionbasepath}/crt_dblinks.sh      
 . ${functionbasepath}/io_calibrate.sh     
-. ${functionbasepath}/audit_settings.sh   
 . ${functionbasepath}/purge_audit.sh      
 . ${functionbasepath}/turn_cluster_off.sh 
 . ${functionbasepath}/turn_cluster_on.sh 
@@ -47,17 +43,14 @@ logfilename="$trgdbname"_DB_Overlay_$(date +%a)"_$(date +%F).log"
 . ${functionbasepath}/stop_database_sqlplus.sh 
 . ${functionbasepath}/start_database_sqlplus.sh 
 . ${functionbasepath}/send_notification.sh
-. ${functionbasepath}/start_rman_tst_backup.sh
 . ${functionbasepath}/check_database_status1.sh
 . ${functionbasepath}/check_database_status2.sh
 . ${functionbasepath}/delete_sourcedb_backups.sh
 . ${functionbasepath}/start_mount_database_sqlplus.sh
 . ${functionbasepath}/start_nomount_database_sqlplus.sh
-. ${functionbasepath}/rman_register_database.sh
 . ${functionbasepath}/list_database_recover_files.sh
 . ${functionbasepath}/alter_database_archivelog_enable.sh
 . ${functionbasepath}/alter_database_open_sqlplus.sh
-. ${functionbasepath}/start_rman_tst_backup.sh
 . ${functionbasepath}/start_target_rman_replication_from_backups.sh
 . ${functionbasepath}/delete_os_trace_files.sh
 . ${functionbasepath}/delete_os_adump_files.sh
@@ -73,7 +66,10 @@ logfilename="$trgdbname"_DB_Overlay_$(date +%a)"_$(date +%F).log"
 . ${functionbasepath}/os_verify_or_make_file.sh
 . ${functionbasepath}/error_notification_exit.sh
 . ${functionbasepath}/get_decrypted_password.sh
-
+. ${functionbasepath}/copy_file.sh
+. ${functionbasepath}/db_rename_pdb_sqlplus.sh
+. ${functionbasepath}/db_update_adlib.sh
+. ${functionbasepath}/setup_util_file_directories.sh
 #
 #
 ########################################
@@ -85,7 +81,7 @@ then
 	echo ""
 	echo ""
 	echo " ====> Abort!!!. Invalid database name for overlay"
-        usage $0 :2000_overlay_staging2  "[DATABASE NAME]"
+        usage $0 :2000_target_processing.sh  "[DATABASE NAME]"
 	########################################################################
 	#   send notification                                                  #
 	########################################################################
@@ -109,9 +105,15 @@ os_verify_or_make_directory ${logfilepath}
 os_verify_or_make_directory ${trgbasepath}
 os_verify_or_make_directory ${trgbasepath}${trgdbname}
 os_verify_or_make_file ${abendfile} 0
+if [[ ! -n "${context_file+1}" || -z "${context_file}" ]]
+then 
+   echo "CONTEXT_FILE cannot be empty, please set the environment correctly"
+   error_notification_exit $rcode "Validation Error:  CONTEXT_FILE variable cannot be empty !!" $trgdbname 0 $LINENO
+fi
 #
 trgappspwd=$( get_decrypted_password $trgappspwd )
 srcappspwd=$( get_decrypted_password $srcappspwd )
+trgdbsystem=$( get_decrypted_password $trgdbsystem )
 #####################################################################
 #                                                                   #
 # Write an block condition to stop running the job with condition   #
@@ -212,7 +214,7 @@ do
 			########################################################################
 			#   send notification to start  target database replication            #
 			########################################################################
-			send_notification "$trgdbname"_Overlay_staging "Replication of $trgdbname database started" ${TOADDR} ${RTNADDR} ${CCADDR}
+			send_notification "$trgdbname"_Overlay_DB_staging "Replication of $trgdbname database started" ${TOADDR} ${RTNADDR} ${CCADDR}
 			echo "END     TASK: " $step "send-notification_01"
 		;;
         "250")
@@ -220,7 +222,7 @@ do
  			########################################################################
 			#   send notification to start  target database OEM blackout           #
 			########################################################################
-			send_notification "$trgdbname"_Overlay_staging "please note that $trgdbname is under OEM blackout" ${TOADDR} ${RTNADDR} ${CCADDR}
+			send_notification "$trgdbname"_Overlay_DB_staging "please note that $trgdbname is under OEM blackout" ${TOADDR} ${RTNADDR} ${CCADDR}
 			echo "END     TASK: " $step "send-notification_02"
 		;;
         "300")
@@ -365,7 +367,7 @@ do
 			then
 				error_notification_exit $rcode "Start database $trgdbname NOMOUNT FAILED!!" $trgdbname $step $LINENO
 			fi
-			echo "END     TASK: $step start_nomount_database_sqlplus"
+			echo "END     TASK:  $step start_nomount_database_sqlplus"
 		;;
         "700")
 			echo "START   TASK: " $step "param_db_file_name_convert"
@@ -376,7 +378,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Change DB parameters for $trgdbname database"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			param_db_file_name_convert $trginstname $dbtargethomepath +DATA/${srcdbname} +DATA/${trgdbname}
+			param_db_file_name_convert $trginstname $dbtargethomepath ${srcdbdisk}/${srcdbname} ${trgdbdisk}/${trgdbname}
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
@@ -471,7 +473,7 @@ do
 			echo "END     TASK: " $step "delete_os_adump_files"
 		;;
         "950")
-			echo "START   TASK:  " $step "start_nomount_database_sqlplus"
+			echo "START   TASK: " $step "start_nomount_database_sqlplus"
 			########################################
 			#  update log file:                    #
 			#      start database NOMOUNT          #
@@ -486,7 +488,7 @@ do
 			then
 				error_notification_exit $rcode "Start database $trgdbname NOMOUNT FAILED!!" $trgdbname $step $LINENO
 			fi
-			echo "END     TASK: "$step "start_nomount_database_sqlplus"
+			echo "END     TASK: " $step "start_nomount_database_sqlplus"
 		;;
         "1000")
 			echo "START   TASK: " $step "start_target_rman_replication_from_backups"
@@ -497,7 +499,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Start $trgdbname RMAN replication"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			start_target_rman_replication_from_backups $trginstname $dbtargethomepath $trgdbname $srcdbname
+			start_target_rman_replication_from_backups $trginstname $dbtargethomepath $trgdbname ${dbsourcebkupdir}
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -596,12 +598,78 @@ do
 			fi
 			echo "END     TASK: " $step "alter_database_open_sqlplus"
 		;;
-			#echo "START   TASK: $step turn_cluster_on"
+		"1255")
+			echo "START   TASK: " $step "copy descriptive file"
 			########################################
 			#  update log file:                    #
-			#      turn database cluster on        #
+			#      copy descriptive file to target #
 			########################################
-
+			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Copy $trgdbname to DB_HOME"
+			echo $now >>${logfilepath}${logfilename}
+			#
+			copy_file ${customxmlbasepath}${srcpdb}_PDBDesc.xml ${dbtargethomepath}/dbs
+			#
+			rcode=$?
+			if [ $rcode -ne 0 ] 
+			then
+				error_notification_exit $rcode "Copy $trgdbname to DB_HOME  FAILED!!" $trgdbname $step $LINENO
+			fi
+			echo "END     TASK: " $step "copy_file"
+		;;
+		"1260")
+			echo "START   TASK: " $step "rename pdb from source to target"
+			########################################
+			#  update log file:                    #
+			#      rename pdb                      #
+			########################################
+			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Rename pdb $trgpdb to $srcpdb using sqlplus"
+			echo $now >>${logfilepath}${logfilename}
+			#
+			db_rename_pdb_sqlplus $trginstname $dbtargethomepath $srcpdb $trgpdb
+			#
+			rcode=$?
+			if [ $rcode -ne 0 ] 
+			then
+				error_notification_exit $rcode "Rename pdb $trgpdb to $srcpdb FAILED!!" $trgdbname $step $LINENO
+			fi
+			echo "END     TASK: " $step "db_rename_pdb_sqlplus"
+		;;
+		"1265")
+			echo "START   TASK: " $step "setup util file directories"
+			########################################
+			#  update log file:                    #
+			#      rename pdb                      #
+			########################################
+			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Setup util file directories usign perl"
+			echo $now >>${logfilepath}${logfilename}
+			#
+			setup_util_file_directories $trginstname $dbtargethomepath $context_file
+			#
+			rcode=$?
+			if [ $rcode -ne 0 ] 
+			then
+				error_notification_exit $rcode "Setup util file directories usign perl FAILED!!" $trgdbname $step $LINENO
+			fi
+			echo "END     TASK: " $step "setup_util_file_directories"
+		;;
+		"1270")
+			echo "START   TASK: " $step "update db libraries"
+			########################################
+			#  update log file:                    #
+			#      rename pdb                      #
+			########################################
+			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Update DB Libraries using sqlplus"
+			echo $now >>${logfilepath}${logfilename}
+			#
+			db_update_adlib $trginstname $dbtargethomepath $context_file
+			#
+			rcode=$?
+			if [ $rcode -ne 0 ] 
+			then
+				error_notification_exit $rcode "Update DB Libraries using sqlplus FAILED!!" $trgdbname $step $LINENO
+			fi
+			echo "END     TASK: " $step "db_update_adlib"
+		;;
 			########################################
 			#  update log file:                    #
 			#      set database audit              #
@@ -626,7 +694,7 @@ do
 			echo $now >>${logfilepath}${logfilename}
 			#
 			echo "START   TASK: " $step "apps_fnd_clean"
-			apps_fnd_clean $trginstname $dbtargethomepath
+			apps_fnd_clean $trginstname $trgpdb $dbtargethomepath
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -644,7 +712,7 @@ do
 			echo $now >>${logfilepath}${logfilename}
 			#
 			echo "START   TASK: " $step "custom_sql_run postsqlexecution$trgdbname"
-			custom_sql_run $trginstname $dbtargethomepath "" "" "as sysdba" ${custsqlbasepath}postsqlexecution$trgdbname.sql 
+			custom_sql_run $trginstname $trgpdb $dbtargethomepath "" "" "as sysdba" ${custsqlbasepath}postsqlexecution$trgdbname.sql ${trgdbsystem}
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -662,7 +730,7 @@ do
 			echo $now >>${logfilepath}${logfilename}
 			#
 			echo "START   TASK: " $step "db_adconfig"
-			db_adconfig $trginstname $dbtargethomepath $context_file $srcappspwd
+			db_adconfig $trgpdb $dbtargethomepath $context_file $srcappspwd
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -695,7 +763,7 @@ do
 			########################################################################
 			#   send notification that target database overlay has been completed  #
 			########################################################################
-			send_notification "$trgdbname Overlay DB part completed" "$trgdbname overlay DB refresh has been completed" ${TOADDR} ${RTNADDR} ${CCADDR}
+			send_notification "$trgdbname"_Overlay_DB_staging_completed "$trgdbname overlay DB refresh has been completed" ${TOADDR} ${RTNADDR} ${CCADDR}
 			#	
 			echo "END     TASK: " $step "send_notification"
 		;;
