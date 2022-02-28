@@ -21,7 +21,6 @@ rmanbasepath="${functionbasepath}rman/"
 abendfile="$trgbasepath""$trgappname"/"$trgappname"_1050_abend_step
 logfilename="$trgdbname"_Overlay_Apps_PART1$(date +%a)"_$(date +%F).log"
 
-
 ####################################################################################################
 #      add functions library                                                                       #
 ####################################################################################################
@@ -149,7 +148,7 @@ do
 			then
 			    appender=$(date "+%m%d%y%H%M%S")
 			    echo "Moving previous backup file ${appsourcebkupdir}${srcappname}${tier}.tar.gz ${appsourcebkupdir}${srcappname}${tier}.tar.gz.$appender"
-				os_delete_move_file M ${appsourcebkupdir}${srcappname}${tier}.tar.gz ${appsourcebkupdir}${srcappname}${tier}.tar.gz.$appender
+				os_delete_move_file D ${appsourcebkupdir}${srcappname}${tier}.tar.gz ${appsourcebkupdir}${srcappname}${tier}.tar.gz.$appender
 			fi
 			#
 	        rcode=$?
@@ -196,4 +195,3 @@ do
         ;;
         esac
 done
-
