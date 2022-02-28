@@ -113,6 +113,7 @@ fi
 #
 trgappspwd=$( get_decrypted_password $trgappspwd )
 srcappspwd=$( get_decrypted_password $srcappspwd )
+srcdbsystem=$( get_decrypted_password $srcdbsystem )
 trgdbsystem=$( get_decrypted_password $trgdbsystem )
 #####################################################################
 #                                                                   #
@@ -598,7 +599,7 @@ do
 			fi
 			echo "END     TASK: " $step "alter_database_open_sqlplus"
 		;;
-		"1255")
+		"1300")
 			echo "START   TASK: " $step "copy descriptive file"
 			########################################
 			#  update log file:                    #
@@ -616,7 +617,7 @@ do
 			fi
 			echo "END     TASK: " $step "copy_file"
 		;;
-		"1260")
+		"1350")
 			echo "START   TASK: " $step "rename pdb from source to target"
 			########################################
 			#  update log file:                    #
@@ -634,7 +635,7 @@ do
 			fi
 			echo "END     TASK: " $step "db_rename_pdb_sqlplus"
 		;;
-		"1265")
+		"1400")
 			echo "START   TASK: " $step "setup util file directories"
 			########################################
 			#  update log file:                    #
@@ -643,7 +644,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Setup util file directories usign perl"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			setup_util_file_directories $trginstname $dbtargethomepath $context_file
+			setup_util_file_directories $trgpdb $dbtargethomepath $context_file $srcappspwd $srcdbsystem
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -652,7 +653,7 @@ do
 			fi
 			echo "END     TASK: " $step "setup_util_file_directories"
 		;;
-		"1270")
+		"1450")
 			echo "START   TASK: " $step "update db libraries"
 			########################################
 			#  update log file:                    #
@@ -661,7 +662,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Update DB Libraries using sqlplus"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			db_update_adlib $trginstname $dbtargethomepath $context_file
+			db_update_adlib $trginstname $dbtargethomepath $trgpdb
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -689,7 +690,7 @@ do
 			#  update log file: 				   #
 			#        REFRRESH post scripts         #
 			########################################
-		"1300")
+		"1500")
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Execute $trgdbname REFRESH Post Scripts"
 			echo $now >>${logfilepath}${logfilename}
 			#
@@ -703,7 +704,7 @@ do
 			fi
 			echo "END     TASK: " $step "REFRESH_post_scripts"
 		;;
-        "1400")
+        "1550")
 			########################################
 			#  update log file:                    #
 			#        Any post scripts              #
@@ -721,7 +722,7 @@ do
 			fi
 			echo "END     TASK: " $step "custom_sql_run postsqlexecution$trgdbname"
 		;;
-		"1450")
+		"1600")
 		    ########################################
 			#  update log file:                    #
 			#        Run DB Autoconfig             #
@@ -758,7 +759,7 @@ do
 			########################################
 			echo "END     TASK: xxxxxxxxxxxxxxxxxxxxxxxx"
 		;;
-        "1600")
+        "1650")
 			echo "START   TASK: " $step "send_notification"
 			########################################################################
 			#   send notification that target database overlay has been completed  #
@@ -767,7 +768,7 @@ do
 			#	
 			echo "END     TASK: " $step "send_notification"
 		;;
-        "1650")
+        "1700")
 			echo "START   TASK: " $step "end-of $trgdbname database refresh"
 			syncpoint $trgdbname "0 " "$LINENO"
 			echo "END     TASK: " $step "end-of $trgdbname database refresh"

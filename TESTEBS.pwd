@@ -1,4 +1,5 @@
-srcappspwd="xxxxxx"
-trgappspwd="xxxxxx"
-trgdbsystem="xxxxxx"
-trgappsysadmin="xxxxxx"
+srcappspwd=
+srcdbsystem=
+trgappspwd=
+trgdbsystem=
+trgappsysadmin=

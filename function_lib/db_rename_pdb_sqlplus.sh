@@ -1,4 +1,4 @@
-rename_pdb()
+db_rename_pdb_sqlplus()
 {
 orasid=$1
 orahome=$2
@@ -22,7 +22,7 @@ trgpdb_ebs_patch=${trgpdb}_ebs_patch
 # &6=$srcpdb_ebs_patch
 # &7=$trgpdb_ebs_patch
 "$ORACLE_HOME"/bin/sqlplus /" as sysdba"    \
-			@${sqlbasepath}db_rename_pdb.sql $srcpdb $trgpdb $prd_desc_file $ebs_srcpdb $ebs_trgpdb $srcpdb_ebs_patch $trgpdb_ebs_patch \
+			@${sqlbasepath}rename_pdb.sql $srcpdb $trgpdb $prd_desc_file $ebs_srcpdb $ebs_trgpdb $srcpdb_ebs_patch $trgpdb_ebs_patch \
 			> ${logfilepath}${orasid}_db_rename_pdb.log
 
 }
