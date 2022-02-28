@@ -174,7 +174,7 @@ do
 			echo $now >>$logfilepath$logfilename
 			#
 			echo taring ${appsourcehomepath} to ${appsourcebkupdir}${srcappname}${tier}.tar.gz
-			os_tar_gz_file ${appsourcebkupdir}${srcappname}${tier}.tar.gz "apps_st tech_st" ${appsourcehomepath} ${srcappname}${tier}_tarbackup.log
+			os_tar_gz_file ${appsourcebkupdir}${srcappname}${tier}.tar.gz "EBSapps" ${appsourcehomepath} ${srcappname}${tier}_tarbackup.log
 			rcode=$?
 			if [ $? -ne 0 ] 
 			then
