@@ -152,8 +152,8 @@ do
 			if is_os_process_running ${apptargethomepath} 
 			then
 				echo "Apps process is running.."
-				. ${apptargethomepath}apps_st/appl/$trgappname*.env
-				$ADMIN_SCRIPTS_HOME/adstpall.sh  apps/${trgappspwd}
+				. ${apptargethomepath}/EBSapps.env run
+				{echo "apps"; echo ${trgappspwd}; echo ${trgwlsadminpwd} } | $ADMIN_SCRIPTS_HOME/adstpall.sh @ -nopromptmsg
 				sleep 100
 				if is_os_process_running ${apptargethomepath} 
 				then
@@ -170,19 +170,19 @@ do
 			#  Clean old apps home				   #
 			########################################
 			echo "START   TASK: $step delete_appl_tech_st"
-			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete appl_st tech_st of $trgappname "
+			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete EBSapps FMW_Home of $trgappname "
 			echo $now >>$logfilepath$logfilename
 			#
 		    if ! is_os_file_exist ${appsourcebkupdir}${srcappname}${tier}.tar.gz 
 			then
 			    error_notification_exit $rcode "Apps restore is failed due to missing tar backups." $trgappname $step $LINENO
 			fi
-			if is_os_dir_exist ${apptargethomepath}/apps_st && is_os_dir_exist ${apptargethomepath}/tech_st
+			if is_os_dir_exist ${apptargethomepath}/EBSapps && is_os_dir_exist ${apptargethomepath}/FMW_Home
 			then
-			    echo "Deleting apps_st and tech_st"
-				os_delete_move_dir D "${apptargethomepath}/apps_st ${apptargethomepath}/tech_st"
+			    echo "Deleting EBSapps and FMW_Home"
+				os_delete_move_dir D "${apptargethomepath}/EBSapps ${apptargethomepath}/FMW_Home"
 			else 
-			    error_notification_exit $rcode "old apps_st and old tech_st directory may don't exist." $trgappname $step $LINENO
+			    error_notification_exit $rcode "old EBSapps and old FMW_Home directory may don't exist." $trgappname $step $LINENO
 			fi
 			#
 	        rcode=$?
@@ -224,7 +224,7 @@ do
 			echo $now >>$logfilepath$logfilename
 			#
 			echo application cloning to $trgappname
-			apps_run_adcfgclone "${apptargethomepath}apps_st/comn/clone/bin" ${context_file} ${srcappspwd}
+			{echo "apps"; echo ${srcappspwd}; echo ${trgwlsadminpwd} } | apps_run_adcfgclone "${apptargethomepath}/EBSapps/comn/clone/bin" ${context_file} dualfs
 			rcode=$?
 			if [ "$rcode" -ne 0 ]
 			then
@@ -241,7 +241,7 @@ do
 			echo $now >>$logfilepath$logfilename
 			#
 			echo set apps environment for $trgappname
-			. ${apptargethomepath}apps_st/appl/$trgappname*.env
+			. ${apptargethomepath}/EBSapps.env run
 			rcode=$?
 			if [ "$rcode" -ne 0 ]
 			then
@@ -284,6 +284,8 @@ do
 			echo "END     TASK: $step run auto config"
 		;;
 		"450")
+			echo "Existing for Manual steps before Apps "
+			exit 450
 			########################################
 			#  Start Apps				 		   #
 			########################################
@@ -292,7 +294,7 @@ do
 			echo $now >>$logfilepath$logfilename
 			#
 			echo start apps on $trgappname
-			$ADMIN_SCRIPTS_HOME/adstrtal.sh  apps/${trgappspwd}
+			{echo "apps"; echo ${trgappspwd}; echo ${trgwlsadminpwd} } | $ADMIN_SCRIPTS_HOME/adstrtal.sh
 			rcode=$?
 			if [ "$rcode" -ne 0 ]
 			then
