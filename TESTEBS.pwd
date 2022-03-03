@@ -1,5 +1,7 @@
 srcappspwd=
 srcdbsystem=
+srcwlsadminpwd=
 trgappspwd=
 trgdbsystem=
 trgappsysadmin=
+trgwlsadminpwd=
