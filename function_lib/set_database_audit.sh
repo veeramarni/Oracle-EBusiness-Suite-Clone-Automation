@@ -1,19 +1,21 @@
 set_database_audit()
 {
-dbname=$1
-ldbname=`echo "$dbname" | tr [A-Z] [a-z]`
-orasid="$dbname"1
-lorasid="$ldbname"1
-export ORACLE_SID="$orasid"
-if [ $dbname == "DBM01" ]
-then
-	lorasid="$ldbname"1
-	export ORACLE_SID="$lorasid"
-	export ORACLE_HOME=/u01/app/oracle/product/11.2.0.4/dbhome_1
-else
-	export ORACLE_HOME=/u01/app/oracle/product/11.2.0.4/dbhome_2
-fi
-"$ORACLE_HOME"/bin/sqlplus /" as sysdba"  \
-			@/u01/app/oracle/scripts/refresh/targets//"$dbname"/"$dbname"_set_database_audit.sql \
-			> /u01/app/oracle/scripts/refresh/logs/"$dbname"_set_database_audit.log
+orasid=$1
+orahome=$2
+dbname=$3
+export ORACLE_SID=${orasid}
+export ORACLE_HOME=${orahome}
+export NLS_DATE_FORMAT='DD-MM-RRRR HH24:MI:SS'
+export PATH=$ORACLE_HOME/bin:$PATH
+export ORACLE_BASE=/u01/app/oracle
+case $dbname in
+	"DSGN")
+		"$ORACLE_HOME"/bin/sqlplus /" as sysdba"  \
+			@${sqlbasepath}set_database_audit.sql \
+			> ${logfilepath}${orasid}_set_database_audit.log
+			;;
+	*)
+		echo "wrong database to delete old OS trace files"
+		;;
+esac
 }
