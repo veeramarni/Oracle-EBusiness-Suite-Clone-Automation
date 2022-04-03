@@ -327,7 +327,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Change DB parameters for $trgdbname database"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			custom_sql_run $trginstname $trgpdb $dbtargethomepath "" "" "as sysdba" ${sqlbasepath}create_spfile.sql 
+			custom_sql_run $trginstname $trgpdb $dbtargethomepath "" "" "" "as sysdba" ${sqlbasepath}create_spfile.sql 
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
@@ -444,7 +444,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete old OS trace files for target database $trgdbname"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			delete_os_trace_files $trgdbname
+			delete_os_trace_files $trgdbname $dbtargethomepath $trgdbname
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -463,7 +463,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Delete old OS adump files for target database $trgdbname"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			delete_os_adump_files $trgdbname
+			delete_os_adump_files $trgdbname $dbtargethomepath $trgdbname
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -662,7 +662,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Update DB Libraries using sqlplus"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			db_update_adlib $trginstname $dbtargethomepath $trgpdb
+			custom_sql_run $trginstname $trgpdb $dbtargethomepath $dbtargethomepath/network/admin/$trgpdb'_'$HOSTNAME "" "" "as sysdba" $dbtargethomepath/appsutil/install/${trgpdb}_${HOSTNAME}/adupdlib.sql libext
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
@@ -713,7 +713,7 @@ do
 			echo $now >>${logfilepath}${logfilename}
 			#
 			echo "START   TASK: " $step "custom_sql_run postsqlexecution$trgdbname"
-			custom_sql_run $trginstname $trgpdb $dbtargethomepath "" "" "as sysdba" ${custsqlbasepath}postsqlexecution$trgdbname.sql ${trgdbsystem}
+			custom_sql_run $trginstname $trgpdb $dbtargethomepath "" "" "" "as sysdba" ${custsqlbasepath}postsqlexecution$trgdbname.sql ${trgdbsystem}
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
