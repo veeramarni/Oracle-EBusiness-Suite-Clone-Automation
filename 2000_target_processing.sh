@@ -327,7 +327,7 @@ do
 			now=$(date "+%m/%d/%y %H:%M:%S")" ====> Change DB parameters for $trgdbname database"
 			echo $now >>${logfilepath}${logfilename}
 			#
-			custom_sql_run $trginstname $trgpdb $dbtargethomepath "" "" "" "as sysdba" ${sqlbasepath}create_spfile.sql 
+			custom_sql_run $trginstname $trgpdb $dbtargethomepath "" "" "" "as sysdba" ${sqlbasepath}create_spfile.sql $trginstname
 			rcode=$?
 			if [ $rcode -ne 0 ] 
 			then
@@ -731,7 +731,7 @@ do
 			echo $now >>${logfilepath}${logfilename}
 			#
 			echo "START   TASK: " $step "db_adconfig"
-			db_adconfig $trgpdb $dbtargethomepath $context_file $srcappspwd
+			db_adconfig $trgpdb $dbtargethomepath $trgpdb_${HOSTNAME} $srcappspwd
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
