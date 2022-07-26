@@ -731,7 +731,7 @@ do
 			echo $now >>${logfilepath}${logfilename}
 			#
 			echo "START   TASK: " $step "db_adconfig"
-			db_adconfig $trgpdb $dbtargethomepath $trgpdb_${HOSTNAME} $srcappspwd
+			db_adconfig $trgpdb $dbtargethomepath ${trgpdb}_${HOSTNAME} $srcappspwd
 			#
 			rcode=$?
 			if [ $rcode -ne 0 ] 
